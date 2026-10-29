@@ -60,3 +60,9 @@ Le build et les routes locales sont contrôlés ; aucun déploiement distant n'e
 Le corrigé Full Text `3_TP_index_FT_sol.pdf` (22 pages) est référencé comme SOL-FT : toutes les sous-questions ont été revues, ainsi que les annexes et coquilles. Voir `docs/CONTROLE-TP-FULLTEXT.md`.
 
 Le TE1 2025–2026 ajoute 5 leçons et 25 questions avec références aux pages physiques du PDF. Les exemples remplaçant les annexes sont signalés ; les trois exercices SQL utilisent les jeux existants et leur variante. La sauvegarde v2, sa clé IndexedDB et tous les anciens identifiants restent inchangés. Voir `docs/CONTROLE-TE1-2526.md`.
+
+## Séries de QCM
+
+`/qcm` regroupe les QCM par chapitre et anciens TE1. 162 QCM supplémentaires couvrent chacune des 81 leçons (deux nouveaux par leçon), avec une seule réponse correcte, indices et explication. La correction s’ouvre après vérification et la navigation permet d’enchaîner les questions. Les QCM précèdent les exercices SQL et les démarches de réflexion ; aucun exercice historique n’est supprimé.
+
+La première réponse sans aide peut être évaluée normalement ; une nouvelle tentative sur la même question après affichage de la correction reste assistée. Le stockage v2 et les identifiants historiques sont conservés.

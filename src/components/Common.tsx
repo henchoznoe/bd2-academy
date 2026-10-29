@@ -64,11 +64,17 @@ export const typeLabels: Record<Exercise["type"], string> = {
   result: "Résultat à trouver",
   lab: "Atelier",
 };
-export function ExerciseCard({ exercise }: { exercise: Exercise }) {
+export function ExerciseCard({
+  exercise,
+  seriesId,
+}: {
+  exercise: Exercise;
+  seriesId?: string;
+}) {
   return (
     <Link
       className="exercise-card group"
-      to={`/exercices/${encodeURIComponent(exercise.id)}`}
+      to={`/exercices/${encodeURIComponent(exercise.id)}${seriesId ? `?serie=${encodeURIComponent(seriesId)}` : ""}`}
     >
       <div className="flex min-w-0 items-center gap-3">
         <span className="exercise-type">

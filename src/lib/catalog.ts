@@ -199,8 +199,18 @@ export const lessonById = (id?: string) => lessons.find((l) => l.id === id);
 export const exerciseById = (id?: string) => exercises.find((e) => e.id === id);
 export const moduleLessons = (id: string) =>
   lessons.filter((l) => l.moduleId === id);
+export function prioritizeQuizzes(items: readonly Exercise[]): Exercise[] {
+  return [
+    ...items.filter((e) => e.type === "quiz"),
+    ...items.filter((e) => e.type !== "quiz"),
+  ];
+}
 export const lessonExercises = (id: string) =>
-  exercises.filter((e) => e.lessonId === id);
+  prioritizeQuizzes(exercises.filter((e) => e.lessonId === id));
+export const moduleQuizzes = (id: string) =>
+  moduleLessons(id).flatMap((lesson) =>
+    lessonExercises(lesson.id).filter((e) => e.type === "quiz"),
+  );
 export function coverageIssues() {
   const issues: string[] = [],
     ids = new Set<string>();
@@ -221,7 +231,7 @@ export function coverageIssues() {
         issues.push(`Référence invalide : ${item.id} / ${ref.sourceId}`);
     }
   for (const row of curriculum.skills.filter((s) =>
-    /^(LMD-C|DF-C|FN-C|PHY-C|IDX-C|AUT-C|FT-C|VEC-C|TP-|EX-)/.test(s.id),
+    /^(LMD-C|DF-C|FN-C|PHY-C|IDX-C|AUT-C|FT-C|VEC-C|TP-|EX-|QCM-)/.test(s.id),
   )) {
     const id = row.id.split(" — ")[0];
     if (!exerciseIds.has(id)) issues.push(`Exercice non couvert : ${id}`);

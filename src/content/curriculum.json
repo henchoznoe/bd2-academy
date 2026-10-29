@@ -1884,6 +1884,816 @@
       "id": "EX-2526-5.3",
       "description": "Calculer les moyennes une fois puis joindre",
       "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-bd1-01",
+      "description": "Jointure sans correspondance",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-bd1-02",
+      "description": "Compter les valeurs NULL",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-case-01",
+      "description": "Premier WHEN vrai",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-case-02",
+      "description": "CASE simple et NULL",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-null-functions-01",
+      "description": "Premier renseignement disponible",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-null-functions-02",
+      "description": "Transformer une égalité en absence",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-conditional-aggregation-01",
+      "description": "COUNT et ELSE 0",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-conditional-aggregation-02",
+      "description": "Conserver une catégorie sans succès",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-pivot-01",
+      "description": "Le rôle de FOR",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-pivot-02",
+      "description": "Regroupement implicite trop fin",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-pivot-variants-01",
+      "description": "Agrégation avec FILTER",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-pivot-variants-02",
+      "description": "Portée d'UNPIVOT",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-scalar-subquery-01",
+      "description": "Sous-requête sans résultat",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-scalar-subquery-02",
+      "description": "Plus d'une ligne",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-derived-lateral-01",
+      "description": "Corrélation explicite",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-derived-lateral-02",
+      "description": "Préserver une ligne avec LATERAL",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-cte-01",
+      "description": "Rôle de WITH",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-cte-02",
+      "description": "Filtrer un rang calculé",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-merge-01",
+      "description": "Branches de MERGE",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-merge-02",
+      "description": "Plusieurs sources pour une cible",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-multitable-01",
+      "description": "INSERT ALL",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-multitable-02",
+      "description": "INSERT FIRST",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-pagination-01",
+      "description": "Pagination reproductible",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-pagination-02",
+      "description": "Ex æquo à la frontière",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-grouping-sets-01",
+      "description": "Nombre de niveaux demandés",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-grouping-sets-02",
+      "description": "NULL de donnée ou de total",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-rollup-cube-01",
+      "description": "ROLLUP à deux colonnes",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-rollup-cube-02",
+      "description": "CUBE à trois dimensions",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-windows-01",
+      "description": "Conserver le détail",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-windows-02",
+      "description": "Ordre de calcul et ordre de sortie",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-window-frames-01",
+      "description": "ROWS et ex æquo",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-window-frames-02",
+      "description": "Cadre de trois lignes",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-window-order-01",
+      "description": "Cumul après agrégation",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-window-order-02",
+      "description": "Filtre avant fenêtre",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-ranking-01",
+      "description": "Trous après ex æquo",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-ranking-02",
+      "description": "Départager ROW_NUMBER",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-hypothetical-rank-01",
+      "description": "Rang d'une valeur hypothétique",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-hypothetical-rank-02",
+      "description": "LISTAGG et tri",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-recursion-01",
+      "description": "Ancre de la récursivité",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-recursion-02",
+      "description": "Cycle et terminaison",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-distributed-01",
+      "description": "Lire une référence distante",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-distributed-02",
+      "description": "Volume transféré",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-cinema-01",
+      "description": "Chiffre dérivé d'une séance",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-sql-cinema-02",
+      "description": "Moyenne pondérée",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-df-semantique-01",
+      "description": "Définition d'une DF",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-df-semantique-02",
+      "description": "Observation contre règle",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-df-types-graphes-01",
+      "description": "Dépendance triviale",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-df-types-graphes-02",
+      "description": "Déterminant composé",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-df-armstrong-01",
+      "description": "Transitivité",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-df-armstrong-02",
+      "description": "Augmentation",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-df-fermetures-01",
+      "description": "Calcul de fermeture",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-df-fermetures-02",
+      "description": "X+ et F+",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-df-couverture-01",
+      "description": "Attribut superflu",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-df-couverture-02",
+      "description": "Couvertures différentes",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-df-cles-01",
+      "description": "Superclé non minimale",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-df-cles-02",
+      "description": "Attribut jamais produit",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-df-projection-01",
+      "description": "Projection et transitivité",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-df-projection-02",
+      "description": "Filtrage textuel insuffisant",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-anomalies-01",
+      "description": "Mise à jour répétée",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-anomalies-02",
+      "description": "Suppression d'information",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-sans-perte-01",
+      "description": "Critère de Heath",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-sans-perte-02",
+      "description": "Tuples parasites",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-preservation-01",
+      "description": "Préserver les DF",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-preservation-02",
+      "description": "BCNF et dépendances",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-1fn-2fn-01",
+      "description": "Cellule multivaluée",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-1fn-2fn-02",
+      "description": "Dépendance partielle",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-3fn-01",
+      "description": "Attribut premier",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-3fn-02",
+      "description": "3FN sans BCNF",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-synthese-01",
+      "description": "Ajouter une relation clé",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-synthese-02",
+      "description": "Garanties de la synthèse",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-bcnf-01",
+      "description": "Condition BCNF",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-bcnf-02",
+      "description": "Décomposition binaire",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-dm-01",
+      "description": "Deux faits indépendants",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-dm-02",
+      "description": "DF contre DMV",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-4fn-01",
+      "description": "Violation de 4FN",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-4fn-02",
+      "description": "Séparer les faits indépendants",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-zoo-01",
+      "description": "Contrôler une DF",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-fn-zoo-02",
+      "description": "Réécriture après normalisation",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-physique-memoires-01",
+      "description": "Persistance",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-physique-memoires-02",
+      "description": "Unité d'accès du stockage",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-physique-acces-01",
+      "description": "Séquentiel et aléatoire",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-physique-acces-02",
+      "description": "Additionner des unités cohérentes",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-physique-cache-01",
+      "description": "Hit ratio",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-physique-cache-02",
+      "description": "Lecture logique sans E/S",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-physique-blocs-01",
+      "description": "Lignes non fragmentées",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-physique-blocs-02",
+      "description": "Nombre de blocs",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-physique-fichiers-01",
+      "description": "Recherche dans un heap",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-physique-fichiers-02",
+      "description": "Compromis d'un fichier trié",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-physique-annexes-01",
+      "description": "SSD et positionnement",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-physique-annexes-02",
+      "description": "Comparer des mesures",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-index-fondations-01",
+      "description": "Rôle d'un index",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-index-fondations-02",
+      "description": "Index dense",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-btree-operations-01",
+      "description": "Insertion et dépassement",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-btree-operations-02",
+      "description": "Suppression et sous-remplissage",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-btree-capacite-01",
+      "description": "Convention de l'ordre",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-btree-capacite-02",
+      "description": "Hauteur et lectures",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-bplus-structure-01",
+      "description": "Données dans un B+arbre",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-bplus-structure-02",
+      "description": "Parcours de plage",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-index-bulk-composite-01",
+      "description": "Préfixe gauche",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-index-bulk-composite-02",
+      "description": "Bulk loading",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-index-clustered-01",
+      "description": "Index plaçant",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-index-clustered-02",
+      "description": "Lookup secondaire",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-index-produits-01",
+      "description": "InnoDB et index secondaire",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-index-produits-02",
+      "description": "Oracle heap et PK",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-index-requetes-01",
+      "description": "Couverture du WHERE",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-index-requetes-02",
+      "description": "Égalité puis tri",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-index-couts-01",
+      "description": "Accès froid non recouvrant",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-index-couts-02",
+      "description": "Effet du cache",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-index-fonctionnel-01",
+      "description": "Expression et index",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-index-fonctionnel-02",
+      "description": "Index de préfixe",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-index-strategie-01",
+      "description": "Coût d'écriture",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-index-strategie-02",
+      "description": "Choix du plan",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-index-tp-methode-01",
+      "description": "Clients sans commande",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-index-tp-methode-02",
+      "description": "NOT IN et NULL",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-bitmap-01",
+      "description": "Combinaison AND",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-bitmap-02",
+      "description": "Combinaison OR",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-hachage-01",
+      "description": "Collision",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-hachage-02",
+      "description": "Intervalle",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-clusters-01",
+      "description": "Cluster Oracle",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-clusters-02",
+      "description": "Index contre organisation",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-like-regex-01",
+      "description": "Préfixe contre sous-chaîne",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-like-regex-02",
+      "description": "Mots contre fragments",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-index-inverse-01",
+      "description": "Contenu d'un index inversé",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-index-inverse-02",
+      "description": "Intersection de listes",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-tfidf-01",
+      "description": "TF normalisé",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-tfidf-02",
+      "description": "Terme présent partout",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-ranking-innodb-01",
+      "description": "Score et probabilité",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-ranking-innodb-02",
+      "description": "Fréquence brute dans le modèle",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-pretraitement-01",
+      "description": "Stopword",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-pretraitement-02",
+      "description": "Collation",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-index-mysql-01",
+      "description": "Colonnes de MATCH",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-index-mysql-02",
+      "description": "Deuxième index Full Text",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-modes-01",
+      "description": "Opérateurs booléens",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-modes-02",
+      "description": "Expansion de requête",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-genres-tp-01",
+      "description": "Genres et séparation",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-genres-tp-02",
+      "description": "Schéma relationnel des genres",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-tp-corrige-01",
+      "description": "Statut d'une correction annotée",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-tp-corrige-02",
+      "description": "Numéro de ligne et identité",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-collations-tp-01",
+      "description": "Octets et caractères",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-texte-collations-tp-02",
+      "description": "Suffixe ci et accents",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-vecteurs-representations-01",
+      "description": "Embedding appris",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-vecteurs-representations-02",
+      "description": "Comparer dans le même espace",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-vecteurs-distances-01",
+      "description": "Cosinus de vecteurs alignés",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-vecteurs-distances-02",
+      "description": "Distance euclidienne",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-vecteurs-mysql-01",
+      "description": "Taille des composantes",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-vecteurs-mysql-02",
+      "description": "Stockage et index ANN",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-exam-sql-01",
+      "description": "Fenêtre globale et NULL",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-exam-sql-02",
+      "description": "FK et sens d'une DF",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-exam-df-01",
+      "description": "Attributs obligatoires d'une clé",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-exam-df-02",
+      "description": "Relation clé en synthèse",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-exam-index-01",
+      "description": "Index recouvrant et E/S",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-exam-index-02",
+      "description": "Réduire les lignes de données",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-te1-2526-theorie-01",
+      "description": "Couverture incomplète",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-te1-2526-theorie-02",
+      "description": "Deux périmètres de volume",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-te1-2526-df-01",
+      "description": "Fermeture et minimalité",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-te1-2526-df-02",
+      "description": "Contre-exemple préservant les autres règles",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-te1-2526-normalisation-01",
+      "description": "Preuve binaire sans perte",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-te1-2526-normalisation-02",
+      "description": "Forme maximale après synthèse",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-te1-2526-stockage-01",
+      "description": "DESC et organisation principale",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-te1-2526-stockage-02",
+      "description": "Lire le DDL Oracle",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-te1-2526-requetes-01",
+      "description": "Moyenne préalable et cardinalité",
+      "kind": "exercise"
+    },
+    {
+      "id": "QCM-te1-2526-requetes-02",
+      "description": "Réécriture et gain de temps",
+      "kind": "exercise"
     }
   ],
   "sources": [

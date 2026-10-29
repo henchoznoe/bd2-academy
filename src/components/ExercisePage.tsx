@@ -1,7 +1,8 @@
 import { lazy, Suspense, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import {
   ArrowLeft,
+  ArrowRight,
   CheckCircle2,
   ChevronDown,
   Lightbulb,
@@ -9,7 +10,12 @@ import {
   RotateCcw,
   Square,
 } from "lucide-react";
-import { exerciseById, lessonById } from "../lib/catalog";
+import {
+  exerciseById,
+  lessonById,
+  lessonExercises,
+  moduleQuizzes,
+} from "../lib/catalog";
 import { datasetInfo } from "../lib/datasets";
 import { cancelSQL, runSQL, verifySQL } from "../lib/sql";
 import type { QueryResult } from "../lib/results";
@@ -50,6 +56,19 @@ function Exercise({ id }: { id: string }) {
     [rubric, setRubric] = useState<boolean[]>([false, false, false, false]);
   const data = exercise.datasetId ? datasetInfo(exercise.datasetId) : undefined;
   const answer = saved.draft;
+  const [searchParams] = useSearchParams();
+  const seriesId = searchParams.get("serie");
+  const inChapterSeries =
+    exercise.type === "quiz" && !!lesson && seriesId === lesson.moduleId;
+  const quizzes =
+    exercise.type === "quiz"
+      ? inChapterSeries
+        ? moduleQuizzes(lesson!.moduleId)
+        : lessonExercises(exercise.lessonId).filter((e) => e.type === "quiz")
+      : [];
+  const quizIndex = quizzes.findIndex((e) => e.id === id);
+  const quizLink = (exerciseId: string) =>
+    `/exercices/${encodeURIComponent(exerciseId)}${inChapterSeries ? `?serie=${encodeURIComponent(seriesId!)}` : ""}`;
   function setAnswer(value: string) {
     patch(id, {
       draft: value,
@@ -104,14 +123,16 @@ function Exercise({ id }: { id: string }) {
     }
   }
   function validate() {
-    if (exercise.type === "quiz")
+    if (exercise.type === "quiz") {
       feedback(
-        Number(answer) === exercise.correctIndex,
-        Number(answer) === exercise.correctIndex
-          ? "Bonne réponse. Justifiez votre choix avant de continuer."
-          : "Cette réponse est à reprendre. Un indice peut vous aider.",
+        answer === String(exercise.correctIndex),
+        answer === String(exercise.correctIndex)
+          ? "Bonne réponse. La correction ci-dessous explique le raisonnement."
+          : "Cette réponse est à reprendre. Consultez la correction ci-dessous.",
       );
-    else if (exercise.type === "result") {
+      setShowSolution(true);
+      patch(id, { solutionSeen: true });
+    } else if (exercise.type === "result") {
       const ok = exercise.acceptedAnswers!.some(
         (a) => normalize(a) === normalize(answer),
       );
@@ -156,6 +177,35 @@ function Exercise({ id }: { id: string }) {
       </div>
       <h1>{exercise.title}</h1>
       <SourceRefs refs={exercise.sourceRefs} />
+      {exercise.type === "quiz" && (
+        <section className="panel" aria-label="Navigation de la série QCM">
+          <p className="fine-print">
+            Question {quizIndex + 1} / {quizzes.length} · Une seule bonne
+            réponse
+          </p>
+          <div className="flex flex-wrap gap-3 mt-3">
+            {quizzes[quizIndex - 1] && (
+              <Link className="button" to={quizLink(quizzes[quizIndex - 1].id)}>
+                <ArrowLeft size={15} />
+                Question précédente
+              </Link>
+            )}
+            <Link
+              className="button ghost"
+              to={`/qcm/${lesson?.moduleId ?? ""}`}
+            >
+              Tous les QCM du chapitre
+            </Link>
+          </div>
+        </section>
+      )}
+      {exercise.id.startsWith("QCM-") && (
+        <p className="notice">
+          QCM d’entraînement créé pour cette leçon, avec correction expliquée.
+          Les références renvoient aux supports, sans présenter cet exemple
+          comme une question officielle.
+        </p>
+      )}
       {exercise.origin === "exam" && (
         <div className="notice">
           Énoncé visible dans la copie ancienne ; données d’entraînement
@@ -398,6 +448,33 @@ function Exercise({ id }: { id: string }) {
           </div>
         )}
       </section>
+      {exercise.type === "quiz" && (
+        <nav
+          className="panel flex flex-wrap items-center justify-between gap-3"
+          aria-label="Continuer la série QCM"
+        >
+          <p className="fine-print">
+            {quizzes[quizIndex + 1]
+              ? "Expliquez le choix correct avant de passer à la suite."
+              : "Vous avez atteint la dernière question de cette série."}
+          </p>
+          {quizzes[quizIndex + 1] ? (
+            <Link
+              className="button primary"
+              to={quizLink(quizzes[quizIndex + 1].id)}
+            >
+              Question suivante <ArrowRight size={16} />
+            </Link>
+          ) : (
+            <Link
+              className="button primary"
+              to={`/qcm/${lesson?.moduleId ?? ""}`}
+            >
+              Revenir aux QCM du chapitre <ArrowRight size={16} />
+            </Link>
+          )}
+        </nav>
+      )}
       <div className="flex flex-wrap gap-3">
         <Link
           className="button"

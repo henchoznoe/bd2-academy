@@ -26,6 +26,8 @@ import {
   lessonComponents,
   lessonExercises,
   moduleLessons,
+  moduleQuizzes,
+  prioritizeQuizzes,
   modules,
   skills,
   sources,
@@ -267,6 +269,18 @@ export function ModulePage() {
           Ouvrir l’atelier
         </Link>
       </div>
+      <section className="panel mt-6 mb-6">
+        <span className="eyebrow">COMMENCER PAR LES QCM</span>
+        <h2>{moduleQuizzes(module.id).length} QCM pour vérifier vos repères</h2>
+        <p>
+          Une seule bonne réponse par question, des indices et une correction
+          expliquée. Les exercices SQL et les questions de réflexion restent
+          disponibles dans les leçons, après les QCM.
+        </p>
+        <Link className="button primary mt-4" to={`/qcm/${module.id}`}>
+          Ouvrir la série de QCM <ArrowRight size={16} />
+        </Link>
+      </section>
       <div className="lesson-list">
         {list.map((lesson, i) => (
           <Link
@@ -395,11 +409,35 @@ export function LessonPage() {
         </div>
         <span className="fine-print">{practice.length} exercice(s)</span>
       </div>
-      <div className="exercise-list">
-        {practice.map((exercise) => (
-          <ExerciseCard key={exercise.id} exercise={exercise} />
-        ))}
-      </div>
+      <section aria-label="QCM de la leçon">
+        <h3>1. Commencer par les QCM</h3>
+        <p className="fine-print mb-4">
+          Choisir une réponse, la vérifier, puis consulter la correction pour
+          comprendre le raisonnement.
+        </p>
+        <div className="exercise-list">
+          {practice
+            .filter((e) => e.type === "quiz")
+            .map((exercise) => (
+              <ExerciseCard key={exercise.id} exercise={exercise} />
+            ))}
+        </div>
+      </section>
+      {practice.some((e) => e.type !== "quiz") && (
+        <section
+          className="mt-7"
+          aria-label="Exercices et questions de réflexion"
+        >
+          <h3>2. Approfondir avec les exercices et la réflexion</h3>
+          <div className="exercise-list">
+            {practice
+              .filter((e) => e.type !== "quiz")
+              .map((exercise) => (
+                <ExerciseCard key={exercise.id} exercise={exercise} />
+              ))}
+          </div>
+        </section>
+      )}
       <section className="panel mt-6">
         <h2>Mes repères de compréhension</h2>
         <p>
@@ -496,7 +534,7 @@ export function TrackPage() {
   const { track } = useParams(),
     tp = tpTracks.find((t) => t.id === track);
   if (!tp) return <Empty>TP introuvable.</Empty>;
-  const list = exercises.filter((e) => e.tpId === tp.id);
+  const list = prioritizeQuizzes(exercises.filter((e) => e.tpId === tp.id));
   return (
     <div className="page-enter">
       <Link className="back-link" to="/tp">
@@ -573,8 +611,8 @@ export function ExamPage() {
             l.sourceRefs.some((r) => r.sourceId === session.sourceId),
         );
         const ids = new Set(sessionLessons.map((l) => l.id));
-        const list = exercises.filter(
-          (e) => e.origin === "exam" && ids.has(e.lessonId),
+        const list = prioritizeQuizzes(
+          exercises.filter((e) => ids.has(e.lessonId)),
         );
         return (
           <section
@@ -602,7 +640,9 @@ export function ExamPage() {
                 </Link>
               ))}
             </div>
-            <h3 className="mt-7">Question par question</h3>
+            <h3 className="mt-7">
+              QCM, puis questions de réflexion et exercices
+            </h3>
             <div className="exercise-list">
               {list.map((e) => (
                 <ExerciseCard key={e.id} exercise={e} />
@@ -848,7 +888,7 @@ export function SourcesPage() {
     selected = params.get("source"),
     issues = coverageIssues();
   const rows = curriculum.skills.filter((s) =>
-    /^(LMD-C|DF-C|FN-C|PHY-C|IDX-C|AUT-C|FT-C|VEC-C|TP-|EX-)/.test(s.id),
+    /^(LMD-C|DF-C|FN-C|PHY-C|IDX-C|AUT-C|FT-C|VEC-C|TP-|EX-|QCM-)/.test(s.id),
   );
   return (
     <div className="page-enter">

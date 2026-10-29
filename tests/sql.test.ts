@@ -211,4 +211,64 @@ describe("reference SQL on the pinned WebAssembly engine", () => {
       expect(compareResults(wrongWindow, expected).correct).toBe(false);
     }
   });
+  it("checks the new SQL quiz answers against actual SQL results", async () => {
+    const answer = (id: string) => {
+      const e = exercises.find((e) => e.id === `QCM-${id}`)!;
+      return e.options![e.correctIndex!];
+    };
+    const samples: [string, string, (rows: unknown[][]) => string][] = [
+      [
+        "sql-bd1-02",
+        "SELECT COUNT(*),COUNT(v),AVG(v) FROM (VALUES (10),(NULL),(20)) t(v);",
+        (rows) => rows[0].slice(0, 2).join(", ") + " et " + rows[0][2],
+      ],
+      [
+        "sql-case-01",
+        "SELECT CASE WHEN 5500>=3000 THEN 'Moyen' WHEN 5500>=5000 THEN 'Élevé' END;",
+        (rows) => String(rows[0][0]),
+      ],
+      [
+        "sql-case-02",
+        "SELECT CASE CAST(NULL AS INTEGER) WHEN NULL THEN 'Inconnu' ELSE 'Autre' END;",
+        (rows) => String(rows[0][0]),
+      ],
+      [
+        "sql-null-functions-01",
+        "SELECT COALESCE(NULL,0,25);",
+        (rows) => String(rows[0][0]),
+      ],
+      [
+        "sql-null-functions-02",
+        "SELECT NULLIF(8,8);",
+        (rows) => (rows[0][0] === null ? "NULL" : String(rows[0][0])),
+      ],
+      [
+        "sql-conditional-aggregation-01",
+        "SELECT COUNT(CASE WHEN p THEN 1 ELSE 0 END) FROM (VALUES (true),(false),(true),(false)) t(p);",
+        (rows) => String(rows[0][0]),
+      ],
+      [
+        "sql-window-frames-01",
+        "SELECT SUM(v) OVER(ORDER BY v RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM (VALUES (10),(20),(20)) t(v) ORDER BY v;",
+        (rows) => String(rows[1][0]),
+      ],
+      [
+        "sql-ranking-01",
+        "SELECT RANK() OVER(ORDER BY v DESC) FROM (VALUES (90),(90),(70)) t(v) ORDER BY v DESC;",
+        (rows) => rows.map((r) => r[0]).join(","),
+      ],
+      [
+        "sql-hypothetical-rank-01",
+        "SELECT 1+COUNT(*) FILTER(WHERE v>150) FROM (VALUES (100),(200),(200)) t(v);",
+        (rows) => String(rows[0][0]),
+      ],
+      [
+        "exam-sql-01",
+        "SELECT AVG(v) OVER() FROM (VALUES (100),(NULL),(200)) t(v);",
+        (rows) => String(rows[0][0]),
+      ],
+    ];
+    for (const [id, sql, format] of samples)
+      expect(answer(id), id).toBe(format((await query("course", sql)).rows));
+  });
 });

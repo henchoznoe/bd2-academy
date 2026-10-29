@@ -39,6 +39,7 @@ import {
   SourcesPage,
   GlossaryPage,
 } from "./components/Pages";
+const QuizPage = lazy(() => import("./components/QuizPage"));
 const ExercisePage = lazy(() => import("./components/ExercisePage"));
 const Labs = lazy(() => import("./components/Labs"));
 const ProgressPage = lazy(() => import("./components/ProgressPage"));
@@ -84,6 +85,7 @@ function Shell() {
   }, []);
   const menuLinks = [
     ["/", "Mon parcours", LayoutDashboard],
+    ["/qcm", "QCM", Check],
     ["/tp", "Travaux pratiques", SquareCheckBig],
     ["/examen", "Préparer l’examen", GraduationCap],
     ["/ateliers/df", "Laboratoire", FlaskConical],
@@ -255,6 +257,8 @@ function Shell() {
                 <Route path="/cours/:moduleId" element={<ModulePage />} />
                 <Route path="/lecons/:id" element={<LessonPage />} />
                 <Route path="/exercices/:id" element={<ExercisePage />} />
+                <Route path="/qcm" element={<QuizPage />} />
+                <Route path="/qcm/:moduleId" element={<QuizPage />} />
                 <Route path="/tp" element={<TracksPage />} />
                 <Route path="/tp/:track" element={<TrackPage />} />
                 <Route path="/examen" element={<ExamPage />} />
