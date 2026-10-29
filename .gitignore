@@ -8,3 +8,4 @@ dist/
 coverage/
 public/duckdb/
 public/datasets/search-index.json
+*.tsbuildinfo

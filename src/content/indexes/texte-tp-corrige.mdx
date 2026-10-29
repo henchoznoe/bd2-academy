@@ -1,0 +1,46 @@
+export const meta = {"id": "texte-tp-corrige", "moduleId": "fulltext", "title": "Lire le corrigé du TP Full Text", "summary": "Relier les réponses aux données, aux index et aux limites du corrigé.", "objectives": ["Retrouver chaque réponse du TP dans le corrigé", "Justifier les différences de résultats et reconnaître les coquilles"], "sourceRefs": [{"sourceId": "SOL-FT", "pages": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]}], "skillIds": ["B10.01", "B10.02", "B10.07", "B10.08", "B10.09", "B10.10", "B10.11", "B10.12"], "order": 23.1}
+
+## Un corrigé maintenant disponible
+Le support **SOL-FT** est la version avec solutions du TP. Ses 22 pages précisent les réponses et ajoutent un témoignage ainsi qu'une annexe sur les chaînes et collations. Chaque sous-question du parcours TP renvoie à ses pages physiques.
+
+### Préparation : lire le contexte
+Les pages 1–5 décrivent un environnement MySQL conteneurisé, un schéma movie et un chargement CSV. Les noms de conteneur, chemins et temps sont ceux de cette configuration. Le site utilise le CSV fourni de 1 288 films pour les requêtes relationnelles ; il ne démarre pas un serveur MySQL. Les MATCH, tables auxiliaires et collations MySQL restent des démarches guidées.
+
+### Les comptes vérifiés sur le CSV
+
+| Recherche | Résultat sur les 1 288 films |
+| --- | ---: |
+| Toutes les lignes | 1288 |
+| Genres contenant Comedy | 463 |
+| Comedy et résumé contenant family | 43 |
+| Titre contenant dream, sans distinction de casse | 5 |
+| Titre commençant par The suivi d'un espace | 248 |
+| Chaîne brute contenant Action avant Crime | 48 |
+| Présence des membres Action et Crime | 53 |
+
+Ces comptes concernent le jeu principal. Le jeu alternatif du correcteur ajoute un film choisi pour l'entraînement. Les requêtes doivent calculer la réponse, pas recopier un nombre.
+
+### SET : comprendre l'inversion 48/53
+Les commentaires de la p.11 sont inversés. Le propre exemple du corrigé montre une chaîne Crime, Action, Comedy, Thriller, réaffichée Action,Comedy,Crime,Thriller dans le SET déclaré. Comme Action est déclaré avant Crime, le SET donne **53**, contre **48** dans la chaîne brute. FIND_IN_SET retrouve les deux membres sans imposer leur ordre et donne également 53.
+
+Les cinq lignes supplémentaires ont n = 110, 182, 437, 539, 1018. La conversion ne supprime pas cinq films : elle range les membres selon la déclaration du SET. Voir aussi la [documentation MySQL de SET](https://dev.mysql.com/doc/refman/8.4/en/set.html).
+
+### Des mots, des sous-chaînes et des stopwords
+Les pages 14–16 comparent death in, death, naturel, booléen et expansion. Les recherches LIKE donnent ici 2 et 7. **Two Deaths** contient la sous-chaîne death, mais pas le token death : deaths est un autre mot sans traitement de racine automatique. Son n vaut 794 dans le CSV disponible, tandis que le corrigé utilise 808 ; les numéros de lignes dépendent de la version du jeu.
+
+Dans la configuration décrite, in est un mot d'arrêt. Les six résultats lexicaux et les 71 de l'expansion sont les observations du corrigé ; ils ne sont pas des résultats MySQL exécutés par le navigateur. L'expansion peut retrouver Only You sans death dans son titre : elle ajoute des termes des premières réponses, sans garantir des synonymes pertinents.
+
+### Score booléen : une précision nécessaire
+La note « pas de score / pas de tri possible » de la p.14 est incorrecte pour InnoDB. Le mode booléen calcule un score ; il ne trie pas automatiquement par pertinence. Un ORDER BY explicite est possible, comme dans les exercices. La [documentation officielle du mode booléen](https://dev.mysql.com/doc/refman/8.4/en/fulltext-boolean.html) montre ces scores et les opérateurs de pondération.
+
+### Index et métadonnées
+CREATE TABLE AS SELECT ne reprend pas la clé primaire comme CREATE TABLE LIKE. Inspecter le schéma avant d'ajouter une PK. L'identifiant utilisateur et l'identifiant de document interne FTS sont deux objets distincts.
+
+Un MATCH doit disposer d'un index FULLTEXT compatible avec ses colonnes ; un index combiné n'est pas simplement un préfixe de B-arbre. Les entrées persistées et celles du cache sont inspectées séparément. Le corrigé observe six tables d'index supplémentaires lors du second FULLTEXT ; les structures de suivi communes à la table ne sont pas à recompter comme six nouveaux index logiques.
+
+### Le témoignage : utile avec ses hypothèses
+Les pages 16–17 rapportent une accélération d'une recherche professionnelle. L'expression imprimée `+*western*` ne doit pas être recopiée telle quelle pour InnoDB : l'opérateur étoile se place **après** le préfixe du mot. `+western* +compiled* +survey*` rend ces trois préfixes obligatoires.
+
+Cette recherche ne reproduit pas toutes les sous-chaînes acceptées par LIKE. Vérifier les colonnes textuelles, les tokens et les ensembles d'identifiants avant de comparer les plans et les temps. L'accélération du témoignage ne constitue pas une mesure réalisée sur le site.
+
+**Pour pratiquer :** reprendre les sous-questions du TP, puis le complément sur la réécriture d'une recherche en Full Text. Expliquer le sens avant de discuter le coût.

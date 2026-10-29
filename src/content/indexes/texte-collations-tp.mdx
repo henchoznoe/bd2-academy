@@ -1,0 +1,54 @@
+export const meta = {"id": "texte-collations-tp", "moduleId": "fulltext", "title": "Annexe du TP : charset, collation et longueur", "summary": "Comparer les chaînes et distinguer caractères et octets avec les paramètres annoncés.", "objectives": ["Identifier charset et collation effectifs", "Expliquer les tests de casse, accents et ligatures", "Calculer LENGTH et CHAR_LENGTH sans les confondre"], "sourceRefs": [{"sourceId": "SOL-FT", "pages": [7, 18, 19, 20, 21, 22]}], "skillIds": ["B10.07"], "order": 23.2}
+
+## Deux paramètres aux rôles différents
+Le **jeu de caractères (charset)** définit les caractères représentables et leur encodage. La **collation** définit des règles de comparaison et de tri pour ce charset. Deux chaînes peuvent donc être différentes en octets mais égales sous une collation donnée.
+
+Le corrigé commence p.18 par une phrase générale case sensitive, suivie d'un résultat A = a. Cette phrase ne constitue pas une règle universelle : il faut relever la collation effective.
+
+```sql
+-- MySQL : inspection, à exécuter sur le serveur étudié
+SHOW FULL COLUMNS FROM movie;
+SELECT COLUMN_NAME, CHARACTER_SET_NAME, COLLATION_NAME
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA=DATABASE()
+  AND TABLE_NAME='movie' AND COLUMN_NAME='title';
+SHOW COLLATION;
+SHOW CHARACTER SET;
+SHOW SESSION VARIABLES LIKE 'character_set_%';
+SHOW SESSION VARIABLES LIKE 'collation_connection';
+```
+
+### Comparer explicitement
+Dans les noms modernes du support, ci/cs indiquent l'insensibilité/sensibilité à la casse ; ai/as indiquent celles aux accents lorsqu'ils sont présents. La disponibilité et les règles précises se vérifient par collation.
+
+```sql
+SELECT
+ _utf8mb4'Été' COLLATE utf8mb4_0900_ai_ci = _utf8mb4'ete' AS ai_ci,
+ _utf8mb4'Été' COLLATE utf8mb4_0900_as_cs = _utf8mb4'ete' AS as_cs;
+-- 1 puis 0 pour ces deux collations précises
+```
+
+Une insensibilité aux accents ne signifie pas une reconnaissance de synonymes. Ligatures, caractères de langues différentes et ponctuation nécessitent leurs propres tests.
+
+### Lire les exemples historiques latin1 du corrigé
+Les pages 21–22 utilisent latin1_general_cs, latin1_general_ci et latin1_bin. Dans cette famille historique, latin1_general_ci ignore la casse tout en gardant des distinctions d'accents. Les comptes 6 et 11 sont liés à la table et aux poids de ces collations ; ils ne doivent pas être généralisés à toutes les collations suffixées ci.
+
+Une collation binaire compare les codes selon son contrat ; son tri ne représente pas nécessairement un dictionnaire linguistique. Corriger la syntaxe du script imprimé avant exécution : parenthèses des tuples INSERT et ORDER BY, notamment. Distinguer aussi le texte littéral `&amp;` d'un caractère `&` si le fichier a été transformé par une exportation HTML.
+
+### LENGTH et CHAR_LENGTH
+LENGTH compte les **octets**, CHAR_LENGTH les **caractères**. Le nombre maximal d'octets du charset ne s'applique pas systématiquement à chaque caractère.
+
+```sql
+SELECT LENGTH(_utf8mb4'pingüino'), CHAR_LENGTH(_utf8mb4'pingüino');
+-- 9 octets, 8 caractères : ü occupe deux octets en UTF-8
+SELECT LENGTH(_utf8mb4'MySQL Character Set'),
+       CHAR_LENGTH(_utf8mb4'MySQL Character Set');
+-- 19 octets, 19 caractères
+```
+
+L'exemple ucs2 de la p.19 donne 38 octets pour les 19 caractères du texte ASCII. Ce charset est déprécié dans le contexte MySQL indiqué ; il sert ici à expliquer l'encodage.
+
+### Où s'applique la collation ?
+Le support cite serveur, base, tables/colonnes et expressions. Les paramètres de connexion et les règles de résolution des collations participent aussi aux comparaisons. Un changement de collation d'une colonne peut modifier égalités, tris, unicités et recherches : annoncer les paramètres au lieu de déduire les résultats du seul mot MySQL.
+
+**Validation de l'annexe :** expliquer un test avant exécution, prévoir ce qui dépend de la collation, puis vérifier les valeurs sur le moteur cible. Le navigateur ne simule pas toutes les collations MySQL.

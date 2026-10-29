@@ -1,6 +1,6 @@
 # BD2 Academy
 
-Application de révision en français construite à partir des 18 PDF du cours, de la roadmap et des quatre TP. React, TypeScript strict, Tailwind CSS, Vite, MDX, CodeMirror et DuckDB-WASM.
+Application de révision en français construite à partir des 19 PDF du cours et des quatre TP. React, TypeScript strict, Tailwind CSS, Vite, MDX, CodeMirror et DuckDB-WASM.
 
 ## Démarrer
 
@@ -22,12 +22,12 @@ pnpm test:sql    # exécuter les solutions sur le moteur WebAssembly embarqué
 ## Contenu et fonctionnement
 
 - Huit modules, diagnostic BD1 facultatif, quatre parcours de TP et ancien examen avec variantes identifiées.
-- Chaque question de la roadmap possède une correspondance dans `/sources` ; les références utilisent les positions réelles des pages PDF.
+- Chaque question du programme possède une correspondance dans `/sources` ; les références utilisent les positions réelles des pages PDF.
 - Sept ateliers : DF, normalisation, B/B+arbres, stockage, bitmaps/hachage, TF-IDF et vecteurs.
 - Les exercices SQL comparent les résultats sur deux jeux : valeurs, doublons, NULL et ordre uniquement lorsqu'il est demandé. Les alias peuvent varier. Les résultats numériques sont comparés avec une précision de huit décimales ; le moteur pédagogique utilise la conversion numérique Arrow pour les nombres du cours.
 - Le bac SQL repart d'un jeu neuf à chaque exécution. Plusieurs instructions sont possibles ; le dernier résultat est affiché. Limite d'affichage : 100 lignes, limite de résultat : 10 000 lignes, interruption automatique après 30 secondes.
-- IndexedDB conserve brouillons, tentatives, acquis et journal. L'export JSON versionné permet de changer d'appareil. Un import affiche un aperçu avant remplacement. L'export Markdown ne modifie pas le fichier original de la roadmap.
-- Lecture, compréhension déclarée, réussite évaluée et correction consultée restent distinctes. Les acquis initiaux viennent de la roadmap ; les validations BD1 seulement déclarées sont conservées comme telles.
+- IndexedDB conserve brouillons, tentatives, acquis et journal. L'export JSON versionné permet de changer d'appareil. Un import affiche un aperçu avant remplacement. L'export Markdown permet de conserver une synthèse de ses propres acquis.
+- Lecture, compréhension déclarée, réussite évaluée et correction consultée restent distinctes. Chaque visiteur commence avec zéro acquis, zéro tentative et un journal vide. Le format de progression v2 efface les données héritées de la version 1, puis conserve les nouvelles révisions de chacun localement. Les anciens exports v1 sont incompatibles afin de ne pas réintroduire ces données.
 
 ## Sources, vocabulaire et limites
 
@@ -56,3 +56,5 @@ L'ancien examen est incomplet : page imprimée 3 et annexes absentes. Les donné
 Importer le projet comme application **Vite**, avec **Node 24**, `pnpm build` et sortie **dist**. `vercel.json` contient la réécriture SPA pour les liens directs. Les ressources DuckDB, scripts et JSON restent servis comme fichiers. Aucune variable d'environnement, API payante ou base distante n'est nécessaire.
 
 Le build et les routes locales sont contrôlés ; aucun déploiement distant n'est revendiqué. Après déploiement, vérifier le rafraîchissement d'une page `/lecons/sql-case` et l'exécution d'une requête SQL.
+
+Le corrigé Full Text `3_TP_index_FT_sol.pdf` (22 pages) est référencé comme SOL-FT : toutes les sous-questions ont été revues, ainsi que les annexes et coquilles. Voir `docs/CONTROLE-TP-FULLTEXT.md`.

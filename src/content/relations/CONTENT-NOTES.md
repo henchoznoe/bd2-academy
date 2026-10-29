@@ -1,6 +1,6 @@
 # DF, normalisation et TP zoo — contenu et contrôles
 
-17 leçons MDX, 64 exercices : les 14 DF-C, 12 FN-C et 16 TP-N de la roadmap, 16 QCM, 4 résultats courts et 2 requêtes supplémentaires. Le total comprend 8 exercices SQL réellement exécutables. Les autres questions qui exigent une démarche sont guidées et ont une réponse complète.
+17 leçons MDX, 64 exercices : les 14 DF-C, 12 FN-C et 16 TP-N du programme, 16 QCM, 4 résultats courts et 2 requêtes supplémentaires. Le total comprend 8 exercices SQL réellement exécutables. Les autres questions qui exigent une démarche sont guidées et ont une réponse complète.
 
 Les références désignent les pages PDF réelles des six fichiers du bloc (C-DF, SOL-DF, C-FN, SOL-FN, TP-N, SOL-N). Les numéros de diapositives imprimés ne sont pas utilisés comme pages. Les répétitions et pages de plan n'ajoutent pas d'objectifs. Les annexes DF/DM sont identifiées ; la 5FN est explicitement non étudiée.
 

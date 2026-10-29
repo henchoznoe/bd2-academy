@@ -48,4 +48,4 @@ Périmètre : lecture des sections de `1_LMD_avance.pdf`, comparaison aux leçon
 
 ## Ne pas élargir le programme
 
-LMD p.37 marque UNPIVOT non vu ; la figure p.122 marque une partie des fonctions analytiques non vues, notamment LEAD/LAG. La syntaxe d’exclusion du cadre p.97 et les références XML ne justifient pas d’ajouter des ateliers obligatoires au-delà de la roadmap. Conserver les mots du support comme repères, expliciter les synonymes utiles et identifier les adaptations de dialecte sans ajouter d’objectifs.
+LMD p.37 marque UNPIVOT non vu ; la figure p.122 marque une partie des fonctions analytiques non vues, notamment LEAD/LAG. La syntaxe d’exclusion du cadre p.97 et les références XML ne justifient pas d’ajouter des ateliers obligatoires au-delà du programme. Conserver les mots du support comme repères, expliciter les synonymes utiles et identifier les adaptations de dialecte sans ajouter d’objectifs.

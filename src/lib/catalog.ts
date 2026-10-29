@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { ComponentType } from "react";
-import roadmap from "../content/roadmap.json" with { type: "json" };
+import curriculum from "../content/curriculum.json" with { type: "json" };
 export const sourceReferenceSchema = z.object({
   sourceId: z.string(),
   pages: z.array(z.number().int().positive()).min(1),
@@ -193,8 +193,8 @@ export const tpTracks = [
     sourceId: "TP-FT",
   },
 ];
-export const sources = roadmap.sources;
-export const skills = roadmap.skills.filter((s) => s.kind === "skill");
+export const sources = curriculum.sources;
+export const skills = curriculum.skills.filter((s) => s.kind === "skill");
 export const lessonById = (id?: string) => lessons.find((l) => l.id === id);
 export const exerciseById = (id?: string) => exercises.find((e) => e.id === id);
 export const moduleLessons = (id: string) =>
@@ -220,7 +220,7 @@ export function coverageIssues() {
       if (!source || ref.pages.some((p) => p > source.pages))
         issues.push(`Référence invalide : ${item.id} / ${ref.sourceId}`);
     }
-  for (const row of roadmap.skills.filter((s) =>
+  for (const row of curriculum.skills.filter((s) =>
     /^(LMD-C|DF-C|FN-C|PHY-C|IDX-C|AUT-C|FT-C|VEC-C|TP-|EX-)/.test(s.id),
   )) {
     const id = row.id.split(" — ")[0];

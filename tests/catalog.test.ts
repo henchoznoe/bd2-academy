@@ -8,10 +8,10 @@ import {
   skills,
 } from "../src/lib/catalog";
 describe("source and pedagogical coverage", () => {
-  it("covers all roadmap exercises, TP subquestions and visible exam questions", () => {
+  it("covers all curriculum exercises, TP subquestions and visible exam questions", () => {
     expect(coverageIssues()).toEqual([]);
-    expect(sources).toHaveLength(18);
-    expect(sources.reduce((n, s) => n + s.pages, 0)).toBe(655);
+    expect(sources).toHaveLength(19);
+    expect(sources.reduce((n, s) => n + s.pages, 0)).toBe(677);
     expect(modules).toHaveLength(8);
     expect(exercises.filter((e) => e.origin === "exam")).toHaveLength(30);
   });

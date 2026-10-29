@@ -97,7 +97,7 @@ export default function ProgressPage() {
             className="button primary"
             onClick={() =>
               downloadText(
-                "bd2-academy-progression-v1.json",
+                "bd2-academy-progression-v2.json",
                 JSON.stringify(data, null, 2),
               )
             }
@@ -133,9 +133,8 @@ export default function ProgressPage() {
           </label>
         </div>
         <p className="fine-print mt-3">
-          L’import est présenté avant remplacement. Le site ne modifie pas le
-          fichier ROADMAP-REVISIONS-BD2.md de votre dossier. Le JSON contient
-          vos réponses et votre journal ; conservez-le comme une sauvegarde
+          L’import est présenté avant remplacement. Le JSON contient vos
+          réponses et votre journal ; conservez-le comme une sauvegarde
           personnelle.
         </p>
         {importError && (
@@ -161,7 +160,7 @@ export default function ProgressPage() {
               <X size={19} />
             </button>
           </div>
-          <p>Le fichier BD2 Academy version 1 contient :</p>
+          <p>Le fichier BD2 Academy version 2 contient :</p>
           <ul className="plain-list">
             <li>
               {Object.keys(pending.records).length} éléments de progression ou
@@ -337,9 +336,9 @@ export default function ProgressPage() {
         </div>
       </section>
       <section className="panel">
-        <h2>Les compétences de la roadmap</h2>
+        <h2>Les compétences du programme</h2>
         <p>
-          Les coches importées conservent leur provenance. Une nouvelle coche
+          Votre progression est propre à ce navigateur. Une nouvelle coche
           manuelle indique « déclaré compris » ; les exercices évalués par le
           site sont suivis séparément.
         </p>
@@ -349,7 +348,7 @@ export default function ProgressPage() {
             <option value="all">Toutes les compétences</option>
             <option value="new">À apprendre ou à reprendre</option>
             <option value="declared">Compréhension déclarée</option>
-            <option value="verified">Acquis vérifiés dans les échanges</option>
+            <option value="verified">Réussites évaluées</option>
           </select>
         </label>
         <div className="skill-list">

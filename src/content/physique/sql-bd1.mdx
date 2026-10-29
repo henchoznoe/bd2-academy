@@ -1,7 +1,7 @@
 export const meta = {"id": "sql-bd1", "moduleId": "sql", "title": "Diagnostic BD1 — rappels à la demande", "summary": "Vérifier uniquement les prérequis qui bloquent votre progression en BD2.", "objectives": ["Lire les clés et les jointures", "Distinguer agrégats, sous-requêtes et NULL"], "sourceRefs": [{"sourceId": "TP-L", "pages": [1, 2]}, {"sourceId": "C-LMD", "pages": [3, 43, 44]}], "skillIds": ["B0.01", "B0.03", "B0.04", "B0.05", "B0.06"], "order": 0}
 
 ## Un diagnostic facultatif
-Ce diagnostic est créé pour la révision, pas extrait d'un support. Votre maîtrise déclarée de BD1 est conservée : ces rappels servent seulement si une notion bloque en BD2.
+Ce diagnostic est créé pour la révision, pas extrait d'un support. Ces rappels permettent de vérifier les bases avant de poursuivre en BD2, sans supposer d’acquis au départ.
 
 ### Lire le schéma
 Une clé primaire identifie chaque ligne sans NULL. Une clé candidate est minimale et peut devenir une contrainte UNIQUE avec NOT NULL lorsque le modèle interdit les valeurs absentes. Une clé étrangère référence une clé admissible d'une autre table ; elle peut être nullable si le schéma le permet.

@@ -1,6 +1,6 @@
-export const meta = {"id": "texte-genres-tp", "moduleId": "fulltext", "title": "TP films : genres multiples et recherche reproductible", "summary": "Séparer la sémantique des genres, les échantillons et les mesures historiques.", "objectives": ["Séparer la sémantique des genres, les échantillons et les mesures historiques.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-FT", "pages": [5, 11, 41, 42, 44, 56, 68]}], "skillIds": ["B10.01", "B10.02", "B10.07", "B10.08", "B6.05", "B6.13"], "order": 23};
+export const meta = {"id": "texte-genres-tp", "moduleId": "fulltext", "title": "TP films : genres multiples et recherche reproductible", "summary": "Séparer la sémantique des genres, les échantillons et les mesures historiques.", "objectives": ["Séparer la sémantique des genres, les échantillons et les mesures historiques.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-FT", "pages": [5, 11, 41, 42, 44, 56, 68]}, {"sourceId": "SOL-FT", "pages": [6, 7, 8, 9, 10, 11, 12, 15, 16]}], "skillIds": ["B10.01", "B10.02", "B10.07", "B10.08", "B6.05", "B6.13"], "order": 23}
 
-Le CSV original disponible contient 1 288 films. Le navigateur peut utiliser un extrait annoncé comme tel : il ne faut pas imposer à cet extrait les comptages historiques 463 comédies ou 43 comédies parlant de famille. Les requêtes corrigées portent sur le jeu réellement affiché.
+Le CSV original disponible contient 1 288 films. Le navigateur charge ici les 1288 lignes complètes. Les vérifications donnent 463 comédies, 43 dont le résumé contient family, 5 titres contenant dream et 248 titres commençant par The suivi d’un espace. Le jeu alternatif ajoute un film choisi pour vérifier les requêtes, donc ses comptes diffèrent.
 
 ```sql
 SELECT COUNT(*) FROM movie WHERE LOWER(genres) LIKE '%comedy%';
@@ -21,3 +21,8 @@ Une normalisation crée Genre(nomGenre) et MovieGenre(movie_id,nomGenre), avec P
 Le type MySQL SET autorise un ensemble de valeurs déclarées, stocké et affiché selon l’ordre de déclaration des membres. Une recherche LIKE '%Action%Crime%' exige cet ordre textuel. `FIND_IN_SET('Action',genres)` et la même condition pour Crime testent la présence des deux membres indépendamment de leur ordre. Le SET reste spécifique à MySQL et ne remplace pas une relation d’association portable.
 
 Les temps et nombres 48/53, 2/7/6/71 figurant dans le TP sont des observations du jeu et de sa configuration. Pour comparer au Full Text, noter moteur, index, stopwords, collation et décompte vérifié ; aucun temps DuckDB ne prouve une accélération InnoDB.
+
+
+
+### Corrigé fourni et contrôle des comptes
+SOL-FT p.11 inverse deux commentaires : la chaîne d’origine donne **48** lignes Action avant Crime, le SET déclaré donne **53**, et la recherche des deux membres donne **53**. Les cinq ajouts portent n=110,182,437,539,1018. Le contenu n’est pas perdu ; son ordre textuel est normalisé. Le tableau de contrôle et les autres coquilles sont détaillés dans la leçon « Lire le corrigé du TP Full Text ».

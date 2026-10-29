@@ -33,7 +33,7 @@ import {
 } from "../lib/catalog";
 import { useProgress } from "./ProgressProvider";
 import { ExerciseCard, SourceRefs, Empty, Status } from "./Common";
-import roadmap from "../content/roadmap.json" with { type: "json" };
+import curriculum from "../content/curriculum.json" with { type: "json" };
 const icons = {
   code: Code2,
   network: Network,
@@ -58,7 +58,7 @@ export function Dashboard() {
     declared = exercises.filter(
       (e) => record(e.id).status === "declared",
     ).length;
-  const resume = lessonById(data.lastLesson ?? "sql-pivot") ?? lessons[0];
+  const resume = lessonById(data.lastLesson ?? "sql-bd1") ?? lessons[0];
   const difficulties = data.journal.filter((j) => !j.resolved).length;
   return (
     <div className="page-enter">
@@ -233,7 +233,7 @@ export function Dashboard() {
         </Link>
       </div>
       <p className="fine-print mt-5">
-        Les acquis de la roadmap sont repris avec leur provenance. Lire une
+        Chaque personne commence sans acquis ni difficulté préremplis. Lire une
         leçon ou afficher une correction ne coche aucune réussite.
       </p>
     </div>
@@ -810,7 +810,7 @@ export function SourcesPage() {
   const [params] = useSearchParams(),
     selected = params.get("source"),
     issues = coverageIssues();
-  const rows = roadmap.skills.filter((s) =>
+  const rows = curriculum.skills.filter((s) =>
     /^(LMD-C|DF-C|FN-C|PHY-C|IDX-C|AUT-C|FT-C|VEC-C|TP-|EX-)/.test(s.id),
   );
   return (
@@ -818,13 +818,13 @@ export function SourcesPage() {
       <span className="eyebrow">UN COURS TRAÇABLE</span>
       <h1>Sources et couverture.</h1>
       <p className="page-subtitle">
-        18 PDF, 655 pages et les ressources voisines des TP. Les pages indiquées
+        19 PDF, 677 pages et les ressources voisines des TP. Les pages indiquées
         sont les positions réelles des PDF.
       </p>
       <div className={`feedback ${issues.length ? "error" : "success"}`}>
         {issues.length
           ? `${issues.length} correspondance(s) à corriger dans le catalogue.`
-          : `Les ${rows.length} exercices et questions recensés dans la roadmap ont une correspondance dans le site.`}
+          : `Les ${rows.length} exercices et questions recensés dans le programme ont une correspondance dans le site.`}
       </div>
       {issues.length > 0 && <pre>{issues.join("\n")}</pre>}
       <p className="notice">
@@ -893,14 +893,14 @@ export function SourcesPage() {
       <section className="panel">
         <h2>La matrice des exercices</h2>
         <p>
-          Chaque ligne conserve l’identifiant de la roadmap. Les corrections
+          Chaque ligne conserve l’identifiant du programme. Les corrections
           partielles ou reconstruites sont annoncées dans l’exercice.
         </p>
         <div className="table-scroll">
           <table>
             <thead>
               <tr>
-                <th>Identifiant de la roadmap</th>
+                <th>Identifiant du programme</th>
                 <th>Exercice</th>
                 <th>Leçon associée</th>
               </tr>
