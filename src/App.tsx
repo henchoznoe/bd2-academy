@@ -28,6 +28,7 @@ import {
 import { modules } from "./lib/catalog";
 import { useProgress, ProgressProvider } from "./components/ProgressProvider";
 import { downloadText } from "./lib/progress";
+import { Brainrot } from "./components/Brainrot";
 import {
   Dashboard,
   ModulePage,
@@ -83,12 +84,12 @@ function Shell() {
     return () => window.removeEventListener("keydown", key);
   }, []);
   const menuLinks = [
-    ["/", "Mon parcours", LayoutDashboard],
-    ["/tp", "Travaux pratiques", SquareCheckBig],
-    ["/examen", "Préparer l’examen", GraduationCap],
-    ["/ateliers/df", "Laboratoire", FlaskConical],
-    ["/sql", "Bac à SQL", Code2],
-    ["/progression", "Mes acquis", ShieldCheck],
+    ["/", "Mon parcours skibidi", LayoutDashboard],
+    ["/tp", "TP de l’Ohio", SquareCheckBig],
+    ["/examen", "Examen : mode sigma", GraduationCap],
+    ["/ateliers/df", "Labo de Tralalero", FlaskConical],
+    ["/sql", "Bac à SQL rizz", Code2],
+    ["/progression", "Mon aura (+67)", ShieldCheck],
   ] as const;
   return (
     <>
@@ -112,7 +113,7 @@ function Shell() {
           </span>
           <span>
             bd2<span className="font-normal text-indigo-500">academy</span>
-            <small>LE SAVOIR PAR LA PRATIQUE</small>
+            <small>LE SAVOIR PAR LE BRAINROT</small>
           </span>
         </Link>
         <button
@@ -165,7 +166,7 @@ function Shell() {
           </Link>
           <div className="local-note">
             <span className="green-dot" />
-            Votre progression reste sur cet appareil.
+            Ton aura reste sur cet appareil, no cap.
           </div>
         </div>
       </aside>
@@ -181,7 +182,7 @@ function Shell() {
               <Menu size={22} />
             </button>
             <span className="top-breadcrumb">
-              ESPACE DE RÉVISION <span>/</span> BASES DE DONNÉES 2
+              ESPACE DE RÉVISION <span>/</span> BASES DE DONNÉES 2 <span>/</span> 67 🤙
             </span>
           </div>
           <form
@@ -199,7 +200,7 @@ function Shell() {
             <input
               ref={searchInput}
               id="global-search"
-              placeholder="Une notion, un exercice…"
+              placeholder="Cherche ta notion, frérot…"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -269,7 +270,7 @@ function Shell() {
                   path="*"
                   element={
                     <div>
-                      <h1>Cette page n’existe pas.</h1>
+                      <h1>Cette page vit dans l’Ohio. Elle n’existe pas.</h1>
                       <Link to="/">Retrouver mon parcours</Link>
                     </div>
                   }
@@ -280,7 +281,7 @@ function Shell() {
           <footer className="footer">
             <span>
               BD2 ACADEMY <span className="mx-2">·</span> Comprendre avant de
-              cocher.
+              cocher. Skibidi.
             </span>
             <Link to="/sources">
               18 supports, un parcours vérifiable
@@ -290,6 +291,7 @@ function Shell() {
         </main>
       </div>
       <ScrollToTop />
+      <Brainrot />
     </>
   );
 }
