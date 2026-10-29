@@ -1,6 +1,6 @@
 # BD2 Academy
 
-Application de révision en français construite à partir des 19 PDF du cours et des quatre TP. React, TypeScript strict, Tailwind CSS, Vite, MDX, CodeMirror et DuckDB-WASM.
+Application de révision en français construite à partir des 20 PDF du cours et des quatre TP. React, TypeScript strict, Tailwind CSS, Vite, MDX, CodeMirror et DuckDB-WASM.
 
 ## Démarrer
 
@@ -21,7 +21,7 @@ pnpm test:sql    # exécuter les solutions sur le moteur WebAssembly embarqué
 
 ## Contenu et fonctionnement
 
-- Huit modules, diagnostic BD1 facultatif, quatre parcours de TP et ancien examen avec variantes identifiées.
+- Huit modules, diagnostic BD1 facultatif, quatre parcours de TP et deux anciens TE1 avec variantes identifiées.
 - Chaque question du programme possède une correspondance dans `/sources` ; les références utilisent les positions réelles des pages PDF.
 - Sept ateliers : DF, normalisation, B/B+arbres, stockage, bitmaps/hachage, TF-IDF et vecteurs.
 - Les exercices SQL comparent les résultats sur deux jeux : valeurs, doublons, NULL et ordre uniquement lorsqu'il est demandé. Les alias peuvent varier. Les résultats numériques sont comparés avec une précision de huit décimales ; le moteur pédagogique utilise la conversion numérique Arrow pour les nombres du cours.
@@ -39,7 +39,7 @@ Voir les audits sourcés dans `docs/TERMINOLOGIE-RELATIONS.md`, `docs/TERMINOLOG
 
 DuckDB-WASM 1.32.0 embarque ici DuckDB v1.4.3. Un résultat DuckDB ne valide pas toute la sémantique Oracle/MySQL. Les syntaxes spécifiques, Full Text MySQL, plans et mesures réelles restent guidés. Les simulateurs sont identifiés comme pédagogiques. La page `/compatibilite` permet de tester les constructions et toutes les solutions dans le navigateur.
 
-L'ancien examen est incomplet : page imprimée 3 et annexes absentes. Les données choisies sont annoncées ; les consignes historiques ne définissent pas celles du prochain examen. UNPIVOT, les fonctions signalées non étudiées et la 5FN restent des repères.
+Le TE1 2024–2025 est incomplet : page imprimée 3 et annexes absentes. Le TE1 2025–2026 contient ses dix pages dans un ordre photographique inhabituel, sans ses annexes. Les données choisies sont annoncées ; les consignes historiques ne définissent pas celles du prochain examen. UNPIVOT, les fonctions signalées non étudiées et la 5FN restent des repères.
 
 ## Structure
 
@@ -58,3 +58,5 @@ Importer le projet comme application **Vite**, avec **Node 24**, `pnpm build` et
 Le build et les routes locales sont contrôlés ; aucun déploiement distant n'est revendiqué. Après déploiement, vérifier le rafraîchissement d'une page `/lecons/sql-case` et l'exécution d'une requête SQL.
 
 Le corrigé Full Text `3_TP_index_FT_sol.pdf` (22 pages) est référencé comme SOL-FT : toutes les sous-questions ont été revues, ainsi que les annexes et coquilles. Voir `docs/CONTROLE-TP-FULLTEXT.md`.
+
+Le TE1 2025–2026 ajoute 5 leçons et 25 questions avec références aux pages physiques du PDF. Les exemples remplaçant les annexes sont signalés ; les trois exercices SQL utilisent les jeux existants et leur variante. La sauvegarde v2, sa clé IndexedDB et tous les anciens identifiants restent inchangés. Voir `docs/CONTROLE-TE1-2526.md`.

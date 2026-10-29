@@ -1,0 +1,40 @@
+export const meta = {"id": "te1-2526-normalisation", "moduleId": "examen", "title": "TE1 2025–2026 · Normalisation et preuve sans perte", "summary": "Passer des clés à la synthèse, puis démontrer chaque propriété séparément.", "objectives": ["Démontrer toutes les clés et la forme normale de chaque sous-relation", "Appliquer Heath avec le bon sens logique"], "sourceRefs": [{"sourceId": "EX-2526", "pages": [6, 8]}], "skillIds": ["B5.09", "B5.11", "B6.02", "B6.03", "B6.07", "B6.08", "B6.09"], "order": 6}
+
+Les énoncés sont visibles dans TE1_2526.pdf, mais les annexes ne sont pas fournies. Les corrections ci-dessous sont des explications vérifiées ; les réponses manuscrites ne constituent pas un corrigé officiel. Les paramètres remplacés sont annoncés comme **données choisies pour l’entraînement**.
+
+## Données choisies pour remplacer l’annexe
+
+```text
+R(A,B,C,D,E) ; F = {A -> C, C -> A, B -> E, E -> B, AB -> D}.
+```
+
+## Toutes les clés
+
+A et C se fournissent mutuellement ; B et E également. Pour obtenir D, il faut réunir un représentant de chaque paire. Les clés sont `AB`, `AE`, `BC`, `CE`. Aucune combinaison ne contenant que D et des attributs d’une seule paire ne déclenche l’autre paire. Retirer un attribut de ces quatre clés laisse une seule paire accessible : la minimalité est établie.
+
+## Synthèse en 3FN
+
+La couverture a des cibles simples et des sources minimales. Les déterminants équivalents A/C permettent AC ; B/E permettent BE ; `AB -> D` donne ABD. Aucune relation n’est incluse dans une autre ; ABD contient une clé de R.
+
+```text
+Décomposition choisie : AC, BE, ABD
+```
+
+La réunion des DF projetées conserve A/C, B/E et AB/D : les règles initiales sont préservées. Les contraintes de clé ou de référence SQL ne remplacent pas cette preuve.
+
+## La forme maximale se teste localement
+
+Dans AC, A et C sont clés ; dans BE, B et E sont clés ; dans ABD, AB est la seule clé et les DF non triviales ont une source superclé. Ces trois relations sont BCNF, donc aussi 3FN et 2FN. La synthèse garantit la 3FN, mais il faut cette vérification supplémentaire pour annoncer BCNF. On s’arrête ici aux formes fondées sur les DF ; on ne certifie pas la 4FN sans examiner les dépendances multivaluées.
+
+Autre **cas choisi** : `U(A,B,C)` avec `AB -> C` et `C -> B`. Ses clés sont AB et AC ; chaque attribut est premier. U est en 3FN, mais pas BCNF : C n’est pas une superclé et `C -> B` n’est pas triviale. La présence de clés étrangères n’est pas le critère de BCNF.
+
+## Preuve explicite par Heath
+
+Pour une décomposition binaire couvrant R, la jointure est sans perte lorsque l’intersection détermine **au moins une** des deux relations. Il s’agit d’un **OU**, pas d’une exigence des deux implications à la fois.
+
+1. Décomposer R en AC et ABDE. L’intersection est A, et `A -> C` donne `A -> AC` : étape sans perte.
+2. Décomposer ABDE en BE et ABD. L’intersection est B, et `B -> E` donne `B -> BE` : étape sans perte.
+
+En composant ces deux étapes, AC, BE et ABD permettent de reconstruire R sans tuples parasites. La préservation des DF a été vérifiée séparément ; l’une de ces propriétés ne démontre pas automatiquement l’autre.
+
+**Pour valider :** écrire la clé et les DF projetées de chaque relation, puis les intersections et les implications utilisées pour la recomposition.

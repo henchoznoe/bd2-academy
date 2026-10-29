@@ -1,0 +1,582 @@
+[
+  {
+    "id": "EX-2526-1.1",
+    "lessonId": "te1-2526-theorie",
+    "title": "Implications : plusieurs réponses possibles",
+    "type": "quiz",
+    "prompt": "Avec A -> B et B -> C sur T(A,B,C), quelles implications sont garanties ? Une option regroupe ici les deux bonnes assertions du QCM original.",
+    "hints": [
+      "Enchaîner les deux flèches avant d’envisager leur inversion.",
+      "Une fois A -> C obtenu, ajouter B au déterminant conserve cette implication."
+    ],
+    "solution": "A -> C et AB -> C.",
+    "explanation": "Transitivité pour A -> C ; augmentation pour AB -> C. C -> A ne suit pas : deux valeurs de A peuvent conduire au même C.",
+    "skillIds": ["B5.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [4]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies.",
+    "options": [
+      "A -> C et AB -> C",
+      "C -> A uniquement",
+      "A -> C uniquement",
+      "Aucune implication"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "EX-2526-1.2",
+    "lessonId": "te1-2526-theorie",
+    "title": "Une liste dans une cellule respecte-t-elle la 1FN ?",
+    "type": "quiz",
+    "prompt": "T(NumEtudiant,sesCours) contient une liste de numéros de cours dans sesCours. Quelle affirmation correspond au modèle du cours ?",
+    "hints": [
+      "Demander si une cellule représente une valeur atomique dans le modèle du cours.",
+      "Représenter chaque paire étudiant/cours dans une ligne distincte."
+    ],
+    "solution": "La table ne respecte pas la 1FN ; aucune des formes supérieures proposées ne s’applique.",
+    "explanation": "La cellule est multivaluée dans le modèle étudié. Une table Inscription(NumEtudiant,NumCours) représente une inscription par tuple ; on ne confond pas ce défaut avec une dépendance multivaluée en 4FN.",
+    "skillIds": ["B6.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [4]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies.",
+    "options": [
+      "Elle est en BCNF",
+      "Elle est en 3FN",
+      "Elle est en 1FN seulement",
+      "Elle ne respecte pas la 1FN"
+    ],
+    "correctIndex": 3
+  },
+  {
+    "id": "EX-2526-1.3",
+    "lessonId": "te1-2526-theorie",
+    "title": "PK composée et UNIQUE : ce qui est réellement garanti",
+    "type": "guided",
+    "prompt": "T(A,B,C) déclare PRIMARY KEY(A,B) et UNIQUE(A,C). Dans le modèle relationnel sans NULL, quelles DF en découlent ? Que faut-il vérifier si C est nullable en SQL ?",
+    "hints": [
+      "Une clé composée identifie une ligne avec l’ensemble de ses attributs, pas forcément avec chacun séparément.",
+      "Comparer le modèle sans NULL avec deux lignes de même A et de C NULL dans un UNIQUE nullable."
+    ],
+    "solution": "AB -> C ; AC -> B sous l’hypothèse que le couple AC identifie réellement chaque tuple, notamment sans NULL. Ni A -> C, ni B -> C ne sont garanties. En SQL, UNIQUE nullable peut accepter plusieurs lignes de même A avec C NULL et des B différents.",
+    "explanation": "Une clé composée n’implique pas ses attributs séparément. Exemple SQL admissible dans les moteurs autorisant ces NULL : (1,10,NULL),(1,20,NULL) ; il réfute AC -> B si on assimilait naïvement NULL à une valeur du modèle classique.",
+    "skillIds": ["B0.01", "B5.01", "B5.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [4]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-1.4",
+    "lessonId": "te1-2526-theorie",
+    "title": "Anomalie de propagation",
+    "type": "quiz",
+    "prompt": "La question visible évoque T(Client,Produit,Prix). Cas choisi : chaque produit a un prix courant unique, répété pour chaque client. Si deux clients ont acheté le même produit, quel risque apparaît lors du changement de son prix ?",
+    "hints": [
+      "Chercher combien de copies du prix d’un produit sont stockées pour plusieurs clients.",
+      "Simuler la modification d’une seule occurrence et vérifier la règle Produit -> Prix."
+    ],
+    "solution": "Anomalie de propagation : toutes les occurrences du prix du produit doivent être mises à jour ; un oubli rend les lignes incohérentes.",
+    "explanation": "La règle choisie Produit -> Prix rend ce risque concret. Le simple nom des colonnes ne suffit pas à imposer toutes les règles métier possibles.",
+    "skillIds": ["B6.01"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [4]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies.",
+    "options": [
+      "Le prix se met à jour automatiquement partout",
+      "Une anomalie de propagation peut apparaître",
+      "La table perd nécessairement sa clé primaire",
+      "Aucune anomalie n’est possible"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "EX-2526-1.5",
+    "lessonId": "te1-2526-theorie",
+    "title": "Volume : heap et index nonclustered",
+    "type": "guided",
+    "prompt": "Une table heap défragmentée de volume S1 est copiée à l’identique puis dotée d’un index nonclustered(A). Peut-on comparer S1 et S2 sans définir si S2 inclut l’index ? Répondre selon les deux conventions.",
+    "hints": [
+      "Dessiner le heap et l’index secondaire comme deux ensembles de pages distincts.",
+      "Écrire séparément taille(données) et taille(données)+taille(index), puis définir ce que mesure S2."
+    ],
+    "solution": "Si S2 mesure les seules données du heap, supposées inchangées, S2=S1. Si S2 mesure données + nouvel index secondaire, S2=S1+taille(index)>S1. Il faut annoncer le périmètre du volume ; le libellé et les annotations ne donnent pas un corrigé universel.",
+    "explanation": "Un index secondaire ne remplace pas le heap ; ses pages sont distinctes. Les questions 1.5 et 1.8 présentent le même libellé visible : ne pas apprendre deux réponses contradictoires à partir des coches.",
+    "skillIds": ["B7.09", "B8.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [2]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-1.6",
+    "lessonId": "te1-2526-theorie",
+    "title": "LIKE avec joker initial et Full Text",
+    "type": "guided",
+    "prompt": "La question visible cherche à accélérer WHERE A LIKE '%blabla%' sur VARCHAR(250). Comparer B-arbre clustered, nonclustered et Full Text. Quel changement de sémantique faut-il éviter ?",
+    "hints": [
+      "Comparer un préfixe connu avec un motif qui peut commencer n’importe où dans la chaîne.",
+      "Tester xxblablayy avec le LIKE et avec une recherche du token blabla."
+    ],
+    "solution": "Le joker initial ne fournit pas de préfixe constant pour une recherche sélective dans un B-arbre ordinaire. Full Text est adapté à une recherche de mots avec MATCH...AGAINST, pas automatiquement à la sous-chaîne exacte du LIKE inchangé. Une chaîne xxblablayy satisfait le LIKE, mais son token n’est pas blabla.",
+    "explanation": "Le choix FT indiqué dans la copie doit être compris dans le contexte de recherche textuelle ; il ne démontre ni l’équivalence avec tout LIKE, ni un plan précis sans réécriture et paramètres du parseur.",
+    "skillIds": ["B10.01", "B10.02", "B10.03"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [2]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-1.7",
+    "lessonId": "te1-2526-theorie",
+    "title": "Hachage : index ajouté ou fichier réorganisé ?",
+    "type": "guided",
+    "prompt": "La question visible compare une table heap et sa jumelle munie d’un index hash(A). Distinguer un index de hachage séparé d’une organisation de fichier hachée avant de comparer les volumes.",
+    "hints": [
+      "Le mot hash peut décrire un index séparé ou l’organisation des données en buckets.",
+      "Pour un index ajouté, compter ses pages en plus du heap ; pour un fichier haché, annoncer remplissage et débordements."
+    ],
+    "solution": "Pour un heap inchangé auquel on ajoute un index de hachage séparé, le volume des seules données reste identique ; le total données + index augmente de la taille de cet index. Si la table elle-même est réorganisée en buckets, le volume dépend des capacités, du remplissage et des débordements ; le mot hash seul ne fixe pas S2/S1.",
+    "explanation": "Une collision impose une stratégie, mais ne signifie pas une erreur SQL. Le hachage sert surtout l’égalité et ne conserve pas un ordre utile aux intervalles. Aucun nombre absent de l’annexe n’est inventé.",
+    "skillIds": ["B9.03", "B9.04", "B7.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [2]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-1.8",
+    "lessonId": "te1-2526-theorie",
+    "title": "Même hypothèse, même comparaison de volumes",
+    "type": "guided",
+    "prompt": "Relire la question 1.8, dont le libellé imprimé répète celui de 1.5. Expliquer pourquoi des annotations différentes ne suffisent pas à conclure à une règle différente.",
+    "hints": [
+      "Comparer les textes imprimés de 1.5 et 1.8 avant de lire les annotations.",
+      "Une différence de conclusion exige une différence d’hypothèses, notamment sur le périmètre S2."
+    ],
+    "solution": "Si S2 mesure les seules données du heap, supposées inchangées, S2=S1. Si S2 mesure données + nouvel index secondaire, S2=S1+taille(index)>S1. Il faut annoncer le périmètre du volume ; le libellé et les annotations ne donnent pas un corrigé universel.",
+    "explanation": "À organisation et périmètre de mesure identiques, le même raisonnement doit s’appliquer. La copie annotée est une source d’énoncés et de pièges, pas un corrigé officiel sans ambiguïté.",
+    "skillIds": ["B7.09", "B8.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [2]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-1.9",
+    "lessonId": "te1-2526-theorie",
+    "title": "AVG fenêtré : garder une ligne par employé",
+    "type": "sql",
+    "prompt": "La question visible oppose AVG(salaire) et AVG(salaire) OVER(). Sur le jeu course choisi, écrire e_id,ename,salaire,moyenne_globale en conservant chaque employé, y compris les salaires NULL. Aucun tri final exigé. Expliquer aussi le cas d’une table vide.",
+    "hints": [
+      "Il faut garder les colonnes détaillées sans GROUP BY.",
+      "Ajouter AVG(salaire) OVER() ; NULL est ignoré par le calcul, mais sa ligne reste présente."
+    ],
+    "solution": "SELECT e_id,ename,salaire,AVG(salaire) OVER() AS moyenne_globale FROM emp;",
+    "explanation": "La fenêtre conserve les employés et répète la moyenne des salaires connus. Sans OVER, AVG seul renvoie une unique ligne. Sur table vide : une ligne NULL pour AVG agrégé, zéro ligne pour AVG fenêtré.",
+    "skillIds": ["B0.04", "B3.04", "B3.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [2]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Question visible ; table emp et résultats numériques choisis pour cet entraînement.",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"],
+    "starter": "SELECT e_id,ename,salaire\nFROM emp;"
+  },
+  {
+    "id": "EX-2526-1.10",
+    "lessonId": "te1-2526-theorie",
+    "title": "Un index recouvrant doit aussi couvrir le filtre",
+    "type": "guided",
+    "prompt": "T(ClientID PK,Nom,Ville,CodePostal), index nonclustered(CodePostal,ClientID). La requête SELECT ClientID,CodePostal FROM T WHERE Ville='Paris' ORDER BY ClientID est-elle recouverte ? Proposer un ordre d’index pertinent.",
+    "hints": [
+      "Recenser les colonnes de SELECT, WHERE et ORDER BY avant de regarder l’index.",
+      "Le premier attribut de l’index est CodePostal, tandis que le filtre porte sur Ville et le tri sur ClientID."
+    ],
+    "solution": "Non : Ville manque pour évaluer WHERE, même si toutes les colonnes de sortie sont dans l’index. La présence de ClientID ne garantit pas le tri global car CodePostal est en première position. Proposition pour cette requête : (Ville,ClientID,CodePostal), avec égalité sur Ville puis ordre de ClientID.",
+    "explanation": "Recouvrant décrit une relation entre index et requête complète : projection, filtres et autres clauses. Le coût et la maintenance doivent encore être évalués avant de créer un index réel.",
+    "skillIds": ["B8.09", "B8.12", "B8.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [3]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-2.1",
+    "lessonId": "te1-2526-df",
+    "title": "Couverture minimale : décision pour chaque règle",
+    "type": "guided",
+    "prompt": "Données choisies pour remplacer l’annexe absente : R(A,B,C,D,E) ; F1 : A -> B ; F2 : B -> D ; F3 : C -> A ; F4 : AB -> C ; F5 : BC -> E. Donner une couverture minimale, justifier F1 à F5 et vérifier son équivalence.",
+    "hints": [
+      "Tester A+ pour retirer B de AB -> C, puis C+ pour retirer B de BC -> E.",
+      "Pour chaque règle finale, la retirer temporairement et vérifier si sa source obtient encore sa cible."
+    ],
+    "solution": "Conserver F1 A->B, F2 B->D, F3 C->A. Simplifier F4 AB->C en A->C : A fournit B ; B seul ne fournit pas C. Simplifier F5 BC->E en C->E : C fournit A puis B ; B seul ne fournit pas E. G={A->B,B->D,C->A,A->C,C->E}. F implique G ; G implique F4/F5 par augmentation. Retirer séparément chaque règle de G empêche sa source d’obtenir sa cible.",
+    "explanation": "La numérotation F1–F5 est celle du cas choisi ; elle ne reconstitue pas les DF invisibles de l’annexe. Plusieurs couvertures minimales équivalentes sont admises.",
+    "skillIds": ["B5.05", "B5.06", "B5.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [3]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-2.2",
+    "lessonId": "te1-2526-df",
+    "title": "A, E et AC : fermeture, clé ou superclé ?",
+    "type": "guided",
+    "prompt": "Données choisies pour remplacer l’annexe absente : R(A,B,C,D,E) ; F1 : A -> B ; F2 : B -> D ; F3 : C -> A ; F4 : AB -> C ; F5 : BC -> E. Calculer A+, E+, AC+ et qualifier précisément chaque ensemble.",
+    "hints": [
+      "La fermeture complète prouve une superclé ; il reste à tester chaque suppression d’attribut.",
+      "Comparer AC avec A seul et avec C seul."
+    ],
+    "solution": "A+={A,B,C,D,E}, E+={E}, AC+={A,B,C,D,E}. A est une clé candidate, E n’est pas une superclé, AC est une superclé non minimale : A seul suffit déjà. C est également une clé candidate.",
+    "explanation": "La fermeture complète prouve seulement une superclé. Le terme clé candidate exige la minimalité ; AC n’en devient pas une parce que A et C sont chacun clés.",
+    "skillIds": ["B5.05", "B5.09", "B5.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [5]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-2.3",
+    "lessonId": "te1-2526-df",
+    "title": "Violer F1 tout en conservant les autres DF",
+    "type": "guided",
+    "prompt": "Données choisies pour remplacer l’annexe absente : R(A,B,C,D,E) ; F1 : A -> B ; F2 : B -> D ; F3 : C -> A ; F4 : AB -> C ; F5 : BC -> E. Construire un remplissage minimal qui viole F1 seulement ; justifier chacune des autres règles.",
+    "hints": [
+      "Deux tuples doivent partager A et différer sur B ; une seule ligne ne peut violer une DF.",
+      "Retirer F1, calculer A+ avec F2–F5, puis faire varier les attributs hors de cette fermeture."
+    ],
+    "solution": "Deux tuples suffisent : (A,B,C,D,E)=(0,0,0,0,0) et (0,1,1,1,1). Ils partagent A mais diffèrent sur B : F1 est fausse. Les déterminants B de F2, C de F3, AB de F4 et BC de F5 diffèrent tous entre les deux lignes : aucune de ces DF n’est violée. Une seule ligne ne peut violer une DF.",
+    "explanation": "Vérifier toutes les contraintes conservées est indispensable. La méthode systématique calcule A+ avec F2–F5, ici {A}, puis garde ces attributs égaux et fait varier les autres.",
+    "skillIds": ["B5.02", "B5.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [5]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-2.4",
+    "lessonId": "te1-2526-df",
+    "title": "Prouver que AEC -> D n’ajoute rien",
+    "type": "guided",
+    "prompt": "Données choisies pour remplacer l’annexe absente : R(A,B,C,D,E) ; F1 : A -> B ; F2 : B -> D ; F3 : C -> A ; F4 : AB -> C ; F5 : BC -> E. Prouver par fermeture que AEC -> D est déjà impliquée.",
+    "hints": [
+      "Commencer exactement avec A, E, C et noter la règle qui ajoute chaque nouvel attribut.",
+      "F1 peut ajouter B ; chercher ensuite la règle qui fournit D."
+    ],
+    "solution": "Partir de {A,E,C}. F1 A->B ajoute B ; F2 B->D ajoute D. On obtient {A,B,C,D,E}, qui contient D. AEC->D appartient donc à F+ ; l’ajouter ne change pas les contraintes.",
+    "explanation": "Indiquer les règles qui ajoutent les attributs constitue la preuve ; le résultat final sans démarche ne justifie pas une implication.",
+    "skillIds": ["B5.04", "B5.05", "B5.06"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [5]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-3.1",
+    "lessonId": "te1-2526-normalisation",
+    "title": "Trouver toutes les clés avec deux paires équivalentes",
+    "type": "guided",
+    "prompt": "Données choisies pour remplacer l’annexe absente : R(A,B,C,D,E) ; F = {A -> C, C -> A, B -> E, E -> B, AB -> D}. Donner toutes les clés candidates, leur minimalité et l’exhaustivité.",
+    "hints": [
+      "Former les deux groupes d’attributs qui se déterminent mutuellement.",
+      "Un représentant de chaque groupe permet d’appliquer AB -> D ; vérifier qu’aucun sous-ensemble ne suffit."
+    ],
+    "solution": "AB, AE, BC et CE. A et C donnent le même groupe ; B et E le même autre groupe ; un représentant de chaque groupe permet AB puis D. Retirer l’un des deux attributs perd un groupe. D ne produit rien : sans représentant d’une paire, cette paire reste inaccessible. Toute superclé contient donc une de ces quatre clés.",
+    "explanation": "Les clés manuscrites de la copie ne suffisent pas à récupérer son annexe. Ici les quatre clés sont prouvées à partir du jeu de DF annoncé.",
+    "skillIds": ["B5.05", "B5.09", "B5.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [6]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-3.2",
+    "lessonId": "te1-2526-normalisation",
+    "title": "Synthèse 3FN : donner un résultat contrôlé",
+    "type": "guided",
+    "prompt": "Données choisies pour remplacer l’annexe absente : R(A,B,C,D,E) ; F = {A -> C, C -> A, B -> E, E -> B, AB -> D}. Appliquer la synthèse 3FN avec conservation des DF et du contenu.",
+    "hints": [
+      "Regrouper les déterminants équivalents, puis créer une relation pour AB -> D.",
+      "Vérifier si une relation contient déjà une clé de R avant d’ajouter une relation supplémentaire."
+    ],
+    "solution": "Une synthèse est AC, BE, ABD : fusionner les déterminants équivalents A/C et B/E, puis garder AB->D. Aucune relation n’est incluse dans une autre ; ABD contient la clé AB. Les DF A->C,C->A sont locales à AC ; B->E,E->B à BE ; AB->D à ABD. La synthèse préserve les DF et contient une clé ; une preuve directe sans perte est donnée en 3.4.",
+    "explanation": "Les noms des relations et le choix des PK peuvent varier. Une décomposition différente doit être évaluée sur ses propriétés, pas seulement comparée à cette liste.",
+    "skillIds": ["B6.03", "B6.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [6]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-3.3",
+    "lessonId": "te1-2526-normalisation",
+    "title": "La synthèse garantit 3FN ; peut-on conclure BCNF ?",
+    "type": "guided",
+    "prompt": "Données choisies pour remplacer l’annexe absente : R(A,B,C,D,E) ; F = {A -> C, C -> A, B -> E, E -> B, AB -> D}. Pour AC, BE et ABD, déterminer la forme maximale parmi 1FN,2FN,3FN,BCNF. Puis comparer au cas choisi U(A,B,C), AB->C et C->B.",
+    "hints": [
+      "Recalculer les clés et les DF projetées de chaque relation, sans réutiliser automatiquement celles de R.",
+      "Pour le cas U, tester si C est superclé, puis si B est un attribut premier."
+    ],
+    "solution": "AC : clés A et C, donc BCNF. BE : clés B et E, donc BCNF. ABD : clé AB ; les seules DF non triviales projetées ont une source superclé, donc BCNF. Pour U : clés AB et AC, tous les attributs sont premiers ; C->B respecte 3FN mais viole BCNF, car C n’est pas superclé.",
+    "explanation": "Une relation issue d’une synthèse 3FN peut être BCNF, mais cela se prouve localement. Les clés étrangères ne définissent pas BCNF. Les dépendances multivaluées ne sont pas fournies : aucune certification supplémentaire en 4FN.",
+    "skillIds": ["B5.11", "B6.08", "B6.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [6]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-3.4",
+    "lessonId": "te1-2526-normalisation",
+    "title": "Bonus : démontrer la jointure sans perte par Heath",
+    "type": "guided",
+    "prompt": "Données choisies pour remplacer l’annexe absente : R(A,B,C,D,E) ; F = {A -> C, C -> A, B -> E, E -> B, AB -> D}. Prouver sans perte la décomposition AC,BE,ABD, avec des intersections explicites.",
+    "hints": [
+      "Décomposer d’abord en AC et ABDE, puis décomposer ABDE en BE et ABD.",
+      "Calculer chaque intersection et vérifier qu’elle détermine au moins l’une des deux composantes."
+    ],
+    "solution": "R se décompose en AC et ABDE : intersection A ; A->C implique A->AC. ABDE se décompose en BE et ABD : intersection B ; B->E implique B->BE. Chaque étape binaire est sans perte par Heath ; leur composition donne AC,BE,ABD sans perte.",
+    "explanation": "L’intersection doit déterminer au moins une des deux composantes, pas obligatoirement les deux. Préservation des DF et absence de perte de contenu sont deux vérifications différentes.",
+    "skillIds": ["B6.02", "B6.03"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [8]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-4.1-req2",
+    "lessonId": "te1-2526-stockage",
+    "title": "MySQL après Req2 : aucune PK explicite",
+    "type": "guided",
+    "prompt": "Scénario choisi, car le script annexe manque : T(A NOT NULL,B NOT NULL), I1=(50,10), I2=(20,40), I3=(10,20), I4=(30,50), I5=(40,30), insérés dans cet ordre. Req2=fin des insertions ; Req3=ADD PRIMARY KEY(A) ; Req4=CREATE UNIQUE INDEX X_unique ON T(B DESC). Dessin pédagogique, pas mesure physique : 2 lignes par feuille de données, 3 entrées par feuille secondaire. Sur MySQL InnoDB, dessiner le chemin vers les données à la fin de Req2.",
+    "hints": [
+      "Distinguer absence de PK déclarée et absence de clé clustered interne dans InnoDB.",
+      "Dans le modèle choisi, les identifiants internes augmentent avec les insertions I1 à I5."
+    ],
+    "solution": "Aucune PK ni UNIQUE admissible n’est déclarée ; InnoDB utilise une clé clustered interne. Dans le modèle choisi, les feuilles suivent les identifiants internes croissants : [I1,I2] -> [I3,I4] -> [I5]. La racine interne dirige vers ces feuilles, qui contiennent les lignes.",
+    "explanation": "Absence d’index utilisateur ne veut pas dire absence de toute organisation indexée interne. Les capacités de feuilles sont choisies pour dessiner et ne décrivent pas une allocation InnoDB réellement exécutée.",
+    "skillIds": ["B7.07", "B8.10", "B8.11"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [8]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-4.1-req3",
+    "lessonId": "te1-2526-stockage",
+    "title": "MySQL après Req3 : ajout de la PK",
+    "type": "guided",
+    "prompt": "Scénario choisi, car le script annexe manque : T(A NOT NULL,B NOT NULL), I1=(50,10), I2=(20,40), I3=(10,20), I4=(30,50), I5=(40,30), insérés dans cet ordre. Req2=fin des insertions ; Req3=ADD PRIMARY KEY(A) ; Req4=CREATE UNIQUE INDEX X_unique ON T(B DESC). Dessin pédagogique, pas mesure physique : 2 lignes par feuille de données, 3 entrées par feuille secondaire. Sur MySQL InnoDB, dessiner les feuilles de données après la création de la PK sur A.",
+    "hints": [
+      "Trier les valeurs de A puis remplacer ces valeurs par les étiquettes I1 à I5.",
+      "Les lignes complètes sont dans les feuilles de la PK ; il ne faut pas dessiner un heap de données supplémentaire."
+    ],
+    "solution": "L’ordre des A croissants est I3(10),I2(20),I4(30),I5(40),I1(50). Les feuilles de la PK contiennent les lignes : [I3,I2] -> [I4,I5] -> [I1], avec une racine qui les référence. Il n’y a pas un heap séparé identique à recopier en plus.",
+    "explanation": "Le changement de clé clustered réorganise le stockage selon la PK. La position physique des pages ne se confond ni avec leur ordre logique, ni avec l’ordre d’un SELECT sans ORDER BY.",
+    "skillIds": ["B8.01", "B8.10", "B8.11"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [7]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-4.1-req4",
+    "lessonId": "te1-2526-stockage",
+    "title": "MySQL après Req4 : index secondaire DESC",
+    "type": "guided",
+    "prompt": "Scénario choisi, car le script annexe manque : T(A NOT NULL,B NOT NULL), I1=(50,10), I2=(20,40), I3=(10,20), I4=(30,50), I5=(40,30), insérés dans cet ordre. Req2=fin des insertions ; Req3=ADD PRIMARY KEY(A) ; Req4=CREATE UNIQUE INDEX X_unique ON T(B DESC). Dessin pédagogique, pas mesure physique : 2 lignes par feuille de données, 3 entrées par feuille secondaire. Représenter les données et X_unique après Req4. Que référence une entrée de X sous InnoDB ?",
+    "hints": [
+      "Faire deux tris distincts : A pour les données, B DESC pour X.",
+      "Sous InnoDB, une entrée secondaire contient la valeur de la PK qui permet de retrouver la ligne."
+    ],
+    "solution": "Les données restent ordonnées par A : I3,I2,I4,I5,I1. X est trié par B décroissant : I4(50),I2(40),I5(30),I3(20),I1(10), soit feuilles [I4,I2,I5] -> [I3,I1] dans le modèle choisi. Une entrée secondaire contient B et la valeur A de PK ; accéder à une colonne non recouverte nécessite ensuite une recherche dans la PK.",
+    "explanation": "DESC ne trie que cet index, pas la table entière par B. La PK stockée dans les feuilles secondaires est un localisateur logique, pas un ROWID physique de heap Oracle.",
+    "skillIds": ["B8.09", "B8.10", "B8.11", "B8.12"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [7]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-4.2",
+    "lessonId": "te1-2526-stockage",
+    "title": "Oracle : heap ou IOT avant de remplir le tableau",
+    "type": "guided",
+    "prompt": "Scénario choisi, car le script annexe manque : T(A NOT NULL,B NOT NULL), I1=(50,10), I2=(20,40), I3=(10,20), I4=(30,50), I5=(40,30), insérés dans cet ordre. Req2=fin des insertions ; Req3=ADD PRIMARY KEY(A) ; Req4=CREATE UNIQUE INDEX X_unique ON T(B DESC). Dessin pédagogique, pas mesure physique : 2 lignes par feuille de données, 3 entrées par feuille secondaire. Sur Oracle avec une table ordinaire, remplir les colonnes données triées par A, index PK clustered/nonclustered, X clustered/nonclustered après Req2,3,4. Comment le cas IOT diffère-t-il ?",
+    "hints": [
+      "Chercher une clause ORGANIZATION INDEX dans le scénario avant de conclure à une IOT.",
+      "Sur un heap Oracle ordinaire, la PK référence les lignes par ROWID sans trier les données."
+    ],
+    "solution": "Oracle heap : Req2 = données sans ordre A garanti, aucun index PK, aucun X ; Req3 = heap inchangé, index PK nonclustered vers ROWID ; Req4 = heap inchangé, index PK nonclustered et X nonclustered vers ROWID. Une IOT créée avec ORGANIZATION INDEX organise ses lignes par la PK ; ajouter seulement une contrainte PK à un heap ne le transforme pas en IOT.",
+    "explanation": "Le DDL original manque : les annotations Oracle du sujet ne permettent pas de connaître l’organisation réelle de son annexe. Ce tableau répond au script de remplacement annoncé.",
+    "skillIds": ["B7.07", "B8.10", "B8.11"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [10]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-5.1",
+    "lessonId": "te1-2526-requetes",
+    "title": "Simplifier GROUP BY et HAVING dans une corrélation",
+    "type": "sql",
+    "prompt": "ReqOptimi originale absente : requête de remplacement choisie sur emp.\n\n```sql\nSELECT e.e_id, e.ename, e.salaire\nFROM emp e\nWHERE e.salaire > (\n  SELECT AVG(q.salaire) FROM emp q\n  WHERE q.deptno = e.deptno\n  GROUP BY q.deptno\n  HAVING q.deptno = e.deptno\n);\n```\n\nÉcrire e_id,ename,salaire pour les employés dont le salaire dépasse strictement la moyenne de leur département, en simplifiant la sous-requête. Résultat vérifié automatiquement ; suppression des clauses et coût à justifier soi-même.",
+    "hints": [
+      "Déterminer combien de groupes différents peut produire le WHERE corrélé.",
+      "Retirer GROUP BY/HAVING seulement après avoir vérifié le cas deptno NULL et le résultat scalaire vide."
+    ],
+    "solution": "SELECT e.e_id,e.ename,e.salaire\nFROM emp e\nWHERE e.salaire > (\n SELECT AVG(q.salaire) FROM emp q WHERE q.deptno=e.deptno\n);",
+    "explanation": "WHERE q.deptno=e.deptno fixe un seul groupe ; GROUP BY et le HAVING identique sont inutiles ici. Sans correspondance, zéro ligne scalaire et AVG sans groupe donnent chacun NULL. Ne pas généraliser à un HAVING COUNT(*)>1. Une solution non simplifiée mais équivalente peut passer le correcteur de résultats.",
+    "skillIds": ["B2.01", "B2.03", "B9.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [10]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Question visible sur la simplification ; SQL et données choisis, sans restitution de ReqOptimi.",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"],
+    "starter": "SELECT e.e_id, e.ename, e.salaire\nFROM emp e\nWHERE e.salaire > (\n  SELECT AVG(q.salaire) FROM emp q\n  WHERE q.deptno = e.deptno\n  GROUP BY q.deptno\n  HAVING q.deptno = e.deptno\n);"
+  },
+  {
+    "id": "EX-2526-5.2",
+    "lessonId": "te1-2526-requetes",
+    "title": "Une jointure est-elle forcément plus lente ?",
+    "type": "guided",
+    "prompt": "La question visible compare Req01 à ReqOptimi ; leurs textes annexes manquent. Sur le cas choisi des moyennes de département, expliquer comment comparer une corrélation et une jointure sans conclure à partir du seul mot JOIN.",
+    "hints": [
+      "L’équivalence du résultat et le coût du plan sont deux questions distinctes.",
+      "Comparer lignes parcourues, agrégations répétées ou préalables, index et transformations de l’optimiseur."
+    ],
+    "solution": "Vérifier d’abord résultats, doublons et NULL. Examiner ensuite le plan : transformation éventuelle de la corrélation, nombre de parcours, agrégation préalable, index, lignes et largeurs traitées. Mesurer sur les mêmes données et dans un contexte de cache annoncé. Une jointure peut être plus rapide, similaire ou plus lente selon le plan.",
+    "explanation": "L’annotation manuscrite affirmant plus lent à cause du JOIN n’est pas une loi générale. Sans les trois requêtes ni leurs plans, on ne peut attribuer un classement exact au sujet original.",
+    "skillIds": ["B9.06", "B9.07", "B9.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [10]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Énoncé visible ; justification pédagogique vérifiée, sans corrigé officiel. Les éventuelles données de remplacement sont explicitement choisies."
+  },
+  {
+    "id": "EX-2526-5.3",
+    "lessonId": "te1-2526-requetes",
+    "title": "Calculer les moyennes une fois puis joindre",
+    "type": "sql",
+    "prompt": "ReqOptimi originale absente : requête de remplacement choisie sur emp.\n\n```sql\nSELECT e.e_id, e.ename, e.salaire\nFROM emp e\nWHERE e.salaire > (\n  SELECT AVG(q.salaire) FROM emp q\n  WHERE q.deptno = e.deptno\n  GROUP BY q.deptno\n  HAVING q.deptno = e.deptno\n);\n```\n\nRéécrire avec une CTE qui calcule une moyenne par deptno, puis une jointure ; retourner e_id,ename,salaire. Conserver le comportement des départements NULL et des ex æquo au seuil. Aucun tri imposé. Le correcteur certifie les résultats, pas un gain de temps.",
+    "hints": [
+      "Construire une ligne par département avant de joindre à emp.",
+      "Utiliser une égalité ordinaire sur deptno puis le filtre strict e.salaire > m.moyenne."
+    ],
+    "solution": "WITH moyennes AS (\n SELECT deptno,AVG(salaire) AS moyenne FROM emp GROUP BY deptno\n)\nSELECT e.e_id,e.ename,e.salaire\nFROM emp e JOIN moyennes m ON m.deptno=e.deptno\nWHERE e.salaire>m.moyenne;",
+    "explanation": "GROUP BY produit une ligne par deptno, donc la jointure ne multiplie pas les employés. Le test > exclut l’égalité ; une moyenne ou un salaire NULL exclut la ligne. L’égalité de jointure exclut deptno NULL comme la corrélation. Le bénéfice de calculer une moyenne par département dépend du plan ; une CTE ne force pas une matérialisation.",
+    "skillIds": ["B2.05", "B2.06", "B9.07", "B9.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX-2526",
+        "pages": [9]
+      }
+    ],
+    "origin": "exam",
+    "dataOrigin": "Question visible sur la réutilisation d’une moyenne ; CTE, SQL et données choisis, sans restitution de Req02.",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"],
+    "starter": "WITH moyennes AS (\n SELECT deptno,AVG(salaire) AS moyenne\n FROM emp GROUP BY deptno\n)\nSELECT e.e_id,e.ename,e.salaire\nFROM emp e;"
+  }
+]

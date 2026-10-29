@@ -1759,6 +1759,131 @@
       "id": "TP-FT-A4",
       "description": "Complément — du LIKE au Full Text — entraînement sur les compléments du corrigé.",
       "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-1.1",
+      "description": "Implications : plusieurs réponses possibles",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-1.2",
+      "description": "Une liste dans une cellule respecte-t-elle la 1FN ?",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-1.3",
+      "description": "PK composée et UNIQUE : ce qui est réellement garanti",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-1.4",
+      "description": "Anomalie de propagation",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-1.5",
+      "description": "Volume : heap et index nonclustered",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-1.6",
+      "description": "LIKE avec joker initial et Full Text",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-1.7",
+      "description": "Hachage : index ajouté ou fichier réorganisé ?",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-1.8",
+      "description": "Même hypothèse, même comparaison de volumes",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-1.9",
+      "description": "AVG fenêtré : garder une ligne par employé",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-1.10",
+      "description": "Un index recouvrant doit aussi couvrir le filtre",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-2.1",
+      "description": "Couverture minimale : décision pour chaque règle",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-2.2",
+      "description": "A, E et AC : fermeture, clé ou superclé ?",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-2.3",
+      "description": "Violer F1 tout en conservant les autres DF",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-2.4",
+      "description": "Prouver que AEC -> D n’ajoute rien",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-3.1",
+      "description": "Trouver toutes les clés avec deux paires équivalentes",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-3.2",
+      "description": "Synthèse 3FN : donner un résultat contrôlé",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-3.3",
+      "description": "La synthèse garantit 3FN ; peut-on conclure BCNF ?",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-3.4",
+      "description": "Bonus : démontrer la jointure sans perte par Heath",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-4.1-req2",
+      "description": "MySQL après Req2 : aucune PK explicite",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-4.1-req3",
+      "description": "MySQL après Req3 : ajout de la PK",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-4.1-req4",
+      "description": "MySQL après Req4 : index secondaire DESC",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-4.2",
+      "description": "Oracle : heap ou IOT avant de remplir le tableau",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-5.1",
+      "description": "Simplifier GROUP BY et HAVING dans une corrélation",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-5.2",
+      "description": "Une jointure est-elle forcément plus lente ?",
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2526-5.3",
+      "description": "Calculer les moyennes une fois puis joindre",
+      "kind": "exercise"
     }
   ],
   "sources": [
@@ -1856,6 +1981,11 @@
       "id": "SOL-FT",
       "file": "3_TP_index_FT_sol.pdf",
       "pages": 22
+    },
+    {
+      "id": "EX-2526",
+      "file": "TE1_2526.pdf",
+      "pages": 10
     }
   ]
 }

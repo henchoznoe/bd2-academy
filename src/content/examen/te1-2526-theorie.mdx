@@ -1,0 +1,50 @@
+export const meta = {"id": "te1-2526-theorie", "moduleId": "examen", "title": "TE1 2025–2026 · Questions théoriques", "summary": "Distinguer implication, atomicité, contraintes SQL, couverture et sémantique textuelle.", "objectives": ["Justifier chaque proposition, y compris dans un QCM à plusieurs réponses", "Distinguer volume de données, volume total et index recouvrant"], "sourceRefs": [{"sourceId": "EX-2526", "pages": [1, 2, 3, 4]}], "skillIds": ["B5.04", "B5.10", "B6.01", "B6.04", "B8.12", "B9.03", "B10.01", "B3.04"], "order": 4}
+
+Les énoncés sont visibles dans TE1_2526.pdf, mais les annexes ne sont pas fournies. Les corrections ci-dessous sont des explications vérifiées ; les réponses manuscrites ne constituent pas un corrigé officiel. Les paramètres remplacés sont annoncés comme **données choisies pour l’entraînement**.
+
+## Lire la copie sans suivre ses erreurs
+
+Les pages PDF 1, 2, 3, 4 correspondent aux pages imprimées 1, 3, 4, 2. La page imprimée 2 n’est donc pas absente : elle est photographiée plus loin. L’ancien examen 2024–2025 reste un autre sujet, avec ses propres limites.
+
+Le QCM d’origine autorise plusieurs réponses. Pour certains entraînements, une option regroupe les propositions correctes ; les autres questions demandent une justification libre.
+
+## Implication et clés
+
+Avec `A -> B` et `B -> C`, on déduit `A -> C` par transitivité, puis `AB -> C` par augmentation et simplification de l’écriture. On ne peut pas inverser pour obtenir `C -> A`. La table `(A,B,C) = (1,10,100), (2,20,100)` est un contre-exemple à cette inversion.
+
+Une cellule contenant une **liste de numéros de cours** ne respecte pas la 1FN telle qu’enseignée ici. Il faut des lignes d’inscription, par exemple `Inscription(NumEtudiant,NumCours)`, et non une liste à découper dans une colonne.
+
+Pour `PRIMARY KEY(A,B)` et `UNIQUE(A,C)`, la PK implique `AB -> C`. Si A et C sont tous deux non NULL, AC identifie aussi une ligne et implique `AC -> B`. Cela ne donne ni `A -> C`, ni `B -> C` séparément. **Piège SQL :** un UNIQUE nullable peut accepter plusieurs valeurs NULL ; ne pas l’assimiler automatiquement à une clé candidate du modèle relationnel.
+
+## Anomalie de propagation
+
+Si le prix dépend du produit, le répéter pour chaque client oblige à modifier toutes les occurrences de ce produit. Oublier une ligne crée une incohérence : c’est une anomalie de mise à jour, ou de propagation. Une cellule multivaluée et une anomalie de propagation sont deux problèmes distincts.
+
+## Que mesure S1 ou S2 ?
+
+Les questions 1.5 et 1.8 ont le même libellé imprimé : copie d’un heap défragmenté, puis ajout d’un index nonclustered. Les annotations ne suffisent pas à fixer une convention de volume.
+
+- Si S2 désigne **les seules pages de données**, inchangées dans le modèle annoncé, S2 = S1.
+- Si S2 comprend **ces données et le nouvel index secondaire**, S2 = S1 + taille(index), donc S2 > S1.
+- Si on remplace le fichier par une organisation hachée, il faut aussi connaître les buckets, leur remplissage et les débordements. Si on ajoute simplement un index de hachage séparé à un heap inchangé, son espace s’ajoute.
+
+Un index clustered stocke les lignes dans ses feuilles : ajouter fictivement une seconde copie complète de toutes les données serait un double comptage. Les en-têtes, niveaux internes et espaces libres restent à compter selon le modèle.
+
+## Un index recouvrant couvre aussi WHERE
+
+```sql
+SELECT ClientID, CodePostal
+FROM T
+WHERE Ville = 'Paris'
+ORDER BY ClientID;
+```
+
+L’index `(CodePostal,ClientID)` contient les colonnes retournées, mais pas Ville. Il ne suffit donc pas à évaluer toute la requête sans consulter la table. Son ordre commence par CodePostal : il ne garantit pas non plus un tri global sur ClientID. Une proposition pour ce besoin est `(Ville,ClientID,CodePostal)` ; l’égalité sur Ville fixe le préfixe, puis ClientID donne l’ordre demandé. La décision finale dépend du coût et de la charge d’écriture.
+
+## LIKE, Full Text et fenêtre
+
+Un B+arbre ordinaire peut délimiter un préfixe constant tel que `LIKE 'blabla%'`. Pour `LIKE '%blabla%'`, il manque cette borne. Full Text est un autre chemin pour une recherche de **mots**, avec `MATCH ... AGAINST` en MySQL : il n’accélère pas automatiquement le prédicat LIKE inchangé. `xxblablayy` contient la sous-chaîne blabla sans contenir le token blabla.
+
+`SELECT AVG(salaire) FROM emp` renvoie une ligne. `SELECT AVG(salaire) OVER() FROM emp` conserve les lignes d’employés et répète la moyenne. Sur une table vide, l’agrégat seul produit une ligne NULL ; la fenêtre ne produit aucune ligne. Sur une table non vide dont tous les salaires sont NULL, la moyenne vaut NULL dans les deux formes.
+
+**Pour valider :** répondre au QCM puis défendre chaque réponse en annonçant ses hypothèses.

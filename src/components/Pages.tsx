@@ -520,22 +520,37 @@ export function TrackPage() {
   );
 }
 export function ExamPage() {
-  const list = exercises.filter((e) => e.origin === "exam");
+  const sessions = [
+    {
+      sourceId: "EX-2526",
+      title: "TE1 2025–2026",
+      description:
+        "25 questions et sous-questions : théorie, DF, normalisation, stockage et réécriture SQL.",
+      notice:
+        "10 pages photographiées, dans l’ordre imprimé 1, 3, 4, 2, 5, 6, 8, 7, 10, 9. Les annexes ne sont pas fournies ; les pages de référence sont celles du PDF.",
+    },
+    {
+      sourceId: "EX",
+      title: "TE1 2024–2025",
+      description: "24 questions visibles et 6 variantes déjà disponibles.",
+      notice:
+        "9 pages PDF. La page imprimée 3 et les annexes manquent. Des variantes pédagogiques remplacent les données absentes.",
+    },
+  ];
   return (
     <div className="page-enter">
       <span className="eyebrow">ENTRAÎNEMENT TRANSVERSAL</span>
       <h1>Relier tous les chapitres.</h1>
       <p className="page-subtitle">
-        Les questions visibles de l’ancien examen, accompagnées de variantes
-        explicites.
+        Deux anciens TE1, avec théorie, exemples et questions à travailler
+        séparément.
       </p>
       <div className="notice">
-        La copie fournie comporte 9 pages PDF. Sa page imprimée 3 et ses annexes
-        manquent. Les annotations manuscrites sont des indices à vérifier. Les
-        anciennes consignes d’aide et de pondération ne décrivent pas le
-        prochain examen.
+        Les annotations manuscrites sont des indices à vérifier, pas un corrigé
+        officiel. Les consignes historiques d’aide, de durée et de pondération
+        ne décrivent pas le prochain examen.
       </div>
-      <div className="panel">
+      <section className="panel">
         <h2>Lire les données avant de calculer</h2>
         <p>
           <strong>Énoncé visible :</strong> ce que demande effectivement la
@@ -543,37 +558,59 @@ export function ExamPage() {
         </p>
         <p>
           <strong>Donnée déduite de la copie :</strong> une hypothèse
-          argumentée, jamais un fait certain. Aucun paramètre manquant n’est
-          tenu pour établi ici.
+          argumentée, jamais un fait certain.
         </p>
         <p>
           <strong>Donnée choisie pour l’entraînement :</strong> schémas, DF,
-          arbres et chiffres cohérents fournis pour remplacer les annexes. Les
-          exercices ci-dessous annoncent ce cas.
+          scripts et chiffres fournis pour remplacer les annexes absentes.
+          Chaque exercice annonce sa provenance.
         </p>
-        {lessons
-          .filter((l) => l.moduleId === "examen")
-          .map((l) => (
-            <Link
-              className="lesson-practice-link"
-              to={`/lecons/${l.id}`}
-              key={l.id}
-            >
-              <GraduationCap size={16} />
-              <span>{l.title}</span>
-              <ArrowUpRight size={14} />
-            </Link>
-          ))}
-      </div>
-      <div className="section-heading">
-        <h2>Question par question</h2>
-        <span className="fine-print">24 questions visibles + 6 variantes</span>
-      </div>
-      <div className="exercise-list">
-        {list.map((e) => (
-          <ExerciseCard key={e.id} exercise={e} />
-        ))}
-      </div>
+      </section>
+      {sessions.map((session) => {
+        const sessionLessons = lessons.filter(
+          (l) =>
+            l.moduleId === "examen" &&
+            l.sourceRefs.some((r) => r.sourceId === session.sourceId),
+        );
+        const ids = new Set(sessionLessons.map((l) => l.id));
+        const list = exercises.filter(
+          (e) => e.origin === "exam" && ids.has(e.lessonId),
+        );
+        return (
+          <section
+            className="mt-7"
+            key={session.sourceId}
+            aria-label={session.title}
+          >
+            <div className="section-heading">
+              <h2>{session.title}</h2>
+              <span className="fine-print">{list.length} entraînements</span>
+            </div>
+            <p className="page-subtitle">{session.description}</p>
+            <p className="notice">{session.notice}</p>
+            <div className="panel">
+              <h3>Comprendre les raisonnements</h3>
+              {sessionLessons.map((l) => (
+                <Link
+                  className="lesson-practice-link"
+                  to={`/lecons/${l.id}`}
+                  key={l.id}
+                >
+                  <GraduationCap size={16} />
+                  <span>{l.title}</span>
+                  <ArrowUpRight size={14} />
+                </Link>
+              ))}
+            </div>
+            <h3 className="mt-7">Question par question</h3>
+            <div className="exercise-list">
+              {list.map((e) => (
+                <ExerciseCard key={e.id} exercise={e} />
+              ))}
+            </div>
+          </section>
+        );
+      })}
     </div>
   );
 }
@@ -818,8 +855,10 @@ export function SourcesPage() {
       <span className="eyebrow">UN COURS TRAÇABLE</span>
       <h1>Sources et couverture.</h1>
       <p className="page-subtitle">
-        19 PDF, 677 pages et les ressources voisines des TP. Les pages indiquées
-        sont les positions réelles des PDF.
+        {sources.length} PDF,{" "}
+        {sources.reduce((total, source) => total + source.pages, 0)} pages et
+        les ressources voisines des TP. Les pages indiquées sont les positions
+        réelles des PDF.
       </p>
       <div className={`feedback ${issues.length ? "error" : "success"}`}>
         {issues.length
@@ -828,7 +867,7 @@ export function SourcesPage() {
       </div>
       {issues.length > 0 && <pre>{issues.join("\n")}</pre>}
       <p className="notice">
-        Les PDF originaux et la copie nominative de l’examen ne sont pas
+        Les PDF originaux et les copies nominatives des examens ne sont pas
         distribués. Retrouvez ces fichiers dans votre dossier de cours ; les
         références restent vérifiables par nom et page. Les contenus sont des
         explications pédagogiques rédigées et contrôlées à partir de ces

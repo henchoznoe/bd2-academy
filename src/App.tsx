@@ -25,7 +25,7 @@ import {
   SquareCheckBig,
   X,
 } from "lucide-react";
-import { modules } from "./lib/catalog";
+import { modules, sources } from "./lib/catalog";
 import { useProgress, ProgressProvider } from "./components/ProgressProvider";
 import { downloadText } from "./lib/progress";
 import {
@@ -283,7 +283,7 @@ function Shell() {
               cocher.
             </span>
             <Link to="/sources">
-              19 supports, un parcours vérifiable
+              {sources.length} supports, un parcours vérifiable
               <ChevronRight size={13} />
             </Link>
           </footer>

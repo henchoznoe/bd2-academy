@@ -1,0 +1,49 @@
+{
+  "format": "bd2-academy",
+  "version": 2,
+  "records": {
+    "EX-1.1": {
+      "status": "verified",
+      "attempts": 3,
+      "solutionSeen": false,
+      "understood": true,
+      "draft": "SELECT e_id, AVG(salaire) OVER() FROM emp;",
+      "evidence": "Exemple anonyme de sauvegarde v2 antérieure aux ajouts TE1."
+    },
+    "TP-FT-4.2.8": {
+      "status": "review",
+      "attempts": 2,
+      "solutionSeen": false,
+      "understood": false,
+      "draft": "SELECT title FROM movie WHERE title LIKE '%fear%';",
+      "evidence": "Exemple anonyme de sauvegarde v2 antérieure aux ajouts TE1."
+    },
+    "B5.02": {
+      "status": "declared",
+      "attempts": 0,
+      "solutionSeen": false,
+      "understood": true,
+      "draft": "",
+      "evidence": "Exemple anonyme de sauvegarde v2 antérieure aux ajouts TE1."
+    },
+    "lesson:sql-pivot": {
+      "status": "learning",
+      "attempts": 0,
+      "solutionSeen": false,
+      "understood": true,
+      "draft": "",
+      "evidence": "Exemple anonyme de sauvegarde v2 antérieure aux ajouts TE1."
+    }
+  },
+  "journal": [
+    {
+      "id": "compatibility-note",
+      "skill": "B5.02",
+      "difficulty": "Conserver les autres DF dans un contre-exemple.",
+      "correction": "Comparer les tuples sur chaque déterminant.",
+      "redo": "Reprendre un exemple inédit.",
+      "resolved": false
+    }
+  ],
+  "lastLesson": "sql-pivot"
+}

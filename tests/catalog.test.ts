@@ -10,10 +10,10 @@ import {
 describe("source and pedagogical coverage", () => {
   it("covers all curriculum exercises, TP subquestions and visible exam questions", () => {
     expect(coverageIssues()).toEqual([]);
-    expect(sources).toHaveLength(19);
-    expect(sources.reduce((n, s) => n + s.pages, 0)).toBe(677);
+    expect(sources).toHaveLength(20);
+    expect(sources.reduce((n, s) => n + s.pages, 0)).toBe(687);
     expect(modules).toHaveLength(8);
-    expect(exercises.filter((e) => e.origin === "exam")).toHaveLength(30);
+    expect(exercises.filter((e) => e.origin === "exam")).toHaveLength(55);
   });
   it("attaches every lesson to practice and every exercise to real skills and hints", () => {
     for (const lesson of lessons) {

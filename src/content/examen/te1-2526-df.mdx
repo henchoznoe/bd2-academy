@@ -1,0 +1,44 @@
+export const meta = {"id": "te1-2526-df", "moduleId": "examen", "title": "TE1 2025–2026 · DF et contre-exemples", "summary": "Construire une couverture, distinguer clé et superclé et réfuter une seule DF.", "objectives": ["Prouver chaque simplification par une fermeture", "Construire deux tuples qui violent une seule contrainte ciblée"], "sourceRefs": [{"sourceId": "EX-2526", "pages": [3, 5]}], "skillIds": ["B5.02", "B5.04", "B5.05", "B5.08", "B5.09", "B5.10"], "order": 5}
+
+Les énoncés sont visibles dans TE1_2526.pdf, mais les annexes ne sont pas fournies. Les corrections ci-dessous sont des explications vérifiées ; les réponses manuscrites ne constituent pas un corrigé officiel. Les paramètres remplacés sont annoncés comme **données choisies pour l’entraînement**.
+
+## Un jeu de DF choisi, pas l’annexe reconstituée
+
+```text
+R(A,B,C,D,E) ; F1 : A -> B ; F2 : B -> D ; F3 : C -> A ; F4 : AB -> C ; F5 : BC -> E.
+```
+
+Ce cas reprend les démarches demandées, avec cinq règles entièrement déclarées. Il ne prétend pas retrouver les DF numérotées de l’annexe absente.
+
+## Couverture minimale : justifier les décisions
+
+F1, F2 et F3 restent. Dans F4, A fournit déjà B via F1 : B est superflu, d’où `A -> C`. A n’est pas superflu, car B seul ne fournit pas C. Dans F5, C fournit A puis B : B est superflu, d’où `C -> E`. B seul ne fournit pas E.
+
+```text
+G = {A -> B, B -> D, C -> A, A -> C, C -> E}
+```
+
+F implique G par les fermetures précédentes. G implique F : `A -> C` implique `AB -> C`, et `C -> E` implique `BC -> E` par augmentation. Retirer séparément une règle de G empêche sa source d’obtenir sa cible. Une autre couverture minimale est acceptable si ces deux propriétés sont démontrées.
+
+## Une fermeture complète ne suffit pas à être une clé
+
+`A+ = {A,B,C,D,E}`, `E+ = {E}`, `AC+ = {A,B,C,D,E}`. A est une clé candidate. C en est aussi une, via A. AC est une **superclé non minimale** : A ou C suffit déjà. Les seules clés candidates de ce cas sont A et C : les attributs B, D, E sans A/C ne peuvent produire ni A ni C.
+
+## Construire un contre-exemple ciblé
+
+On veut violer **F1 seulement**, en conservant F2 à F5. Il faut deux tuples avec le même A mais des B différents. Choisissons :
+
+| A | B | C | D | E |
+| --- | --- | --- | --- | --- |
+| 0 | 0 | 0 | 0 | 0 |
+| 0 | 1 | 1 | 1 | 1 |
+
+F1 est fausse. Pour F2, les B diffèrent ; pour F3, les C diffèrent ; pour F4, les couples AB diffèrent ; pour F5, les couples BC diffèrent. Aucune de ces quatre règles n’est violée. Une seule ligne ne pourrait violer une DF : deux tuples sont donc minimaux.
+
+**Méthode générale :** retirer la règle cible `X -> Y`, puis calculer Z = X+ avec les autres. Si Y est déjà inclus dans Z, aucun contre-exemple préservant toutes les autres règles n’existe. Sinon, construire deux tuples identiques sur Z, différents sur les autres attributs. Tout déterminant contenu dans Z a sa cible dans Z ; les autres déterminants diffèrent entre les deux tuples.
+
+## Une DF « nouvelle » peut être déjà impliquée
+
+Pour `AEC -> D`, partir de A, E, C ; F1 ajoute B et F2 ajoute D. La fermeture contient D : cette DF n’ajoute aucune contrainte. Donner la chaîne des règles démontre le résultat ; écrire simplement la fermeture finale ne montre pas comment on l’a obtenue.
+
+**Pour valider :** contrôler toutes les DF restantes dans le contre-exemple et tester la minimalité avant d’annoncer une clé.

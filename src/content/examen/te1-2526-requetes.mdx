@@ -1,0 +1,57 @@
+export const meta = {"id": "te1-2526-requetes", "moduleId": "examen", "title": "TE1 2025–2026 · Réécriture SQL et coût", "summary": "Simplifier une corrélation, factoriser une moyenne et justifier les performances.", "objectives": ["Prouver une réécriture en tenant compte des NULL et des groupes vides", "Distinguer une diminution de travail logique d’un gain mesuré"], "sourceRefs": [{"sourceId": "EX-2526", "pages": [9, 10]}], "skillIds": ["B2.01", "B2.03", "B2.05", "B2.06", "B9.06", "B9.07", "B9.09"], "order": 8}
+
+Les énoncés sont visibles dans TE1_2526.pdf, mais les annexes ne sont pas fournies. Les corrections ci-dessous sont des explications vérifiées ; les réponses manuscrites ne constituent pas un corrigé officiel. Les paramètres remplacés sont annoncés comme **données choisies pour l’entraînement**.
+
+## Un remplacement explicite des requêtes absentes
+
+ReqOptimi, Req01 et Req02 sont mentionnées, mais leur texte se trouve dans une annexe absente. L’annotation parle de GROUP BY/HAVING et de réutilisation d’une moyenne ; elle ne permet pas de retrouver ces requêtes avec certitude. Nous choisissons donc ce cas autonome sur emp :
+
+```sql
+SELECT e.e_id, e.ename, e.salaire
+FROM emp e
+WHERE e.salaire > (
+  SELECT AVG(q.salaire) FROM emp q
+  WHERE q.deptno = e.deptno
+  GROUP BY q.deptno
+  HAVING q.deptno = e.deptno
+);
+```
+
+## Simplifier la sous-requête interne
+
+Le WHERE fixe déjà un département par rapport à e. Tous les tuples retenus ont ce même deptno, le GROUP BY ne crée donc pas plusieurs groupes utiles et le HAVING répète le filtre. On obtient :
+
+```sql
+SELECT e.e_id,e.ename,e.salaire
+FROM emp e
+WHERE e.salaire > (
+ SELECT AVG(q.salaire) FROM emp q WHERE q.deptno=e.deptno
+);
+```
+
+Pour un deptno externe non NULL, le groupe sélectionné fournit la même moyenne. Pour un deptno externe NULL, l’égalité ne retient aucune ligne : la version groupée ne renvoie aucune ligne, convertie en NULL par la sous-requête scalaire ; la version sans GROUP BY renvoie directement une ligne AVG(NULL)=NULL. Le test externe reste inconnu et la ligne est exclue. Le salaire NULL et l’égalité stricte au seuil sont également conservés.
+
+Retirer arbitrairement GROUP BY/HAVING serait faux si plusieurs groupes subsistaient ou si HAVING exprimait une condition supplémentaire, par exemple `COUNT(*) > 1`.
+
+## Agréger avant la jointure
+
+```sql
+WITH moyennes AS (
+ SELECT deptno,AVG(salaire) AS moyenne FROM emp GROUP BY deptno
+)
+SELECT e.e_id,e.ename,e.salaire
+FROM emp e JOIN moyennes m ON m.deptno=e.deptno
+WHERE e.salaire>m.moyenne;
+```
+
+Une ligne par département dans moyennes évite de multiplier les employés lors de la jointure. L’égalité ordinaire exclut aussi les départements NULL, comme la corrélation initiale. Une fenêtre partitionnée sans ce filtre pourrait traiter ensemble les deptno NULL et changer le résultat.
+
+**Attention au transfert :** réécrire une somme scalaire en INNER JOIN peut supprimer les clients sans commandes ; ce cas demande souvent une LEFT JOIN. Ici, le filtre strict sur la moyenne élimine déjà les employés sans moyenne correspondante, ce qui justifie l’INNER JOIN.
+
+## Équivalence et performance sont deux validations
+
+Une agrégation par département peut éviter de répéter un travail par employé. Cependant l’optimiseur peut déjà transformer la corrélation ; une jointure ou une CTE n’est pas automatiquement plus rapide. Comparer les plans, les estimations, les lignes réellement parcourues, les index, le cache et les temps sur les mêmes données.
+
+Les exercices SQL vérifient les **résultats sur deux jeux**, pas une accélération MySQL. Une requête moins simplifiée mais équivalente peut passer cette comparaison : il reste à justifier la simplification et son coût. Les conclusions de temps manuscrites de l’ancien TE1 restent des observations de son scénario.
+
+**Pour valider :** expliquer où l’agrégat est calculé, pourquoi la jointure ne multiplie pas les lignes et dans quelles conditions la formulation peut réduire le travail.

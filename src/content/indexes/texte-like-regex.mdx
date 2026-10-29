@@ -28,3 +28,10 @@ Ces formes rendent explicite l’insensibilité à la casse sur le jeu navigateu
 Un AND de deux motifs impose les deux conditions, un OR conserve une ligne satisfaisant au moins l’une. Le motif `%death%in%` impose la présence de death puis de in **après**, y compris au milieu d’un mot ; ce n’est pas « les deux mots dans n’importe quel ordre ».
 
 Un index de préfixe MySQL tel que title(10) stocke seulement les premiers caractères : il est plus petit, mais peut exiger un filtre résiduel et ne couvre pas le titre complet. Ce n’est pas un index partiel par prédicat au sens d’autres produits. Les regex n’obtiennent pas automatiquement un index efficace simplement parce que des index fonctionnels sont disponibles.
+
+
+### Piège LIKE et Full Text au TE1
+
+Comparer recherche de sous-chaîne et recherche de mots avant de remplacer LIKE par MATCH...AGAINST.
+
+[Travailler ce cas du TE1 2025–2026](/lecons/te1-2526-theorie).

@@ -1,0 +1,52 @@
+export const meta = {"id": "te1-2526-stockage", "moduleId": "examen", "title": "TE1 2025–2026 · MySQL, Oracle et organisation physique", "summary": "Dessiner les données et les index après chaque instruction, sans confondre les moteurs.", "objectives": ["Suivre le tri des feuilles et le localisateur des index secondaires", "Distinguer Oracle heap, Oracle IOT et InnoDB"], "sourceRefs": [{"sourceId": "EX-2526", "pages": [7, 8, 10]}], "skillIds": ["B7.07", "B8.01", "B8.10", "B8.11", "B8.12"], "order": 7}
+
+Les énoncés sont visibles dans TE1_2526.pdf, mais les annexes ne sont pas fournies. Les corrections ci-dessous sont des explications vérifiées ; les réponses manuscrites ne constituent pas un corrigé officiel. Les paramètres remplacés sont annoncés comme **données choisies pour l’entraînement**.
+
+## Script et valeurs choisis
+
+Les instructions Req2, Req3, Req4 originales ne sont pas visibles. Le scénario suivant les **remplace**, sans prétendre les reconstituer. Req2 désigne ici la fin des insertions. On suppose des clés non NULL, cinq lignes et aucune suppression.
+
+```sql
+CREATE TABLE T(A INTEGER NOT NULL, B INTEGER NOT NULL);
+INSERT INTO T VALUES (50,10), (20,40), (10,20), (30,50), (40,30);
+-- Ordre d’insertion : I1, I2, I3, I4, I5
+-- Req3 choisie :
+ALTER TABLE T ADD PRIMARY KEY(A);
+-- Req4 choisie :
+CREATE UNIQUE INDEX X_unique ON T(B DESC);
+```
+
+En MySQL, ce cas suppose **InnoDB**. Les dessins sont des schémas pédagogiques, pas un relevé de pages réellement allouées par un serveur. Pour visualiser les blocs, on choisit deux lignes par feuille de données et trois entrées par feuille secondaire ; en-têtes et occupation réelle sont volontairement hors de ce modèle.
+
+## InnoDB, étape par étape
+
+Sans clé utilisateur admissible, InnoDB utilise une clé clustered interne. Après ajout de la PK, A organise les feuilles contenant les lignes. Un index secondaire référence la PK. [Règles du moteur](https://dev.mysql.com/doc/refman/8.4/en/innodb-index-types.html).
+
+```text
+Après Req2 : données dans l’ordre de la clé interne choisie
+racine interne -> [I1 I2] -> [I3 I4] -> [I5]
+
+Après Req3 : les feuilles de la PK contiennent les lignes, triées par A
+racine PK     -> [I3 I2] -> [I4 I5] -> [I1]
+
+Après Req4 : les données restent dans l’ordre de A
+racine PK     -> [I3 I2] -> [I4 I5] -> [I1]
+racine X      -> [I4 I2 I5] -> [I3 I1]   (B décroissant)
+entrée X = (valeur B, valeur A de PK) -> recherche dans la PK
+```
+
+Les flèches horizontales représentent le chaînage des feuilles ; les pages ne sont pas nécessairement contiguës sur le disque. **DESC concerne B dans X**, pas l’ordre de la table par A. Sans ORDER BY, cet ordre physique ne garantit pas l’ordre du résultat SQL.
+
+## Oracle : lire ORGANIZATION avant de conclure
+
+Une table Oracle ordinaire est un heap. Dans notre script choisi, ajouter une PK crée ou utilise un index qui référence ses lignes par ROWID ; cela ne trie pas le heap par A. Une **IOT**, créée avec `ORGANIZATION INDEX`, constitue un autre cas : les lignes sont organisées par PK. [Organisation Oracle](https://docs.oracle.com/en/database/oracle/oracle-database/19/cncpt/tables-and-table-clusters.html).
+
+| Étape du script choisi sur Oracle heap | Données ordonnées par A ? | Index de PK | X_unique |
+| --- | --- | --- | --- |
+| Après Req2 | Non | Absent | Absent |
+| Après Req3 | Non | Nonclustered, vers ROWID | Absent |
+| Après Req4 | Non | Nonclustered, vers ROWID | Nonclustered, vers ROWID |
+
+Les réponses manuscrites du sujet ne permettent pas d’affirmer que sa table Oracle était une IOT : il faudrait le DDL de l’annexe. Une PK est une contrainte logique ; son organisation physique dépend du moteur et des clauses de création.
+
+**Pour valider :** distinguer la table, les feuilles de PK, les feuilles secondaires, le sens du tri et la cible de chaque référence, puis annoncer les hypothèses de capacité.

@@ -31,3 +31,10 @@ La hauteur en niveaux vaut BLEVEL+1. BLEVEL=2 indique trois niveaux, et non deux
 L’index Oracle `REVERSE` inverse des octets de clés et peut réduire un point de contention sur insertions monotones ; il détruit l’ordre naturel des plages. Il ne faut pas le confondre avec indexer la chaîne renversée pour chercher un suffixe.
 
 Les statistiques USER_TABLES et USER_INDEXES décrivent le moteur Oracle, jamais les résultats du moteur DuckDB de ce site. Les conseils chiffrés de remplissage p.68–72 restent des exemples : ils ne fixent pas une valeur universelle de page ou de fan-out.
+
+
+### Suivre les instructions du TE1
+
+Dessiner les feuilles après ajout d’une PK puis d’un index secondaire DESC, avec un scénario distinct pour Oracle heap et InnoDB.
+
+[Travailler ce cas du TE1 2025–2026](/lecons/te1-2526-stockage).

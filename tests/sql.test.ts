@@ -156,4 +156,59 @@ describe("reference SQL on the pinned WebAssembly engine", () => {
         ).correct,
       ).toBe(true);
   });
+  it("distinguishes an empty aggregate from an empty window and handles all-NULL salaries", async () => {
+    expect(
+      (await query("course", "SELECT AVG(salaire) FROM emp WHERE FALSE;")).rows,
+    ).toEqual([[null]]);
+    expect(
+      (
+        await query(
+          "course",
+          "SELECT AVG(salaire) OVER() FROM emp WHERE FALSE;",
+        )
+      ).rows,
+    ).toEqual([]);
+    expect(
+      (
+        await query(
+          "course",
+          "SELECT AVG(salaire) FROM emp WHERE salaire IS NULL;",
+        )
+      ).rows,
+    ).toEqual([[null]]);
+    expect(
+      (
+        await query(
+          "course",
+          "SELECT AVG(salaire) OVER() FROM emp WHERE salaire IS NULL;",
+        )
+      ).rows,
+    ).toEqual([[null]]);
+  });
+  it("preserves TE1 correlated averages when regrouping, including NULL departments and strict thresholds", async () => {
+    const original = `SELECT e.e_id,e.ename,e.salaire FROM emp e WHERE e.salaire > (
+      SELECT AVG(q.salaire) FROM emp q WHERE q.deptno=e.deptno
+      GROUP BY q.deptno HAVING q.deptno=e.deptno);`;
+    const edgeCases =
+      "INSERT INTO emp VALUES(90,'Sans département 1',NULL,100,100,NULL),(91,'Sans département 2',NULL,100,1000,NULL),(92,'Sans salaire',60,100,NULL,NULL),(93,'Seuil nul',70,100,0,NULL);";
+    for (const data of ["course", "course-alt"]) {
+      const expected = await query(data, edgeCases + original);
+      expect(
+        expected.rows.some((row) => [90, 91, 92, 93].includes(Number(row[0]))),
+      ).toBe(false);
+      for (const id of ["EX-2526-5.1", "EX-2526-5.3"]) {
+        const alternative = await query(
+          data,
+          edgeCases + exercises.find((e) => e.id === id)!.solution,
+        );
+        expect(compareResults(alternative, expected).correct, id).toBe(true);
+      }
+      const wrongWindow = await query(
+        data,
+        edgeCases +
+          "SELECT e_id,ename,salaire FROM (SELECT *,AVG(salaire) OVER(PARTITION BY deptno) AS moyenne FROM emp) q WHERE salaire>moyenne;",
+      );
+      expect(compareResults(wrongWindow, expected).correct).toBe(false);
+    }
+  });
 });

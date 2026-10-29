@@ -23,3 +23,10 @@ Un index âge peut servir à une plage de vingt à trente ans, mais si presque t
 ### Validation
 
 Pour proposer un index, donner la séquence de recherche dans cet index, les colonnes encore absentes et le coût des écritures. Un `SELECT *` peut annuler la couverture sans changer le filtre.
+
+
+### Piège de couverture au TE1
+
+Un index contenant toutes les colonnes de sortie peut manquer une colonne du WHERE. Le cas ClientID/CodePostal/Ville montre aussi le rôle de l’ordre des colonnes.
+
+[Travailler ce cas du TE1 2025–2026](/lecons/te1-2526-theorie).
