@@ -2208,3 +2208,88 @@ main:focus {
     visibility: visible;
   }
 }
+.brainrot-parade {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 40;
+}
+.brainrot {
+  position: absolute;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: brainrot-walk linear infinite;
+  opacity: 0.85;
+}
+.brainrot b {
+  font-size: 42px;
+  animation: brainrot-bob 0.6s ease-in-out infinite alternate;
+}
+.brainrot small {
+  font-size: 10px;
+  font-weight: 700;
+  background: #fef08a;
+  color: #18243a;
+  padding: 1px 6px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+@keyframes brainrot-walk {
+  from {
+    transform: translateX(-160px);
+  }
+  to {
+    transform: translateX(calc(100vw + 160px));
+  }
+}
+@keyframes brainrot-bob {
+  to {
+    transform: translateY(-8px) rotate(8deg);
+  }
+}
+.confetti {
+  position: fixed;
+  top: -12px;
+  width: 8px;
+  height: 14px;
+  z-index: 60;
+  pointer-events: none;
+  animation: confetti-fall 1.8s ease-in forwards;
+}
+@keyframes confetti-fall {
+  to {
+    transform: translate(var(--drift), 105vh) rotate(720deg);
+  }
+}
+.screamer {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  background: #000;
+  color: #ef4444;
+  animation: screamer-shake 0.1s infinite;
+}
+.screamer b {
+  font-size: min(60vw, 60vh);
+  line-height: 1;
+}
+.screamer strong {
+  font-size: 28px;
+  letter-spacing: 2px;
+}
+@keyframes screamer-shake {
+  50% {
+    transform: translate(6px, -6px) scale(1.03);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brainrot-parade {
+    display: none;
+  }
+}

@@ -7,6 +7,7 @@ import {
   persistProgress,
 } from "../lib/progress";
 import type { Progress, ProgressRecord } from "../lib/progress";
+import { confetti, screamer } from "./Brainrot";
 type Context = {
   data: Progress;
   ready: boolean;
@@ -74,6 +75,8 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     save(next);
   }
   function patch(id: string, value: Partial<ProgressRecord>) {
+    if (value.status === "verified" || value.status === "declared") confetti();
+    if (value.status === "review") screamer();
     update((p) => ({
       ...p,
       records: {
