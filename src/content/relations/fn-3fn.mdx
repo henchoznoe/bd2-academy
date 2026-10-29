@@ -1,0 +1,59 @@
+export const meta = {
+  "id": "fn-3fn",
+  "moduleId": "normalisation",
+  "title": "Tester exactement la 3FN",
+  "summary": "Toute DF non triviale doit partir d’une superclé ou arriver sur un attribut premier.",
+  "objectives": [
+    "Appliquer la condition formelle",
+    "Éviter les raccourcis incorrects sur les attributs non clés",
+    "Comprendre une 3FN qui conserve des anomalies"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "C-FN",
+      "pages": [
+        28,
+        29,
+        30,
+        31,
+        44,
+        47,
+        48,
+        81
+      ]
+    }
+  ],
+  "skillIds": [
+    "B6.06",
+    "B6.08"
+  ],
+  "order": 5
+}
+
+## Le test qui fonctionne avec plusieurs clés
+
+Pour toute DF non triviale `X → a` impliquée par les règles, une relation est en 3FN si **X est une superclé ou a est premier**. Premier signifie appartenant à au moins une clé candidate. Une DF triviale ne pose pas de problème. Cette formulation du cours est plus fiable que « aucun attribut non-clé ne dépend d'un autre non-clé » lorsque les clés se chevauchent.
+
+## Exemple déroulé : 3FN sans BCNF
+
+```text
+R(A,B,C,D,E)
+AB → CDE
+D → B
+```
+
+A n'est jamais produit, donc toute clé le contient. AB détermine tout. AD donne B par D → B, puis tout par AB. Les seules clés sont AB et AD ; A, B et D sont premiers, C et E ne le sont pas.
+
+AB → CDE part d'une clé. D → B ne part pas d'une superclé, mais B est premier. La relation est donc en 3FN. Elle garde pourtant une répétition de l'association D–B : changer celle-ci exige plusieurs modifications. BCNF supprimera ce cas, au prix possible d'une contrainte perdue.
+
+## Exemple de violation
+
+Avec A → B et B → C dans R(A,B,C), la clé est A. B n'est pas superclé, C n'est pas premier : B → C viole 3FN. On obtient AB et BC, chacun avec son déterminant comme clé.
+
+## Pièges et validation
+
+Ne confonds pas « B apparaît dans la PK » et « B est premier » : une autre clé candidate peut suffire. Ne confonds pas superclé et clé minimale : une superclé non minimale satisfait la condition 3FN. Sur un schéma inédit, trouve les clés avant de tester les DF.
+
+
+### Vocabulaire du support
+Le cours dit « attribut qui appartient à une clé » (PDF p.29). Le terme « attribut premier », utilisé ici comme raccourci, signifie exactement appartenir à au moins une clé candidate. « Super clé » figure aussi p.29 et dans le test p.49 ; elle peut contenir des attributs supplémentaires, contrairement à une clé candidate minimale.

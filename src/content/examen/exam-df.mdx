@@ -1,0 +1,54 @@
+export const meta = {"id": "exam-df", "moduleId": "examen", "title": "Ancien examen : chaîne DF et normalisation", "summary": "Enchaîner preuve, couverture minimale, clés exhaustives et synthèse 3FN.", "objectives": ["Enchaîner preuve, couverture minimale, clés exhaustives et synthèse 3FN.", "Justifier les résultats sans confondre données choisies et annexe originale."], "sourceRefs": [{"sourceId": "EX", "pages": [3, 4, 5]}], "skillIds": ["B5.04", "B5.05", "B5.06", "B5.08", "B5.09", "B5.10", "B6.05", "B6.07", "B6.08"], "order": 2}
+
+## Ancien examen : chaîne DF et normalisation
+
+Les six DF de l'annexe manquent. Le cas suivant est une **donnée choisie pour l’entraînement**, construite pour travailler les mêmes démarches ; les réponses manuscrites ne servent pas de corrigé officiel.
+
+```text
+R(A,B,C,D,E,G,H,I)
+F1 : A -> BC
+F2 : B -> D
+F3 : DG -> I
+F4 : D -> E
+F5 : ABC -> D
+F6 : I -> A
+```
+
+## Preuve et fermeture
+
+Pour AG, partir de A et G. A ajoute B et C ; B ajoute D ; D ajoute E ; DG ajoute I. La fermeture finale est ABCDEGI : I est obtenu, H ne l'est pas. La preuve Armstrong suit les mêmes chaînons mais doit citer les règles : A détermine B par décomposition, puis D par transitivité ; augmentation par G et réflexivité donnent AG déterminant DG ; avec DG déterminant I, conclure par transitivité.
+
+## Une couverture minimale vérifiée
+
+```text
+A -> B
+A -> C
+B -> D
+DG -> I
+D -> E
+I -> A
+```
+
+F1 est décomposée en deux cibles simples. F5 est redondante car B suffit déjà pour D. Aucune autre source ne peut être réduite : D seul et G seul ne donnent pas I. Pour chaque DF restante, la retirer empêche d'obtenir sa cible à partir de sa source. Plusieurs couvertures minimales équivalentes peuvent être valides : vérifier les implications dans les deux sens plutôt que comparer seulement le texte.
+
+## Toutes les clés
+
+G et H ne figurent jamais à droite : toute clé doit les contenir. GH ne suffit pas ; ajouter A, B, D ou I permet de générer tous les attributs. Ajouter seulement C et E n'apporte aucun de ces déclencheurs.
+
+```text
+Clés candidates : AGH, BGH, DGH, IGH
+Attributs premiers : A, B, D, G, H, I
+Attributs non premiers : C, E
+```
+
+Chaque clé est minimale : retirer G ou H perd un attribut jamais produit ; retirer son troisième attribut laisse GH. Toute superclé contient l'une de ces clés : cela prouve l'exhaustivité.
+
+## Synthèse 3FN : vérifier au lieu de recopier
+
+Une synthèse sûre donne `ABC`, `BD`, `DGI`, `DE`, `IA`, puis ajoute `AGH` car aucune des cinq premières relations ne contient une clé universelle. Les DF de départ sont préservées ; la relation contenant une clé garantit la recomposition sans perte dans le cadre de la synthèse.
+
+DGI demande une attention particulière : la projection contient aussi I déterminant D, déduite via I, A, B, D. Ses clés sont DG et GI. Tous ses attributs sont premiers : elle est en 3FN, mais I n'est pas une superclé et I déterminant D viole BCNF.
+
+La relation originale n'est pas en 2FN : A, partie propre de AGH, détermine C non premier ; D, partie propre de DGH, détermine E non premier. Les relations de la synthèse sont toutes au moins en 2FN. Leur test porte sur leurs propres clés et DF projetées, pas uniquement sur les clés de R.
+
+**Vérification :** chaque suppression ou ajout de relation a une justification précise ; distinguer préservation des DF, du contenu, 2FN, 3FN et BCNF.

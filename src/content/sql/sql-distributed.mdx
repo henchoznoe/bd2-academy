@@ -1,0 +1,19 @@
+export const meta = {"id": "sql-distributed", "moduleId": "sql", "title": "Oracle : requêtes distribuées", "summary": "Expliquer un database link et les effets du lieu d’exécution.", "objectives": ["Expliquer un database link et les effets du lieu d’exécution.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [140]}], "skillIds": ["B4.05"], "order": 20}
+
+## Oracle : requêtes distribuées
+
+Un database link Oracle référence une base distante avec les informations nécessaires à la connexion. Il permet d'interroger un objet distant dans une requête locale. La création nécessite des droits adaptés ; un navigateur pédagogique n'établit pas ce type de connexion.
+
+```sql
+-- Forme illustrative Oracle, aucune connexion réelle dans cet atelier
+SELECT e.ename,d.dname
+FROM emp e JOIN dept@SiteGeneve d ON e.deptno=d.deptno;
+```
+
+La notation `dept@SiteGeneve` désigne la table dept sur le site référencé. On peut ensuite raisonner sur le coût du transfert : importer toute une grande table pour la joindre localement n'a pas le même volume réseau que filtrer ou agréger à distance avant de transférer un résultat compact.
+
+Le hint `DRIVING_SITE` présenté dans le cours indique le site souhaité pour le traitement d'une requête distribuée. Il exprime une consigne à l'optimiseur dans un contexte précis, pas une preuve universelle de vitesse. Il faut considérer la taille des relations, le filtre, les index, la latence et les capacités du site distant.
+
+Une requête distribuée conserve les questions SQL habituelles : cardinalité des jointures, NULL et agrégats. Elle ajoute l'emplacement des données et des traitements. Ne pas inclure de secrets de connexion dans un exercice partagé ; les noms et comptes des exemples ne sont pas des identifiants à réutiliser.
+
+**À retenir :** savoir lire la référence distante et justifier un placement de traitement. Ce complément ne demande pas de provisionner une base distante pour réviser.

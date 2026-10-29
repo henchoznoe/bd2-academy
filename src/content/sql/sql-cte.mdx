@@ -1,0 +1,24 @@
+export const meta = {"id": "sql-cte", "moduleId": "sql", "title": "WITH : décomposer une demande", "summary": "Nommer des étapes de requête et distinguer lisibilité et performance.", "objectives": ["Nommer des étapes de requête et distinguer lisibilité et performance.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [54, 55, 56, 57, 58, 59, 60]}], "skillIds": ["B2.05", "B2.06"], "order": 8}
+
+## WITH : décomposer une demande
+
+Une CTE est une expression de table commune nommée par WITH. Sa portée est la requête qui suit. Une CTE peut utiliser celles définies avant elle : cela rend le raisonnement explicite.
+
+```sql
+WITH charges AS (
+ SELECT deptno,SUM(salaire) AS total
+ FROM emp GROUP BY deptno
+), moyenne AS (
+ SELECT AVG(total) AS valeur FROM charges
+)
+SELECT d.dname,c.total FROM charges c JOIN dept d USING(deptno)
+WHERE c.total > (SELECT valeur FROM moyenne);
+```
+
+Le premier résultat intermédiaire contient une ligne par département présent dans emp. Le second contient une valeur : la moyenne de ces charges. Le filtre final compare donc une somme à la moyenne des sommes, pas chaque salaire à la moyenne des salaires.
+
+Inclure les départements sans employé exigerait une jointure externe dès le calcul initial et une décision sur leur charge zéro. La demande doit préciser cette population.
+
+Une CTE évite de recopier une définition et prépare la récursivité. Elle ne garantit pas à elle seule une matérialisation ni l'absence de recalcul : l'optimiseur choisit son exécution selon le moteur et la requête. Comparer des plans et des mesures contextualisées pour parler de performance.
+
+**À retenir :** écrire les colonnes et la granularité de chaque étape, puis vérifier que les variantes avec et sans WITH calculent réellement la même chose.

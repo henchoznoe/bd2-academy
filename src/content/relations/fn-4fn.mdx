@@ -1,0 +1,60 @@
+export const meta = {
+  "id": "fn-4fn",
+  "moduleId": "normalisation",
+  "title": "Décomposer les faits indépendants en 4FN",
+  "summary": "Éliminer les produits croisés redondants en préservant les ensembles qui forment un fait.",
+  "objectives": [
+    "Reconnaître une DM non triviale",
+    "Tester la 4FN",
+    "Décomposer et préciser les hypothèses de clés"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "C-FN",
+      "pages": [
+        72,
+        73,
+        74,
+        75,
+        76,
+        78,
+        83
+      ]
+    }
+  ],
+  "skillIds": [
+    "B6.12",
+    "B6.11"
+  ],
+  "order": 9
+}
+
+## Le test de 4FN
+
+Une DM X ↠ Y est triviale si Y est inclus dans X ou si X et Y couvrent tout le schéma. La 4FN exige que, pour toute DM **non triviale** impliquée par les contraintes, X soit une superclé. Les DF impliquent des DM : la 4FN implique donc BCNF. Sans l'exception de trivialité, toute relation binaire serait injustement refusée.
+
+## Exemple déroulé
+
+Dans Étudiant,Sport,Cours avec indépendance des sports et des cours, Étudiant ↠ Sport est non triviale et Étudiant n'est pas superclé. Décompose en `EtudSport(Etudiant,Sport)` et `EtudCours(Etudiant,Cours)`. La jointure reconstruit exactement toutes les combinaisons voulues par l'indépendance ; elle n'invente pas des associations interdites par le métier.
+
+## Personnes, enfants et voitures
+
+L'exercice décrit P(numPersonne,nom,prenomEnfant,ageEnfant,plaque). Sous les hypothèses numPersonne → nom, et indépendance de l'ensemble des enfants et des voitures, on propose :
+
+```text
+Personne(numPersonne,nom)
+Enfant(numPersonne,prenomEnfant,ageEnfant)
+Voiture(plaque,numPersonne)
+```
+
+Le corrigé suppose qu'une plaque appartient à une personne et que, pour une personne, un prénom identifie un enfant : clés plaque et numPersonne,prenomEnfant. Cette dernière hypothèse est une convention du problème, pas une vérité universelle. Sans elle, un identifiant d'enfant est nécessaire, ou le triplet complet devient la clé dans le modèle fourni.
+
+## Ce qu'il faut vérifier après chaque étape
+
+Recalcule les dépendances des morceaux, y compris les DM : de nouvelles DM peuvent devenir visibles dans les projections. Une décomposition est correcte relativement aux contraintes du schéma, pas parce qu'une petite table se recolle par hasard.
+
+La **5FN est explicitement non étudiée** dans le cours. Elle reste un repère de vocabulaire et ne devient pas un objectif supplémentaire.
+
+## Validation
+
+Explique pourquoi séparer prénom et âge en deux tables indépendantes détruirait le lien qui décrit un enfant. La bonne décomposition sépare des ensembles indépendants, pas les attributs solidaires d'un fait.

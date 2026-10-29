@@ -1,0 +1,18 @@
+export const meta = {"id": "index-strategie", "moduleId": "btree", "title": "Compromis de charge et maintenance des index", "summary": "Justifier un choix à partir des lectures, écritures et mesures.", "objectives": ["Justifier un choix à partir des lectures, écritures et mesures.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-IDX", "pages": [91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105]}], "skillIds": ["B8.12", "B8.15", "B9.09", "B9.10"], "order": 11};
+
+Un index coûte de l’espace, des lectures de cache et du travail à chaque modification concernée. Sa valeur se juge sur une charge : fréquence des requêtes, sélectivité, largeur des entrées et fréquence des insertions, suppressions et mises à jour.
+
+### Les quatre charges de T(A,B,C)
+
+1. Cent mille recherches B=valeur et cent recherches C=valeur : prioriser un index B. Un index C se décide selon son gain réel et l’espace disponible ; la fréquence seule n’en prouve pas l’inutilité.
+2. Cent mille plages sur B, cent égalités sur C et cent mille insertions : garder B comme candidat central et éviter les secondaires à faible bénéfice. Le bulk loading peut réduire le coût d’un chargement massif.
+3. Cent mille égalités sur B, un million de recherches B=valeur avec une plage sur C, et cent mille insertions : proposer B,C. Son préfixe B sert aux deux lectures et évite souvent un index B redondant.
+4. Mille plages sur B et cent mille plages sur C : privilégier l’ordre physique et l’index sur C si les plages sont sélectives. Un secondaire B peut compléter si rentable. B,C ne remplace pas un index C pour ces recherches indépendantes.
+
+### Mesurer correctement
+
+Noter moteur/version, effectifs, index, taille de ligne, statistiques, cache et résultat vérifié. Comparer le plan estimé (`EXPLAIN`) puis l’exécution réelle (`EXPLAIN ANALYZE`, selon le moteur). Répéter dans des conditions comparables sans confondre temps réseau, transfert et exécution serveur.
+
+Une lecture ALL n’est pas une faute automatique : une petite table ou une plage très large justifie souvent un scan. Les seuils 10 ou 25 pour cent et les affirmations « aucun index utile sur NULL » du support sont des heuristiques contextuelles ; la représentation des NULL, le coût aléatoire et la couverture changent la réponse.
+
+La création d’une contrainte peut créer ou réutiliser un index selon le produit. Retirer temporairement des index secondaires avant un chargement ne justifie pas de supprimer les contraintes sans vérifier les données. Documenter les décisions et réexaminer la charge quand elle change.

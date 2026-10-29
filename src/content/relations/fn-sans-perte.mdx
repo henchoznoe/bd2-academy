@@ -1,0 +1,59 @@
+export const meta = {
+  "id": "fn-sans-perte",
+  "moduleId": "normalisation",
+  "title": "Décomposer sans perdre le contenu",
+  "summary": "Une mauvaise jointure peut inventer des associations : c’est une perte d’information.",
+  "objectives": [
+    "Recomposer des projections",
+    "Repérer les tuples parasites",
+    "Appliquer le test binaire et Heath"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "C-FN",
+      "pages": [
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ]
+    }
+  ],
+  "skillIds": [
+    "B6.02",
+    "B6.03"
+  ],
+  "order": 2
+}
+
+## Projection puis jointure
+
+Décomposer R en R1 et R2 signifie projeter ses lignes sur les colonnes de chaque morceau. La jointure naturelle des projections contient toujours les lignes d'origine, en sémantique relationnelle ensembliste. Le risque est d'y ajouter des **tuples parasites** : on a perdu la connaissance des associations exactes, même si aucune ligne d'origine n'a disparu.
+
+## Exemple déroulé
+
+```text
+EMPLOYE
+Num Nom    Age Service
+1   Dupont 31  Compta
+2   Hardy  31  Info
+```
+
+La décomposition `E1(Num,Nom,Age)` et `E2(Age,Service)` fabrique à la jointure quatre lignes : les deux originales, mais aussi Dupont–Info et Hardy–Compta. Age seul ne choisit pas le service approprié.
+
+## Test exact d'une décomposition binaire sous des DF
+
+Calcule l'intersection I des deux schémas et sa fermeture sous F. La décomposition est sans perte si I détermine **tout R1 ou tout R2**. C'est équivalent à déterminer les attributs non communs de l'un des côtés. Il faut une implication logique, pas une coïncidence dans la table actuelle.
+
+Dans l'exemple, I = Age et Age⁺ = Age : ni E1 ni E2 n'est déterminé. En séparant plutôt `E1(Num,Nom,Age)` et `E2(Num,Service)`, Num est l'intersection et détermine les deux morceaux.
+
+## Théorème de Heath
+
+Si R est décrit par X,Y,Z et `X → Y`, on peut le remplacer sans perte par XY et XZ. Pour comprendre la preuve en annexe : tout assemblage sur X retrouve la même valeur Y parce que X → Y ; la jointure ne peut donc inventer un Y incompatible.
+
+## Validation
+
+Pour `R(A,B,C)` avec A → B, sépare AB et AC. L'intersection A détermine AB : sans perte. Ne conclus pas que les DF sont aussi préservées sans effectuer ce second test, étudié ensuite.

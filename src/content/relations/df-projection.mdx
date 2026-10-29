@@ -1,0 +1,53 @@
+export const meta = {
+  "id": "df-projection",
+  "moduleId": "df",
+  "title": "Projeter les DF sur une sous-relation",
+  "summary": "Conserver les conséquences passant par un attribut supprimé.",
+  "objectives": [
+    "Calculer des DF projetées",
+    "Déduire une contrainte même si son intermédiaire disparaît",
+    "Préparer les algorithmes de normalisation"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "C-DF",
+      "pages": [
+        38,
+        40,
+        41
+      ]
+    }
+  ],
+  "skillIds": [
+    "B5.11",
+    "B5.06"
+  ],
+  "order": 7
+}
+
+## Une projection ne filtre pas seulement les règles écrites
+
+La projection de F sur S conserve toutes les DF de `F⁺` dont la source et la cible sont dans S. Pour la calculer sur un petit schéma, prends chaque sous-ensemble X de S, calcule `X⁺` sous **les règles originales**, puis garde les attributs de S. Tu peux ensuite réduire les règles obtenues en couverture minimale.
+
+## Exemple déroulé
+
+On a `R(A,B,C,D)` avec `A → B`, `B → C`, `C → D`. On projette sur `S(A,C,D)`.
+
+- `A⁺` dans R vaut ABCD, donc S conserve A → C et A → D.
+- `C⁺` vaut CD, donc S conserve C → D.
+- D ne fournit rien d'autre.
+
+Une couverture de la projection est `A → C ; C → D`. A → D est déduite. Supprimer simplement les règles où B apparaît ferait perdre à tort A → C.
+
+## Pourquoi cette étape est décisive
+
+Quand on décompose pour BCNF, chaque morceau reçoit ses **DF projetées**. Dans `R(A,B,C,D)` avec A → B et B → C, séparer AB et ACD ne rend pas ACD automatiquement BCNF : A → C y subsiste par transitivité, alors que A ne fournit pas D.
+
+## Application et erreurs fréquentes
+
+Avec `R(A,B,C,D)` et `A → B ; B → C`, projette sur ACD : couverture A → C, clé AD. D est encore nécessaire même s'il n'apparaît dans aucune DF. Une projection change le schéma sur lequel on teste les clés ; elle ne supprime pas les conséquences logiques.
+
+Réussite : tu donnes les règles projetées, une couverture suffisante et les clés du morceau, en explicitant au moins une implication passée par un attribut retiré.
+
+
+**Repère lexical :** « DF projetées » est le nom donné ici aux dépendances valides sur les attributs du morceau après décomposition. Le mécanisme de fermeture et le contrôle de chaque morceau sont ceux du cours ; ce raccourci ne désigne pas un nouvel objectif.

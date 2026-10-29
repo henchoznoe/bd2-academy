@@ -1,0 +1,31 @@
+export const meta = {"id": "sql-hypothetical-rank", "moduleId": "sql", "title": "Rang hypothétique et listes agrégées", "summary": "Distinguer WITHIN GROUP de OVER et former une liste ordonnée.", "objectives": ["Distinguer WITHIN GROUP de OVER et former une liste ordonnée.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [125, 126]}], "skillIds": ["B3.11", "B3.12"], "order": 18}
+
+## Rang hypothétique et listes agrégées
+
+Le cours Oracle propose RANK avec une valeur hypothétique : il demande où se placerait cette valeur dans la population existante. Ce n'est pas le rang de chaque ligne.
+
+```sql
+-- Oracle : exercice guidé de dialecte
+SELECT RANK(15500) WITHIN GROUP(ORDER BY salaire DESC) AS rang
+FROM emp;
+```
+
+Dans un tri décroissant, le rang hypothétique d'une valeur x vaut un plus le nombre de lignes strictement supérieures à x. On peut vérifier cette interprétation avec un comptage, notamment quand x dépasse le maximum ou est inférieur au minimum.
+
+```sql
+-- Vérification du rang hypothétique, exécutable dans le navigateur
+SELECT 1 + COUNT(*) FILTER(WHERE salaire > 15500) AS rang FROM emp;
+```
+
+Le TP utilise aussi LISTAGG sous Oracle : il concatène les valeurs d'un groupe dans un ordre défini par WITHIN GROUP. L'ordre de la liste et celui des lignes de résultat sont distincts.
+
+```sql
+-- Oracle
+SELECT FLM_REALISATEUR,
+ LISTAGG(FLM_TITRE,'; ') WITHIN GROUP(ORDER BY FLM_TITRE) AS titres
+FROM T_FILM_FLM GROUP BY FLM_REALISATEUR;
+```
+
+Une adaptation DuckDB utilise `string_agg(FLM_TITRE,'; ' ORDER BY FLM_TITRE)`. Pour retirer les doublons, une sous-requête DISTINCT est une méthode claire : elle ne dépend pas des variantes de LISTAGG selon la version Oracle ni d'une expression régulière fragile.
+
+**À retenir :** WITHIN GROUP peut décrire un ordre d'agrégat ; OVER décrit une fenêtre qui conserve les lignes. Le mot « rang » ne suffit pas à choisir la syntaxe.

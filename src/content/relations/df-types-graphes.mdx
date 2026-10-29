@@ -1,0 +1,52 @@
+export const meta = {
+  "id": "df-types-graphes",
+  "moduleId": "df",
+  "title": "Types de DF et graphes",
+  "summary": "Décomposer les cibles et conserver la conjonction des déterminants composés.",
+  "objectives": [
+    "Reconnaître trivialité, simplicité et élémentarité",
+    "Lire un déterminant composé",
+    "Représenter les règles sans inverser les flèches"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "C-DF",
+      "pages": [
+        5,
+        6,
+        7,
+        8,
+        24
+      ]
+    }
+  ],
+  "skillIds": [
+    "B5.03",
+    "B5.07"
+  ],
+  "order": 2
+}
+
+## Bien lire les sources et les cibles
+
+Une DF est **triviale** si sa cible est incluse dans sa source : `AB → A`. Elle est **simple** si sa cible est un seul attribut. Le cours réserve son usage utile aux DF simples non triviales. Elle est **élémentaire** si aucun attribut de sa source ne peut être supprimé en conservant la DF. « Directe » signifie ici qu'elle ne résulte pas d'un chemin de transitivité intermédiaire ; cette notion se lit relativement aux autres règles disponibles.
+
+On peut toujours décomposer `X → ABC` en `X → A`, `X → B`, `X → C`. On ne peut pas décomposer la source : `AB → C` ne donne ni `A → C` ni `B → C`.
+
+## Exemple déroulé
+
+Une quantité livrée dépend simultanément d'un produit, d'un fournisseur et d'une date :
+
+```text
+(Nop, Nof, Date) → Quantite
+```
+
+Un même produit peut être livré par plusieurs fournisseurs, et une même paire produit/fournisseur à plusieurs dates. Le graphe doit donc représenter un nœud composé ou une jonction entre les **trois** attributs avant la flèche vers Quantite. Trois flèches indépendantes signifieraient autre chose.
+
+Avec `A → B`, `B → C`, la flèche `A → C` est déduite. Avec `AB → C` et `A → B`, B est superflu à gauche de la première puisque A fournit déjà B : on peut écrire `A → C`.
+
+## Pièges et application
+
+Une cible simple ne garantit pas une source minimale. Un graphe avec cycle n'est pas une erreur : `B → C` et `C → B` peuvent exprimer deux identifiants alternatifs.
+
+Dessine les DF de COMPAGNIE, puis celles d'une livraison. Réussite : la lecture du graphe redonne exactement les règles, y compris leurs sources composées. Un graphe aide à réfléchir, mais une fermeture sert à vérifier une implication.

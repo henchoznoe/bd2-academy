@@ -1,0 +1,13 @@
+export const meta = {"id": "physique-annexes", "moduleId": "physique", "title": "Annexes : stockage flash, RAID et cohérence des mesures", "summary": "Situer les compléments matériels sans apprendre des règles absolues.", "objectives": ["Expliquer le rôle des annexes matérielles", "Critiquer une mesure et annoncer ses hypothèses"], "sourceRefs": [{"sourceId": "C-PHY", "pages": [4, 8, 10, 11, 12, 20, 21, 25, 26, 29, 30]}], "skillIds": ["B7.A1", "B7.A2", "B7.V"], "order": 6}
+
+## Ce qui complète le raisonnement
+Les figures de pistes, secteurs et cylindres expliquent les disques mécaniques. Le stockage flash utilise des cellules et des contraintes d'effacement, avec une endurance et des performances dépendant du matériel. Les chiffres des slides sont historiques et illustratifs.
+
+### RAID
+RAID 0 répartit sans redondance ; il n'apporte pas de tolérance à une panne de disque. RAID 1 duplique. RAID 5 répartit les données et la parité ; RAID 6 conserve davantage de redondance et peut tolérer deux pannes de disque dans son modèle. Les niveaux 2, 3 et 4 restent des repères historiques du support. RAID n'est pas une sauvegarde : une suppression logique peut être répliquée sur tous les disques.
+
+### Exemple de conclusion justifiée
+« Sur ce jeu, avec cette requête et ce cache, l'index réduit les blocs lus de 1 000 à 12. » est une conclusion contextualisée. « Cet index est toujours plus rapide » ne l'est pas. Comparer les mêmes données, projections, filtres, paramètres et états de cache ; tenir compte des écritures et de la dispersion.
+
+### Défi de validation du chapitre
+Sans corrigé, expliquer la chaîne ligne → bloc → buffer → stockage, calculer une taille de fichier, comparer accès dispersés et contigus, puis justifier le choix d'un scan ou d'un index. Refaire avec une taille de ligne modifiée : séparer ce qui touche la table de ce qui touche l'index.

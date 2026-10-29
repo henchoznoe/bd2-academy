@@ -1,0 +1,62 @@
+export const meta = {
+  "id": "df-armstrong",
+  "moduleId": "df",
+  "title": "Prouver avec Armstrong",
+  "summary": "Trois axiomes suffisent ; les règles dérivées rendent les preuves plus courtes.",
+  "objectives": [
+    "Nommer chaque règle utilisée",
+    "Prouver une implication sans inverser une DF",
+    "Construire un contre-exemple si elle ne découle pas"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "C-DF",
+      "pages": [
+        11,
+        12,
+        13,
+        14,
+        18,
+        23
+      ]
+    }
+  ],
+  "skillIds": [
+    "B5.04",
+    "B5.02"
+  ],
+  "order": 3
+}
+
+## Une preuve est une chaîne de règles
+
+Les axiomes d'Armstrong sont : réflexivité (`Y` inclus dans `X` donne `X → Y`), augmentation (`X → Y` donne `XZ → YZ`) et transitivité (`X → Y`, `Y → Z` donnent `X → Z`). Ils sont corrects et complets pour l'implication des DF.
+
+On en déduit l'union, la décomposition et la pseudo-transitivité : `X → Y` et `YZ → T` donnent `XZ → T`. Ajouter un attribut à gauche est permis ; enlever cet attribut exige une preuve.
+
+## Exemple déroulé : prouver AD → F
+
+On donne `A → BC`, `B → E`, `CD → EF`.
+
+1. `A → C` par décomposition de `A → BC`.
+2. `AD → CD` par augmentation avec D.
+3. `CD → F` par décomposition de `CD → EF`.
+4. `AD → F` par transitivité des étapes 2 et 3.
+
+`B → E` est inutile dans cette preuve ; une preuve n'a pas à utiliser toutes les hypothèses.
+
+## Une implication n'est pas une équivalence
+
+Avec `A → B` et `BC → D`, on obtient `AC → D`. Mais remplacer `BC → D` par `AC → D` perd une contrainte :
+
+```text
+A  B  C  D
+a1 b1 c1 d1
+a2 b1 c1 d2
+```
+
+Cette extension respecte `A → B` et `AC → D` mais viole `BC → D`. C'est un contre-exemple complet, pas seulement une intuition.
+
+## Validation
+
+Réécris la preuve de `AC → D` en nommant augmentation et transitivité. Puis justifie pourquoi le contre-exemple ne viole pas `AC → D` : les deux sources AC sont différentes. Ne valide pas une transformation de règles en ne vérifiant qu'un sens.

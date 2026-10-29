@@ -1,0 +1,40 @@
+export const meta = {"id": "sql-bd1", "moduleId": "sql", "title": "Diagnostic BD1 — rappels à la demande", "summary": "Vérifier uniquement les prérequis qui bloquent votre progression en BD2.", "objectives": ["Lire les clés et les jointures", "Distinguer agrégats, sous-requêtes et NULL"], "sourceRefs": [{"sourceId": "TP-L", "pages": [1, 2]}, {"sourceId": "C-LMD", "pages": [3, 43, 44]}], "skillIds": ["B0.01", "B0.03", "B0.04", "B0.05", "B0.06"], "order": 0}
+
+## Un diagnostic facultatif
+Ce diagnostic est créé pour la révision, pas extrait d'un support. Votre maîtrise déclarée de BD1 est conservée : ces rappels servent seulement si une notion bloque en BD2.
+
+### Lire le schéma
+Une clé primaire identifie chaque ligne sans NULL. Une clé candidate est minimale et peut devenir une contrainte UNIQUE avec NOT NULL lorsque le modèle interdit les valeurs absentes. Une clé étrangère référence une clé admissible d'une autre table ; elle peut être nullable si le schéma le permet.
+
+### Jointures
+INNER JOIN garde les correspondances. LEFT JOIN conserve toutes les lignes de gauche ; les colonnes de droite sans correspondance valent NULL. Une jointure un-à-plusieurs peut multiplier les lignes. Déplacer un filtre de la droite vers WHERE peut éliminer les lignes que LEFT JOIN devait conserver.
+
+```sql
+SELECT d.deptno, d.dname, COUNT(e.e_id) AS nombre
+FROM dept d LEFT JOIN emp e ON e.deptno = d.deptno
+GROUP BY d.deptno, d.dname;
+```
+
+COUNT(e.e_id) donne zéro pour un département sans employé ; COUNT(*) compterait la ligne complétée par NULL.
+
+### Agrégats et filtres
+COUNT(*) compte les lignes. COUNT(expression) compte les valeurs non NULL. SUM et AVG ignorent les NULL ; la moyenne n'utilise pas le nombre total de lignes comme dénominateur. Sur un groupe sans valeur renseignée, SUM et AVG valent NULL.
+
+WHERE filtre les lignes avant regroupement. HAVING filtre les groupes après calcul des agrégats. Une condition « au moins deux » s'écrit avec une borne inclusive.
+
+```sql
+SELECT deptno, AVG(salaire) AS moyenne
+FROM emp
+GROUP BY deptno
+HAVING AVG(salaire) > 120;
+```
+
+### Sous-requête et NULL
+Une sous-requête scalaire renvoie une valeur ; zéro ligne donne NULL, plusieurs lignes provoquent une erreur de cardinalité. AVG sans GROUP BY renvoie ici une ligne. `salaire > (SELECT AVG(salaire) FROM emp)` compare à la moyenne globale.
+
+`NULL = NULL` ne donne pas TRUE. Utiliser IS NULL pour le test d'absence. Zéro, chaîne vide et NULL ne sont pas universellement interchangeables ; les particularités du SGBD doivent être nommées.
+
+### Manipuler sans confusion
+CREATE TABLE définit le schéma ; INSERT ajoute, UPDATE modifie et DELETE supprime des lignes. Une transaction regroupe des opérations. ROLLBACK annule les changements non validés selon les règles du moteur ; les commits implicites de certains DDL varient entre Oracle et MySQL.
+
+**Validation :** expliquer le nombre de lignes produit par une jointure, calculer les quatre agrégats et écrire un filtre sur une moyenne globale sans aide.

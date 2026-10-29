@@ -1,0 +1,26 @@
+export const meta = {"id": "index-fondations", "moduleId": "btree", "title": "Du fichier trié à l’index hiérarchique", "summary": "Distinguer index, fichier de données, clé de recherche et densité.", "objectives": ["Distinguer index, fichier de données, clé de recherche et densité.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-IDX", "pages": [3, 4, 5, 6, 7, 8, 9, 10]}], "skillIds": ["B8.01", "B8.02"], "order": 1};
+
+Un index est une structure supplémentaire qui permet de trouver des lignes sans examiner toute la table. Sa clé de recherche peut être un nom, un prix ou plusieurs colonnes : ce n’est pas nécessairement la clé primaire et elle peut avoir des doublons.
+
+Dans un fichier trié, une recherche dichotomique sur 1 024 pages demande environ dix lectures de pages. Un petit index contient des couples valeur et adresse. En indexant cet index à son tour, on construit une hiérarchie : une page à chaque niveau suffit pour choisir le sous-arbre suivant.
+
+### Exemple déroulé
+
+Supposons un fichier trié par titre, avec deux lignes par page :
+
+```text
+P1 : Alien, Amélie
+P2 : Dune, Fargo
+P3 : Heat, Matrix
+Index creux avec borne supérieure : (Amélie,P1), (Fargo,P2), (Matrix,P3)
+```
+
+Pour chercher Dune, on choisit la première borne supérieure adéquate, Fargo, puis on lit P2. Un index utilisant des bornes inférieures fonctionne aussi, mais le critère de choix change : annoncer la convention.
+
+Un index **dense** référence chaque enregistrement, éventuellement via une liste d’adresses pour une valeur répétée. Sa densité est 1 dans le modèle du cours. Un index **creux** référence seulement certaines lignes ou pages : il exige que le fichier soit ordonné selon la clé correspondante. Un index dense peut indexer un tas non trié. Les niveaux supérieurs d’un index dense peuvent eux-mêmes être creux.
+
+### À vérifier
+
+Après une insertion, la ligne doit rester accessible : déplacer des lignes peut obliger à mettre à jour les bornes et les adresses. Une suppression laisse parfois un emplacement réutilisable, parfois entraîne une réorganisation. L’ordre d’un fichier n’est pas l’ordre garanti du résultat SQL : ce dernier nécessite `ORDER BY`.
+
+Le cours rapproche index creux et index plaçant. Dans un produit réel, distinguer le niveau où figurent les séparateurs de celui où figurent les données plutôt que d’appliquer les mots dense et clustered comme des synonymes universels.

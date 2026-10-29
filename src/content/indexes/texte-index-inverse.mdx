@@ -1,0 +1,29 @@
+export const meta = {"id": "texte-index-inverse", "moduleId": "fulltext", "title": "Index inversé : termes, documents et positions", "summary": "Construire les listes de documents avant de calculer leur pertinence.", "objectives": ["Construire les listes de documents avant de calculer leur pertinence.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-FT", "pages": [14, 15, 16, 28, 29, 36, 37]}], "skillIds": ["B10.03", "B10.04"], "order": 17};
+
+Un index inversé part des **termes** pour retrouver les documents. Une ligne de base peut constituer un document ; plusieurs colonnes textuelles peuvent constituer son contenu. Les postings d’un terme contiennent des identifiants de documents, parfois fréquences et positions.
+
+### Mini-corpus créé pour apprendre
+
+```text
+D1 : index btree index
+D2 : index bitmap
+D3 : recherche texte
+
+index     -> (D1, fréquence 2, positions 1 et 3), (D2, fréquence 1, position 1)
+btree     -> (D1,1,2)
+bitmap    -> (D2,1,2)
+recherche -> (D3,1,1)
+texte     -> (D3,1,2)
+```
+
+La requête contenant index et bitmap peut intersecter les listes si les deux sont requis, ou les réunir si l’un suffit. Une phrase exacte exige aussi les positions et l’ordre : les fréquences seules ne suffisent pas.
+
+La construction commence par la tokenisation, puis des transformations explicites comme mise en minuscules et suppression de mots d’arrêt. Le stemming ramène certaines flexions à une racine, mais le parseur MySQL ordinaire décrit dans le cours ne le réalise pas automatiquement.
+
+### Dérouler une suppression
+
+Supprimer D2 retire sa contribution à index et bitmap. La fréquence documentaire d’index passe de deux à un sur les documents restants. Les scores liés au corpus peuvent donc changer même pour D1, dont le texte n’a pas changé. Dans un moteur réel, cache, marquage de documents supprimés et consolidation rendent cette maintenance plus complexe.
+
+Un index Full Text combinant title et genres n’est pas équivalent à deux index séparés : les termes sont recherchés dans le contenu combiné. Pour imposer « mot dans le titre » et « mot dans les genres », disposer des accès sur les colonnes séparées et exprimer les deux conditions.
+
+Le simulateur du site est pédagogique : il rend la tokenisation et les calculs visibles, sans reproduire toutes les règles et structures internes d’InnoDB.

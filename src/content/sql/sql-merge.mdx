@@ -1,0 +1,27 @@
+export const meta = {"id": "sql-merge", "moduleId": "sql", "title": "MERGE et mises à jour conditionnelles", "summary": "Prédire les lignes mises à jour, ajoutées ou conservées.", "objectives": ["Prédire les lignes mises à jour, ajoutées ou conservées.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [61, 62, 63, 64]}], "skillIds": ["B2.07"], "order": 9}
+
+## MERGE et mises à jour conditionnelles
+
+MERGE rapproche une source d'une destination. La condition ON détermine les correspondances ; les branches précisent les actions. Il ne faut pas confondre « absent de la source » et « absent de la destination ».
+
+```sql
+-- Syntaxe du cours Oracle ; exercice de dialecte guidé
+MERGE INTO table_dest d USING table_source s ON(s.id=d.id)
+WHEN MATCHED THEN UPDATE SET d.txt=s.txt
+WHEN NOT MATCHED THEN INSERT(id,txt) VALUES(s.id,s.txt);
+```
+
+Destination initiale : `(1,'one'),(3,'three'),(5,'five')`. Source : `(2,'TWO'),(3,'THREE')`.
+
+| id | txt final | Raisonnement |
+|---|---|---|
+| 1 | one | Aucune source correspondante ; conservé |
+| 2 | TWO | Source sans destination ; inséré |
+| 3 | THREE | Correspondance ; mis à jour |
+| 5 | five | Aucune source correspondante ; conservé |
+
+ON doit identifier la correspondance voulue. Une source ayant plusieurs lignes concurrentes pour la même destination peut rendre la mise à jour ambiguë ou provoquer une erreur selon le moteur. La PK et l'unicité de la source se vérifient avant d'affirmer une transformation.
+
+Oracle autorise des conditions supplémentaires sur des branches et une suppression associée à la branche de mise à jour dans la syntaxe présentée. Ne pas déduire de l'existence de MERGE dans un autre moteur que toutes ces variantes sont identiques.
+
+**À retenir :** dérouler source par source, conserver les lignes de destination non concernées et annoncer le dialecte du code.

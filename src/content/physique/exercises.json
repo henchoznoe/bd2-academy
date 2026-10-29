@@ -1,0 +1,410 @@
+[
+  {
+    "id": "PHY-C01",
+    "lessonId": "physique-acces",
+    "title": "500 blocs : contigus ou dispersés",
+    "type": "guided",
+    "prompt": "500 blocs, 10 ms de positionnement et 1 ms de transfert par bloc. Calculer les deux temps en secondes.",
+    "hints": [
+      "Écrire les hypothèses et les unités avant le calcul.",
+      "Séparer la capacité entière d’un bloc du nombre de blocs requis."
+    ],
+    "solution": "Contigus : (10 + 500 × 1) ms = 0,510 s. Dispersés : 500 × (10 + 1) ms = 5,5 s.",
+    "explanation": "Le modèle suppose un seul positionnement dans le cas contigu et un par bloc dans le cas dispersé.",
+    "skillIds": ["B7.03", "B7.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-PHY",
+        "pages": [14, 15]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "PHY-C02",
+    "lessonId": "physique-cache",
+    "title": "Lectures logiques et physiques",
+    "type": "result",
+    "prompt": "10 000 lectures logiques et 800 physiques. Donner le hit ratio en pourcentage.",
+    "hints": [
+      "Écrire les hypothèses et les unités avant le calcul.",
+      "Séparer la capacité entière d’un bloc du nombre de blocs requis."
+    ],
+    "solution": "92",
+    "explanation": "(10000−800)/10000 = 0,92, soit 92 %. Le nombre de demandes satisfaites en RAM est 9200.",
+    "skillIds": ["B7.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-PHY",
+        "pages": [24]
+      }
+    ],
+    "origin": "created",
+    "acceptedAnswers": ["92", "92%", "92 %"]
+  },
+  {
+    "id": "PHY-C03",
+    "lessonId": "physique-blocs",
+    "title": "Dimensionner une table",
+    "type": "guided",
+    "prompt": "1000 lignes de 100 octets, blocs de 4096 octets, aucun en-tête, lignes non fragmentées et remplissage maximal. Calculer lignes par bloc, blocs et taille allouée. Refaire pour des lignes de 50 octets.",
+    "hints": [
+      "Écrire les hypothèses et les unités avant le calcul.",
+      "Séparer la capacité entière d’un bloc du nombre de blocs requis."
+    ],
+    "solution": "100 octets : floor(4096/100)=40 lignes par bloc ; ceil(1000/40)=25 blocs ; 25×4096=102400 octets. 50 octets : floor(4096/50)=81 lignes ; ceil(1000/81)=13 blocs ; 13×4096=53248 octets.",
+    "explanation": "Les capacités sont des planchers et le nombre de blocs un plafond. Diviser la taille des lignes par deux ne divise pas nécessairement le nombre de blocs exactement par deux.",
+    "skillIds": ["B7.06", "B7.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-PHY",
+        "pages": [28, 31]
+      }
+    ],
+    "origin": "created"
+  },
+  {
+    "id": "PHY-Q01",
+    "lessonId": "physique-blocs",
+    "title": "Bloc et tuple",
+    "type": "quiz",
+    "prompt": "Une requête demande un tuple absent du buffer. Quelle unité est transférée ?",
+    "hints": [
+      "Le bloc est l’unité d’échange entre disque et RAM.",
+      "Revenir aux définitions avant de compter les opérations."
+    ],
+    "solution": "Un bloc contenant le tuple",
+    "explanation": "Le bloc est l’unité d’échange entre disque et RAM.",
+    "skillIds": ["B7.06"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-PHY",
+        "pages": [28, 31]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Seulement les octets du tuple",
+      "Un bloc contenant le tuple",
+      "Toute la table"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "PHY-Q02",
+    "lessonId": "physique-cache",
+    "title": "Cache à chaud",
+    "type": "quiz",
+    "prompt": "Le même bloc est demandé deux fois sans éviction, le cache étant initialement vide.",
+    "hints": [
+      "Chaque demande est logique.",
+      "Revenir aux définitions avant de compter les opérations."
+    ],
+    "solution": "Deux lectures logiques et une physique",
+    "explanation": "Chaque demande est logique. Seule la première provoque un chargement.",
+    "skillIds": ["B7.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-PHY",
+        "pages": [24]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Deux lectures logiques et une physique",
+      "Une logique et deux physiques",
+      "Zéro lecture logique"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "PHY-Q03",
+    "lessonId": "physique-cache",
+    "title": "Hit ratio sans lecture",
+    "type": "quiz",
+    "prompt": "Aucune lecture logique n’a eu lieu. Que vaut le ratio (L−P)/L ?",
+    "hints": [
+      "Le dénominateur vaut zéro ; annoncer le ratio serait trompeur.",
+      "Revenir aux définitions avant de compter les opérations."
+    ],
+    "solution": "Il est indéfini",
+    "explanation": "Le dénominateur vaut zéro ; annoncer le ratio serait trompeur.",
+    "skillIds": ["B7.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-PHY",
+        "pages": [24]
+      }
+    ],
+    "origin": "created",
+    "options": ["0 %", "100 %", "Il est indéfini"],
+    "correctIndex": 2
+  },
+  {
+    "id": "PHY-Q04",
+    "lessonId": "physique-blocs",
+    "title": "Unités",
+    "type": "quiz",
+    "prompt": "16 384 octets correspondent à…",
+    "hints": [
+      "16384 / 1024 = 16.",
+      "Revenir aux définitions avant de compter les opérations."
+    ],
+    "solution": "16 Kio",
+    "explanation": "16384 / 1024 = 16.",
+    "skillIds": ["B7.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-PHY",
+        "pages": [28]
+      }
+    ],
+    "origin": "created",
+    "options": ["8 Kio", "16 Kio", "16 Ko exactement"],
+    "correctIndex": 1
+  },
+  {
+    "id": "PHY-Q05",
+    "lessonId": "physique-blocs",
+    "title": "Lignes non fragmentées",
+    "type": "quiz",
+    "prompt": "1000 lignes de 100 octets ; bloc 4096 ; sans frais. Combien de blocs ?",
+    "hints": [
+      "floor(4096/100)=40 lignes par bloc puis ceil(1000/40)=25.",
+      "Revenir aux définitions avant de compter les opérations."
+    ],
+    "solution": "25",
+    "explanation": "floor(4096/100)=40 lignes par bloc puis ceil(1000/40)=25.",
+    "skillIds": ["B7.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-PHY",
+        "pages": [28, 31]
+      }
+    ],
+    "origin": "created",
+    "options": ["24", "25", "100"],
+    "correctIndex": 1
+  },
+  {
+    "id": "PHY-Q06",
+    "lessonId": "physique-fichiers",
+    "title": "Fichier trié",
+    "type": "quiz",
+    "prompt": "Un fichier trié sur nom accélère surtout…",
+    "hints": [
+      "Le tri physique ne porte que sur la clé annoncée et les insertions peuvent réorganiser.",
+      "Revenir aux définitions avant de compter les opérations."
+    ],
+    "solution": "Un intervalle sur nom",
+    "explanation": "Le tri physique ne porte que sur la clé annoncée et les insertions peuvent réorganiser.",
+    "skillIds": ["B7.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-PHY",
+        "pages": [37]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Tout filtre, sur toute colonne",
+      "Un intervalle sur nom",
+      "Toutes les insertions"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "PHY-Q07",
+    "lessonId": "physique-annexes",
+    "title": "RAID",
+    "type": "quiz",
+    "prompt": "RAID 0 apporte-t-il une redondance permettant de perdre un disque ?",
+    "hints": [
+      "RAID 0 répartit les données sans copie ni parité.",
+      "Revenir aux définitions avant de compter les opérations."
+    ],
+    "solution": "Non",
+    "explanation": "RAID 0 répartit les données sans copie ni parité.",
+    "skillIds": ["B7.A2"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-PHY",
+        "pages": [25, 26]
+      }
+    ],
+    "origin": "created",
+    "options": ["Oui", "Non"],
+    "correctIndex": 1
+  },
+  {
+    "id": "PHY-Q08",
+    "lessonId": "physique-memoires",
+    "title": "Mémoire",
+    "type": "quiz",
+    "prompt": "Pourquoi le SGBD charge-t-il un bloc en mémoire principale ?",
+    "hints": [
+      "Le stockage assure la persistance, la RAM sert au traitement et au cache.",
+      "Revenir aux définitions avant de compter les opérations."
+    ],
+    "solution": "Le CPU traite les données en mémoire",
+    "explanation": "Le stockage assure la persistance, la RAM sert au traitement et au cache.",
+    "skillIds": ["B7.01"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-PHY",
+        "pages": [5, 9]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Le CPU traite les données en mémoire",
+      "La RAM assure seule la persistance",
+      "Une requête doit toujours relire le disque"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "PHY-Q09",
+    "lessonId": "physique-cache",
+    "title": "LRU",
+    "type": "quiz",
+    "prompt": "Quel bloc LRU choisit-il pour éviction ?",
+    "hints": [
+      "Least Recently Used désigne le moins récemment utilisé, et non le moins fréquent.",
+      "Revenir aux définitions avant de compter les opérations."
+    ],
+    "solution": "Le moins récemment utilisé",
+    "explanation": "Least Recently Used désigne le moins récemment utilisé, et non le moins fréquent.",
+    "skillIds": ["B7.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-PHY",
+        "pages": [20]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Le plus récemment utilisé",
+      "Le moins récemment utilisé",
+      "Le plus grand"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "PHY-Q10",
+    "lessonId": "physique-fichiers",
+    "title": "Insertion dans un tas",
+    "type": "quiz",
+    "prompt": "Pourquoi le cours ajoute-t-il n lectures au coût d’une insertion avec vérification d’unicité ?",
+    "hints": [
+      "Dans ce modèle, le contrôle parcourt les n pages avant l’insertion.",
+      "Revenir aux définitions avant de compter les opérations."
+    ],
+    "solution": "Pour rechercher un doublon sans index",
+    "explanation": "Dans ce modèle, le contrôle parcourt les n pages avant l’insertion.",
+    "skillIds": ["B7.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-PHY",
+        "pages": [36]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Pour rechercher un doublon sans index",
+      "Pour trier tous les attributs",
+      "Parce que toute écriture relit n pages"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "PHY-E01",
+    "lessonId": "physique-fichiers",
+    "title": "Comparer les organisations",
+    "type": "guided",
+    "prompt": "Pour 1000 pages, comparer une recherche présente unique dans un tas, une recherche absente et une recherche dichotomique sur fichier trié.",
+    "hints": [
+      "Écrire les hypothèses et les unités avant le calcul.",
+      "Séparer la capacité entière d’un bloc du nombre de blocs requis."
+    ],
+    "solution": "Tas, valeur présente et position uniforme : environ 500 pages ; absente : 1000 pages ; fichier trié sur la clé : environ ceil(log2(1000)) = 10 décisions de blocs, puis récupération des résultats.",
+    "explanation": "Le n/2 du cours est une moyenne sous hypothèses, pas un coût garanti pour toute requête. Une plage ajoute le parcours des pages de résultats.",
+    "skillIds": ["B7.07", "B7.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-PHY",
+        "pages": [35, 36, 37]
+      }
+    ],
+    "origin": "created"
+  },
+  {
+    "lessonId": "sql-bd1",
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [1, 2]
+      }
+    ],
+    "origin": "created",
+    "id": "BD1-E01",
+    "title": "Quatre agrégats, quatre sens",
+    "type": "sql",
+    "prompt": "Sur emp, afficher dans cet ordre le nombre de lignes, le nombre de salaires renseignés, leur somme et leur moyenne.",
+    "hints": [
+      "Compter les lignes puis les valeurs non NULL.",
+      "COUNT(*) et COUNT(salaire) ne possèdent pas le même argument."
+    ],
+    "solution": "SELECT COUNT(*),COUNT(salaire),SUM(salaire),AVG(salaire) FROM emp;",
+    "explanation": "Le jeu principal donne 7,6,22500,3750. Zéro est renseigné ; NULL ne contribue ni à la somme ni au dénominateur de AVG.",
+    "skillIds": ["B0.04"],
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "lessonId": "sql-bd1",
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [1, 2]
+      }
+    ],
+    "origin": "created",
+    "id": "BD1-E02",
+    "title": "Conserver les départements vides",
+    "type": "sql",
+    "prompt": "Afficher deptno,dname et nombre d’employés pour chaque département, même sans employé. Une ligne par département ; ordre libre.",
+    "hints": [
+      "Choisir la table à conserver à gauche.",
+      "Compter une colonne non NULL des employés présents, puis regrouper les colonnes du département."
+    ],
+    "solution": "SELECT d.deptno,d.dname,COUNT(e.e_id) AS nombre FROM dept d LEFT JOIN emp e ON e.deptno=d.deptno GROUP BY d.deptno,d.dname;",
+    "explanation": "Le LEFT JOIN conserve le département 40. Compter la clé de l’employé donne zéro pour ce groupe, alors que COUNT(*) donnerait un.",
+    "skillIds": ["B0.03", "B0.05"],
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "lessonId": "sql-bd1",
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [1, 2]
+      }
+    ],
+    "origin": "created",
+    "id": "BD1-E03",
+    "title": "Au-dessus de la moyenne globale",
+    "type": "sql",
+    "prompt": "Afficher ename,salaire pour les employés dont le salaire est strictement supérieur à la moyenne globale de emp.",
+    "hints": [
+      "Calculer séparément la valeur de comparaison.",
+      "Une sous-requête AVG sans GROUP BY renvoie une seule ligne."
+    ],
+    "solution": "SELECT ename,salaire FROM emp WHERE salaire>(SELECT AVG(salaire) FROM emp);",
+    "explanation": "La sous-requête non corrélée produit la moyenne globale. Une ligne dont le salaire est NULL ne satisfait pas la comparaison.",
+    "skillIds": ["B0.06"],
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  }
+]

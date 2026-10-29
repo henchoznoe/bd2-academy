@@ -1,0 +1,58 @@
+export const meta = {
+  "id": "df-semantique",
+  "moduleId": "df",
+  "title": "Comprendre une dépendance fonctionnelle",
+  "summary": "Une contrainte métier concerne toutes les données admissibles, pas seulement la table affichée.",
+  "objectives": [
+    "Lire X → Y en termes de deux lignes",
+    "Distinguer règle métier et coïncidence",
+    "Construire un contre-exemple"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "C-DF",
+      "pages": [
+        3,
+        4,
+        9
+      ]
+    }
+  ],
+  "skillIds": [
+    "B5.01",
+    "B5.02"
+  ],
+  "order": 1
+}
+
+## Une règle sur les lignes possibles
+
+Dans `Employe(matricule, nom, service)`, la règle « un matricule identifie un seul nom » s'écrit `matricule → nom`. Pour **deux lignes quelconques**, si leurs matricules sont égaux, leurs noms doivent être égaux. La source est le déterminant ; la cible est l'information déterminée. Plusieurs matricules peuvent avoir le même nom : une DF n'est pas une bijection.
+
+La DF est une contrainte du **schéma**, valable aujourd'hui et après toute modification autorisée. Une extension est un remplissage particulier du schéma. Une extension peut réfuter une DF, mais ne suffit pas à établir une règle métier pour toutes les extensions futures.
+
+## Exemple déroulé : COMPAGNIE
+
+Le cours impose un avion par vol et un pilote par avion :
+
+```text
+VOL → AVION
+AVION → PILOTE
+Donc VOL → PILOTE.
+```
+
+| VOL | AVION | PILOTE |
+|---|---|---|
+| 102 | FOK | HARDY |
+| 210 | FOK | HARDY |
+| 300 | BOE | ROUSSEL |
+
+`(401,BOE,ROUSSEL)` respecte les règles. `(407,FOK,TOTO)` contredit la deuxième : FOK aurait HARDY et TOTO. Le fait que deux avions différents aient ROUSSEL comme pilote ne viole aucune des règles.
+
+## Ce qu'il faut éviter
+
+Ne pas inverser une flèche et ne pas conclure `PILOTE → AVION` parce qu'un petit échantillon a des pilotes distincts. « Une personne peut avoir plusieurs téléphones » ne traduit pas une DF personne → téléphone dans une table de couples personne/téléphone.
+
+## À toi de l'appliquer
+
+Pour `Commande(numero,client,date)`, explique la règle `numero → client,date`, puis propose deux lignes qui la violent et deux lignes qui la respectent. Réussite : tu cites précisément les valeurs de source identiques et la valeur de cible différente ; tu n'exiges pas que toutes les colonnes soient différentes.

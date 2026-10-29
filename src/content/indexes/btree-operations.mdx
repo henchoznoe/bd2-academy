@@ -1,0 +1,32 @@
+export const meta = {"id": "btree-operations", "moduleId": "btree", "title": "Rechercher, insérer et supprimer dans un B-arbre", "summary": "Appliquer les invariants et traiter éclatement, redistribution et fusion.", "objectives": ["Appliquer les invariants et traiter éclatement, redistribution et fusion.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-IDX", "pages": [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]}], "skillIds": ["B8.03", "B8.04"], "order": 2};
+
+Le cours définit l’ordre d par un minimum de d clés et un maximum de 2d clés par nœud non racine. Un nœud interne contenant k clés a k+1 fils. Les clés sont triées et toutes les feuilles sont au même niveau. La racine bénéficie d’une exception de minimum.
+
+Chaque clé d’un B-arbre possède un pointeur de donnée, y compris dans un nœud interne. Chercher 14 consiste à comparer avec les séparateurs puis à descendre dans le seul intervalle possible. Une égalité peut terminer la recherche avant les feuilles.
+
+### Insertion du support, ordre 1
+
+```text
+Avant : racine [7]
+  gauche [3] -> feuilles [1] et [4,5]
+  droite [11,16] -> feuilles [8,10], [12,14], [17]
+```
+
+Insérer 13 remplit temporairement la feuille avec 12,13,14. On garde 12 à gauche, 14 à droite et on **retire** 13 de la feuille pour le promouvoir. Le parent devient 11,13,16 et déborde à son tour. On promeut 13 dans la racine :
+
+```text
+Après : racine [7,13]
+  fils [3]  -> [1] ; [4,5]
+  fils [11] -> [8,10] ; [12]
+  fils [16] -> [14] ; [17]
+```
+
+### Suppression, autre branche du support
+
+La figure p.23 repart de l’arbre initial, **sans l’insertion de 13**. Supprimer 12 laisse la feuille 14 valide. Supprimer 14 la vide. Son frère gauche 8,10 peut prêter : 11 descend du parent, 10 remonte. Le parent droit devient 10,16, et ses feuilles sont 8 ; 11 ; 17.
+
+Si les deux frères étaient au minimum, il faudrait fusionner avec une clé du parent. La sous-occupation peut remonter. Une racine devenue vide est remplacée par son unique fils : la hauteur diminue. Pour supprimer une clé interne, la remplacer par son prédécesseur ou successeur puis réparer le nœud où cette clé a réellement été retirée.
+
+### Piège
+
+Ne jamais déplacer directement la clé d’un frère vers une feuille en oubliant le séparateur du parent : il faut préserver les intervalles. Plusieurs choix de redistribution peuvent produire des arbres corrects différents.

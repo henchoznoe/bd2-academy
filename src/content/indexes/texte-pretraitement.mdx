@@ -1,0 +1,35 @@
+export const meta = {"id": "texte-pretraitement", "moduleId": "fulltext", "title": "Tokens, stopwords, collations et n-grams", "summary": "Expliquer pourquoi un mot visible peut manquer dans l’index.", "objectives": ["Expliquer pourquoi un mot visible peut manquer dans l’index.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-FT", "pages": [36, 37, 38, 39, 40, 41, 42, 46, 47, 48, 49, 50, 51, 52, 53, 54, 69]}], "skillIds": ["B10.04", "B10.07", "B10.12"], "order": 20};
+
+Le charset détermine les caractères représentables ; la collation détermine des règles de comparaison et de tri, notamment casse et accents. Une collation insensible à la casse ne constitue pas une reconnaissance de synonymes. La tokenisation définit les unités indexées ; les stopwords et tailles admissibles en retirent certaines.
+
+Le parseur MySQL ordinaire du support reconnaît principalement lettres, chiffres et underscores. Les apostrophes ont des règles particulières ; les tirets séparent généralement les mots. Il n’effectue pas de stemming automatique : dream et dreams ne sont pas nécessairement le même terme.
+
+### Exemple explicite
+
+Avec minuscules, longueur minimale trois et stopword the :
+
+```text
+Texte : The SQL database is well-known
+Avant filtres : the, sql, database, is, well, known
+Après filtres : sql, database, well, known
+```
+
+Ce résultat dépend des paramètres annoncés. On ne peut pas déduire que SQL sera absent parce qu’il est « court » sans connaître la taille minimale effective.
+
+### Parser n-gram
+
+Avec des bigrammes, mysql produit my,ys,sq,ql et database produit da,at,ta,ab,ba,as,se. Le cours les illustre pour les langues CJK. `ngram_token_size` remplace le rôle des limites ordinaires de taille de mot ; les stopwords peuvent éliminer un token **contenant** un mot d’arrêt. Si a est un stopword, les bigrammes da,at,ta,ab,ba,as sont retirés dans cet exemple, tandis que se reste.
+
+### Contrôles MySQL guidés
+
+```sql
+SHOW VARIABLES LIKE 'innodb_ft_%token_size';
+SHOW VARIABLES LIKE 'ngram_token_size';
+SHOW VARIABLES LIKE 'innodb_ft%stopword%';
+SELECT value FROM information_schema.INNODB_FT_DEFAULT_STOPWORD;
+SHOW FULL COLUMNS FROM movie;
+```
+
+Modifier une variable de tokenisation ou de stopwords ne transforme pas magiquement les entrées déjà construites : vérifier les exigences de redémarrage et de reconstruction de la version utilisée. Les tables INNODB_FT_INDEX_CACHE et INNODB_FT_INDEX_TABLE distinguent aussi les entrées encore en cache et celles persistées.
+
+Les annexes collation p.41–42 et métadonnées p.46–54 complètent l’explication ; elles ne définissent pas les paramètres réels du navigateur ni une configuration universelle d’InnoDB.

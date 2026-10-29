@@ -1,0 +1,1852 @@
+[
+  {
+    "id": "IDX-C01",
+    "lessonId": "btree-operations",
+    "title": "Insertion et suppressions : deux branches du dessin",
+    "type": "guided",
+    "prompt": "Ordre 1. Racine 7 ; fils internes 3 et 11,16 ; leurs feuilles sont respectivement 1 / 4,5 et 8,10 / 12,14 / 17. A. Insérer 13. B. Repartir de cet arbre initial, puis supprimer 12 et 14, comme la figure p.23. Décrire chaque mouvement et l’état final. Variante supplémentaire : supprimer 12 et 14 après l’insertion de 13.",
+    "hints": [
+      "Dessiner séparément l’insertion et les suppressions repartant de l’arbre initial.",
+      "Ordre 1 : trois clés débordent ; une feuille vide doit emprunter via le parent ou fusionner."
+    ],
+    "solution": "A. La feuille 12,14 devient 12,13,14. 13 est retiré et promu ; le parent 11,13,16 déborde. Promouvoir 13 vers la racine. Résultat : racine 7,13 ; fils 3 / 11 / 16 ; feuilles 1 / 4,5 / 8,10 / 12 / 14 / 17. B. Supprimer 12 laisse 14. Supprimer 14 crée une feuille vide. Le frère 8,10 prête par le parent : 11 descend dans la feuille vide, 10 monte. Résultat : racine 7 ; fils 3 et 10,16 ; feuilles 1 / 4,5 / 8 / 11 / 17. Variante enchaînée : après A, supprimer 12 laisse le fils 11 avec 8,10 et une feuille vide ; 11 descend et 10 monte, donnant le fils 10 avec feuilles 8 et 11. Supprimer 14 vide le fils gauche de 16 ; le frère 17 est au minimum, on fusionne 16 et 17 puis le fils interne 16 devient vide. Fusionner les fils 10 et vide via le séparateur 13 de la racine : racine 7, fils 3 et 10,13, feuilles 1 / 4,5 / 8 / 11 / 16,17. Une autre redistribution valide peut donner une autre forme.",
+    "explanation": "Les figures de l’insertion et de la suppression ne forment pas une seule séquence : la page 23 repart du dessin de départ. Dans un B-arbre la médiane quitte le nœud éclaté. Après chaque étape, contrôler tri, intervalles, minimum, maximum et niveau commun des feuilles.",
+    "skillIds": ["B8.03", "B8.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-IDX",
+        "pages": [20, 21, 22, 23, 24]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "IDX-C02",
+    "lessonId": "btree-capacite",
+    "title": "Ordre maximal d’un B-arbre sur 4 Kio",
+    "type": "result",
+    "prompt": "Page de 4 Kio=4096 octets, clé de quatre octets, chaque pointeur de huit octets. Sans en-têtes, quel est l’ordre maximal d du B-arbre au sens du cours ?",
+    "hints": [
+      "Ne pas oublier les pointeurs de données dans un B-arbre.",
+      "Résoudre 20k+8 au plus 4096, puis kmax=2d."
+    ],
+    "solution": "102",
+    "explanation": "Avec k clés, k pointeurs de donnée et k+1 pointeurs de fils : 4k+8k+8(k+1)=20k+8. k maximal vaut 204 ; kmax=2d, donc d=102. Réserver des en-têtes réels peut réduire cette valeur.",
+    "skillIds": ["B8.06"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-IDX",
+        "pages": [31]
+      }
+    ],
+    "origin": "course",
+    "acceptedAnswers": ["102", "d=102", "d = 102"]
+  },
+  {
+    "id": "IDX-C03",
+    "lessonId": "btree-capacite",
+    "title": "Capacité, cache et nombre de pages",
+    "type": "guided",
+    "prompt": "Un B-arbre possède au maximum 255 pointeurs de fils par page, des pages de 4 Kio et trois niveaux. Donner 1. les clés maximales ; 2. nœuds et feuilles ; 3. les E/S au pire pour une ligne avec racine en RAM ; 4. RAM nécessaire pour tous les internes et E/S restantes. Fichier de données séparé, cache froid sauf indication.",
+    "hints": [
+      "255 est un nombre de fils : chaque nœud contient au plus 254 clés.",
+      "Compter les pages par niveau puis retirer les niveaux en RAM ; l’accès de donnée reste séparé."
+    ],
+    "solution": "1. 2d+1=255, donc d=127 et Nmax=255^3-1=16 581 374 clés. 2. Nœuds=1+255+255²=65 281 ; feuilles=65 025 ; internes=256. 3. Deux pages d’index non cachées, puis une page de données : trois lectures physiques au pire. 4. 256*4096=1 048 576 octets=1 Mio ; une feuille et une donnée : deux lectures. Si la clé est trouvée dans un interne B-arbre, ou si la requête est couverte, le coût peut être plus faible.",
+    "explanation": "Les formules comptent les clés à tous les niveaux d’un B-arbre, contrairement aux entrées de données d’un B+. Une page en cache reste une lecture logique mais pas une lecture physique.",
+    "skillIds": ["B8.07", "B8.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-IDX",
+        "pages": [32]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "IDX-C04",
+    "lessonId": "btree-capacite",
+    "title": "Lire le modèle de performance MySQL cité",
+    "type": "guided",
+    "prompt": "L’extrait cité p.33 prend 500 000 lignes, clés de trois octets, pointeurs de quatre octets, blocs d’index de 1024 octets et remplissage deux tiers. Expliquer le coût d’environ quatre seeks, la taille 5,2 MB et l’effet du cache.",
+    "hints": [
+      "Le remplissage aux deux tiers réduit les entrées moyennes par page.",
+      "Calculer le fan-out par 1024*2/3/(3+4), puis la taille totale en tenant compte du remplissage."
+    ],
+    "solution": "Fan-out approché : (1024*2/3)/(3+4)≈97,52. log(500000)/log(97,52)+1≈3,865, arrondi en niveaux/coût à environ quatre seeks. Le +1 représente l’accès final à la donnée dans ce modèle. Taille approchée : 500000*(3+4)/(2/3)=5 250 000 octets, soit 5,25 Mo décimaux ou environ 5,01 Mio. Si une grande partie de l’index est en mémoire, seules une ou deux pages peuvent encore manquer. Une écriture ajoute modification des pages et maintenance, pas simplement une lecture identique.",
+    "explanation": "L’extrait illustre un modèle, pas les tailles universelles d’InnoDB ni une mesure sur SSD actuel. Ne pas remplacer ses 1024 octets par 16384 sans recalculer ses hypothèses.",
+    "skillIds": ["B8.07", "B8.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-IDX",
+        "pages": [33]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "IDX-C05",
+    "lessonId": "btree-capacite",
+    "title": "Pourquoi CHAR(700) n’est pas indexable dans l’exemple Sybase ?",
+    "type": "guided",
+    "prompt": "Le CREATE INDEX sur c3 CHAR(700) échoue sur le serveur Sybase à pages 2 Kio de l’exemple. Expliquer sans affirmer qu’une chaîne de 700 octets dépasse à elle seule la page.",
+    "hints": [
+      "Une page de 2048 octets n’autorise pas une clé de cette même taille.",
+      "Comparer les 700 octets de la clé au plafond de 600 octets du contexte ASE."
+    ],
+    "solution": "Le format et les limites de clé du produit réservent de la place pour plusieurs entrées et les pointeurs. Dans SAP ASE 16 présenté avec pages 2 Kio, la limite utilisateur d’une clé d’index est 600 octets ; CHAR(700) la dépasse. La ligne de table peut être stockable alors que sa clé est non indexable. Trois valeurs de 700 octets dépasseraient déjà 2048 octets avant métadonnées. Il faut raccourcir la clé, indexer une expression admissible selon la demande, ou changer la configuration/structure appropriée au produit.",
+    "explanation": "La limite de clé dépend du produit, de sa version et de sa taille de page. Référence primaire vérifiée : [SAP ASE, Index Size](https://help.sap.com/docs/SAP_ASE/86fcdd45cd3142af9f1b6dd75017260f/a8fbd3b6bc2b1014bc1ca6e786977909.html?version=16.0.2.4). Le calcul abstrait d’ordre ne remplace pas ces contraintes de format.",
+    "skillIds": ["B8.06", "B8.11"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-IDX",
+        "pages": [34]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "IDX-C06",
+    "lessonId": "bplus-structure",
+    "title": "Construire le B+arbre puis comparer l’ordre",
+    "type": "guided",
+    "prompt": "Feuilles de deux clés au maximum, séparateur égal au maximum du sous-arbre gauche. Insérer 20,40,25,15,17 selon la figure du cours, puis comparer l’ordre interne B et B+ pour 4 Kio, clés quatre octets, pointeurs huit octets.",
+    "hints": [
+      "Après un éclatement B+, toutes les valeurs doivent encore être présentes dans les feuilles.",
+      "La figure prend le maximum du fils gauche comme séparateur ; les internes n’ont plus de pointeurs de données."
+    ],
+    "solution": "Feuilles successives : [20] ; [20,40] ; [20,25]→[40] ; [15,20]→[25]→[40] ; [15,17]→[20]→[25]→[40]. Après 25 : séparateur 25. Après 15 : séparateurs 20,25. Après 17 : racine 20, fils internes 17 et 25 ; leurs feuilles sont 15,17 / 20 et 25 / 40. Le séparateur existe encore dans une feuille. Dimensionnement interne : B :20k+8≤4096, kmax204, d102. B+ :12k+8≤4096, kmax340, d170. La feuille B+ garde les références de données et son propre surcoût de chaînage.",
+    "explanation": "Ne pas attribuer aux feuilles B+ la capacité des internes sans compter leurs pointeurs de donnée. Les bornes minimales du fils droit produiraient des séparateurs différents mais peuvent former un autre arbre correct.",
+    "skillIds": ["B8.05", "B8.06"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-IDX",
+        "pages": [38, 39, 40]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "IDX-C07",
+    "lessonId": "bplus-structure",
+    "title": "Quatre octets de clé : combien de valeurs et quelle hauteur ?",
+    "type": "guided",
+    "prompt": "Une clé possède quatre octets. Donner le nombre de codes distincts et discuter l’annonce « ordre 170, hauteur max 4 » du support. Puis expliquer l’intérêt de BINARY(16) par rapport à CHAR(36) pour un UUID InnoDB.",
+    "hints": [
+      "Quatre octets donnent 32 bits ; le nombre de codes ne fixe pas seul la hauteur.",
+      "Définir la capacité des feuilles, puis comparer remplissages maximal et minimal."
+    ],
+    "solution": "Quatre octets donnent 32 bits, donc 2^32=4 294 967 296 codes ; le type signé change l’intervalle de valeurs mais pas leur nombre. Le calcul d’interne B+ donne d170 et au plus 341 fils. Avec des feuilles de 340 références, trois niveaux ne contiennent au maximum que 341²*340=39 535 540 références ; quatre peuvent contenir 341³*340=13 481 619 140. Quatre niveaux suffisent à forte occupation. Ce n’est pas un maximum de hauteur garanti : avec au moins 171 fils non racine et 170 références par feuille, cinq niveaux peuvent contenir dès 2*171³*170=1 700 071 740 références. L’occupation peut donc encore permettre cinq niveaux pour 2^32 valeurs. Les détails du format réel modifient ces bornes. UUID binaire : 16 octets de contenu contre 36 caractères textuels ; davantage d’entrées par page et secondaires InnoDB moins larges puisque la PK y figure.",
+    "explanation": "Le support assimile une hauteur issue de la capacité maximale à une hauteur maximale. Distinguer nombre de codes, nombre de lignes effectivement présentes, capacité des feuilles et remplissage. BINARY(16) ne supprime pas à lui seul les insertions aléatoires.",
+    "skillIds": ["B8.07", "B8.08", "B8.11"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-IDX",
+        "pages": [41, 42, 43]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "IDX-C08",
+    "lessonId": "index-bulk-composite",
+    "title": "Construire par bulk loading",
+    "type": "guided",
+    "prompt": "Les feuilles de deux entrées du cours sont (3,4),(8,9),(10,11),(12,13),(20,22),(23,31). Construire les niveaux avec au plus trois fils par interne et des bornes supérieures du fils gauche. Comparer aux insertions individuelles.",
+    "hints": [
+      "Les six feuilles sont déjà triées : les relier puis les regrouper.",
+      "Avec trois fils par interne, former deux groupes de trois feuilles puis une racine."
+    ],
+    "solution": "Chaîner les six feuilles dans l’ordre. Premier interne : séparateurs 4,9 avec fils [3,4],[8,9],[10,11]. Deuxième : 13,22 avec fils [12,13],[20,22],[23,31]. Racine : séparateur 11 avec les deux internes. Chaque entrée reste dans sa feuille. La construction remplit des pages séquentielles à partir des entrées triées ; elle évite de répéter la recherche et les éclatements pour chaque valeur. Le tri et l’écriture des niveaux supérieurs gardent un coût, et on peut réserver de l’espace libre pour les insertions futures.",
+    "explanation": "Les deux entrées par feuille viennent du support ; la capacité de trois fils est l’hypothèse d’entraînement annoncée pour rendre le résultat déterminé. D’autres fan-outs produisent d’autres hauteurs.",
+    "skillIds": ["B8.09", "B8.15"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-IDX",
+        "pages": [47, 48]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "IDX-C09",
+    "lessonId": "index-requetes",
+    "title": "Index classe et âge : égalité, AND, OR et plage",
+    "type": "guided",
+    "prompt": "Sur Eleve, on possède un index classe. Étudier classe=I1 ; classe=I1 OR age=20 ; classe=I1 AND age=20 ; puis l’intérêt d’un index age pour age entre 20 et 30.",
+    "hints": [
+      "La condition se limite-t-elle aux élèves de I1 ou demande-t-elle aussi des lignes extérieures ?",
+      "OR doit couvrir chaque branche ; AND peut partir de la recherche sur classe et filtrer ensuite."
+    ],
+    "solution": "Égalité classe : un intervalle indexé donne les élèves de I1 ; bénéfice selon leur proportion et les lookups. OR : l’index classe seul manque les vingt ans hors I1 ; il faut un scan ou un autre accès sur âge et une union sans doublons. AND : chercher I1 puis filtrer âge ; un composé classe,age peut resserrer les deux égalités et couvrir certaines projections. Plage âge : un B-arbre âge localise l’intervalle ; son gain dépend de la part de la table retenue, du clustering, de la couverture et du cache. Si presque tous les élèves ont vingt à trente ans, un scan peut gagner.",
+    "explanation": "AND permet de partir d’un ensemble candidat plus petit ; OR doit couvrir toutes les branches. Aucun temps universel ne découle du seul texte de la requête.",
+    "skillIds": ["B8.12"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-IDX",
+        "pages": [74, 75, 76]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "IDX-C10",
+    "lessonId": "index-requetes",
+    "title": "Peut-on répondre sans lire la table ?",
+    "type": "guided",
+    "prompt": "Un index dense sur (Age,sal) contient toutes les lignes nécessaires. Donner une requête à laquelle il suffit, puis une modification qui impose un accès aux données.",
+    "hints": [
+      "Lister les colonnes du filtre, de la projection et des agrégats.",
+      "Si une colonne demandée manque dans l’index, un accès à la ligne peut être nécessaire."
+    ],
+    "solution": "SELECT AVG(sal) FROM Emp WHERE Age=30 AND sal BETWEEN 4000 AND 5000; peut être couvert par (Age,sal), car filtre et agrégat sont présents. SELECT Nom,sal FROM Emp WHERE Age=30; nécessite Nom, absent, donc des lookups si aucun autre mécanisme ne le fournit. COUNT(*) peut être couvert si l’index représente bien toutes les lignes concernées, y compris les cas NULL pertinents pour le moteur. Un index dense n’est pas automatiquement recouvrant pour n’importe quelle projection.",
+    "explanation": "La couverture est une relation entre une requête et un index, pas une propriété globale de la table.",
+    "skillIds": ["B8.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-IDX",
+        "pages": [77]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "IDX-C11",
+    "lessonId": "index-requetes",
+    "title": "Trois requêtes EMP : proposer le meilleur préfixe",
+    "type": "guided",
+    "prompt": "Proposer un index pour 1. NumDpt,COUNT(*) GROUP BY NumDpt ; 2. NumDpt,MIN(sal) GROUP BY NumDpt ; 3. AVG(sal) WHERE Age=30 AND sal BETWEEN 4000 AND 5000. Comparer (sal,Age).",
+    "hints": [
+      "L’index doit contenir les valeurs de l’agrégat et permettre le groupement.",
+      "Pour la troisième requête, placer l’égalité sur Age avant la plage de salaire."
+    ],
+    "solution": "1. (NumDpt) donne les groupes et peut couvrir le comptage. 2. (NumDpt,sal) groupe les entrées par département puis par salaire ; il contient aussi les valeurs à minimiser. 3. (Age,sal) fixe le préfixe Age=30 puis parcourt seulement la plage de salaires pour cet âge ; il couvre AVG. (sal,Age) commence par tous les salaires 4000–5000 de tous les âges puis filtre Age : couverture possible mais plage souvent plus large. Les plans peuvent utiliser des stratégies spécifiques pour MIN/groupes ; vérifier la représentation des NULL et les statistiques.",
+    "explanation": "Les égalités précèdent souvent les plages pour obtenir un intervalle contigu plus précis. Cela ne veut pas dire qu’un tri par colonnes d’égalité est toujours optimal pour toutes les charges.",
+    "skillIds": ["B8.09", "B8.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-IDX",
+        "pages": [79, 80]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "IDX-C12",
+    "lessonId": "index-couts",
+    "title": "Six estimations sur TITRES puis SELECT *",
+    "type": "guided",
+    "prompt": "TITRES : un million de lignes, 135 000 pages observées, capacité de dix lignes/page remplies à 75 %, 190 000 lignes dans la plage de prix. Les index composés ont 35 700 feuilles. Estimer scan, clustered prix, secondaire prix, secondaire (prix,titre), secondaire (titre,prix), puis choisir. Refaire avec SELECT * si la table a d’autres colonnes absentes des composés. Définir h comme le coût de descente additionnel.",
+    "hints": [
+      "Séparer descente, feuilles d’index et pages de données.",
+      "La proportion retenue vaut 19 pour cent ; elle réduit la plage de feuilles seulement si prix est le préfixe."
+    ],
+    "solution": "Scan :135000. Clustered prix :ceil(190000/7,5)=25334 pages de données plus descente ; avec la taille observée et distribution uniforme :25650. Secondaire prix :h+feuilles de plage non chiffrables sans leur capacité+jusqu’à190000 accès de donnée sous dispersion pessimiste. Recouvrant prix,titre :h+0,19*35700=h+6783. Recouvrant titre,prix :scan des35700 feuilles, car prix n’est pas préfixe. Pour la projection titre, prix,titre est le meilleur candidat de ce modèle. Pour SELECT *, les composés perdent leur couverture et ajoutent les lookups : clustered prix est alors généralement le candidat de ce modèle, avec scan de table à reconsidérer. Le cache et le clustering factor peuvent réduire les lectures physiques réelles. Un REBUILD d’index ne réordonne pas la table.",
+    "explanation": "Les données 10*75 % et 135000 pages ne sont pas exactement cohérentes : annoncer laquelle sert à l’estimation. Le nombre maximal de lignes visitées n’est pas un nombre assuré de pages distinctes.",
+    "skillIds": ["B8.10", "B8.12", "B8.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-IDX",
+        "pages": [81, 82, 83, 84, 85]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "IDX-C13",
+    "lessonId": "index-clustered",
+    "title": "Qualifier les deux structures de la figure",
+    "type": "guided",
+    "prompt": "La figure p.99 montre à gauche racine, niveau intermédiaire puis leaf nodes/data pages. À droite : racine, feuilles contenant index rows, puis data pages séparées atteintes par des pointeurs. Qualifier les index et leur coût logique sans cache pour une ligne.",
+    "hints": [
+      "Les dernières pages de l’arbre contiennent-elles des entrées d’index ou les lignes de données ?",
+      "À droite, les pointeurs des feuilles conduisent encore vers un ensemble de pages séparées."
+    ],
+    "solution": "Gauche : organisation clustered, B+ dont les feuilles sont les pages de données ; trois niveaux dessinés, donc jusqu’à trois lectures de pages, donnée incluse. Droite : index nonclustered, deux niveaux d’index puis donnée séparée ; jusqu’à trois lectures dans le modèle de pointeur physique direct. Si le localisateur est une PK, le lookup peut demander une descente dans l’organisation principale plutôt qu’un seul accès physique. Le chaînage des feuilles existe des deux côtés et ne suffit pas à qualifier le clustering. On ne peut pas déduire unicité ou statut PK du seul dessin.",
+    "explanation": "Description vérifiée visuellement sur la page réelle 99. Séparer niveaux d’index et accès final aux données.",
+    "skillIds": ["B8.02", "B8.05", "B8.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-IDX",
+        "pages": [99]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "IDX-C14",
+    "lessonId": "index-fondations",
+    "title": "Film : insertion, suppression, dense et creux",
+    "type": "guided",
+    "prompt": "Construire une variante explicite de Film(nom_realisateur,titre), deux lignes par page, ordonnée par titre : Alien/Scott, Amélie/Jeunet, Dune/Villeneuve, Fargo/Coen, Heat/Mann, Matrix/Wachowski. Montrer insertion de Blade Runner/Scott, puis suppression d’Amélie et Fargo ; proposer un index creux titre et dense réalisateur.",
+    "hints": [
+      "Fixer ordre du fichier, capacité des pages et politique de compactage.",
+      "Le creux référence des pages triées sur titre ; l’index réalisateur doit retrouver chaque ligne."
+    ],
+    "solution": "Au départ P1=[Alien,Amélie],P2=[Dune,Fargo],P3=[Heat,Matrix]. Une réorganisation compacte après insertion donne P1=[Alien,Amélie],P2=[Blade Runner,Dune],P3=[Fargo,Heat],P4=[Matrix]. Après suppressions et compactage choisi :P1=[Alien,Blade Runner],P2=[Dune,Heat],P3=[Matrix]. Index creux titre en bornes supérieures : (Blade Runner,P1),(Heat,P2),(Matrix,P3). Dense réalisateur : Scott→Alien et Blade Runner ; Villeneuve→Dune ; Mann→Heat ; Wachowski→Matrix, avec localisateurs de lignes. Sans compactage, des trous et bornes différentes sont possibles ; préciser cette stratégie et mettre à jour les adresses après déplacement.",
+    "explanation": "Les valeurs et le compactage sont choisis pour l’entraînement ; le cours demande de construire un exemple, pas de retrouver un fichier original absent. L’index réalisateur doit couvrir chaque ligne car le fichier n’est pas ordonné selon réalisateur.",
+    "skillIds": ["B8.01", "B8.02"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-IDX",
+        "pages": [100]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "IDX-C15",
+    "lessonId": "index-strategie",
+    "title": "Quatre charges de lecture et d’écriture",
+    "type": "guided",
+    "prompt": "T(A,B,C) : A. 100000 égalités B,100 égalités C. B.100000 plages B,100 égalités C,100000 inserts. C.100000 égalités B,1000000 conditions B=valeur avec plage C,100000 inserts. D.1000 plages B,100000 plages C. Proposer et justifier les index sans imposer une réponse indépendante des données.",
+    "hints": [
+      "Relever les lectures les plus fréquentes ainsi que les écritures à entretenir.",
+      "Un composé B,C sert à une égalité sur B suivie d’une plage sur C, mais pas de même façon à C seul."
+    ],
+    "solution": "A :priorité à un B-arbre B ; C seulement si son gain amortit espace et maintenance. B :B-arbre B pour les plages ; éviter un C sans bénéfice prouvé vu les écritures ; envisager bulk pour les lots. C :composé (B,C), égalité B puis plage C ; son préfixe remplace souvent un index B séparé. D :priorité à C, éventuellement organisation plaçante sur C si les accès de données par plage dominent ; secondaire B selon sélectivité/coût. Dans les quatre cas, SELECT * réclame la ligne sauf index recouvrant tous ses champs. Comparer au scan, tenir compte de largeur, distribution, cache et plans. Le seul nombre de requêtes ne fournit pas un gain mesuré.",
+    "explanation": "Le but de l’exercice est le compromis documenté. Une proposition alternative est valide si elle explicite les distributions et coûts qui la rendent meilleure.",
+    "skillIds": ["B8.12", "B8.15"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-IDX",
+        "pages": [101, 102, 103, 104]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "IDX-C16",
+    "lessonId": "index-fonctionnel",
+    "title": "Équivalences numériques et accès indexés",
+    "type": "guided",
+    "prompt": "Comparer IntCol>3 et IntCol>=4 sur une colonne entière ; MAX(NumCol*2) et MAX(NumCol)*2 ; puis expliquer le risque de T1.IntCol=T2.floatCol avec un index sur IntCol.",
+    "hints": [
+      "Vérifier les types et l’équivalence des résultats avant les performances.",
+      "Une fonction ou conversion sur la colonne peut masquer l’ordre de ses valeurs brutes."
+    ],
+    "solution": "Sur un vrai entier, >3 et >=4 sont équivalents, y compris leur rejet des NULL par WHERE. Ils peuvent produire le même intervalle indexé ; aucune vitesse différente n’est assurée. Sur des décimaux, ils ne sont plus équivalents. Pour un facteur positif et sans débordement ni différence de type, MAX(x*2)=MAX(x)*2 ; la seconde expression expose directement MAX(x), potentiellement accessible à l’extrémité d’un index. Le moteur peut aussi réécrire la première : vérifier le plan. Une comparaison entier/flottant peut convertir une colonne et perdre l’accès direct ou la précision sur de grands entiers. Harmoniser les types métier ou convertir le côté approprié après vérification de la sémantique.",
+    "explanation": "Un gain théorique repose sur la possibilité d’utiliser l’ordre des valeurs brutes. Une transformation mathématique ne garantit pas l’équivalence des types SQL, débordements ou arrondis.",
+    "skillIds": ["B8.14", "B9.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-IDX",
+        "pages": [105]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "AUT-C01",
+    "lessonId": "bitmap",
+    "title": "Compter dans les bitmaps des produits",
+    "type": "result",
+    "prompt": "Ordre : poivron rouge, poivron vert, poivron jaune, tomate rouge, poivron vert. Donner les nombres de rouges, rouges ou verts, rouges sans tomate, dans cet ordre.",
+    "hints": [
+      "Garder le même ordre des cinq lignes pour chaque vecteur.",
+      "Compter les bits de Rouge, puis de Rouge OR Vert, puis de Rouge AND NOT Tomate."
+    ],
+    "solution": "2,4,1",
+    "explanation": "Rouge=10010 ; Vert=01001 ; Tomate=00010. Popcount(Rouge)=2 ; popcount(Rouge OR Vert)=popcount(11011)=4 ; popcount(Rouge AND NOT Tomate)=popcount(10000)=1. NOT est limité aux cinq lignes.",
+    "skillIds": ["B9.01"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-AUT",
+        "pages": [4, 5, 6]
+      }
+    ],
+    "origin": "course",
+    "acceptedAnswers": ["2,4,1", "2, 4, 1", "2 ; 4 ; 1"]
+  },
+  {
+    "id": "AUT-C02",
+    "lessonId": "bitmap",
+    "title": "Professeurs : spécialité et catégorie",
+    "type": "guided",
+    "prompt": "Choisir cinq professeurs, représenter les bitmaps de spécialité et proposer les accès pour COUNT WHERE spécialité=info puis spécialité=info AND catégorie=3.",
+    "hints": [
+      "Créer un vecteur par spécialité, avec une position par professeur.",
+      "Un second bitmap catégorie=3 permet une intersection sans lire les noms."
+    ],
+    "solution": "Extension choisie : (1,A,3,info),(2,B,1,math),(3,C,3,info),(4,D,2,telecom),(5,E,1,info). Bitmap info=10101,math=01000,telecom=00010 ; physique et communication=00000. COUNT info :lire le bitmap info et compter trois bits. Ajouter un bitmap de catégorie, notamment catégorie3=10100 ; info AND catégorie3=10100, soit deux. Pas besoin de lire nom ni les lignes pour ce comptage dans le modèle ; SELECT * imposerait leurs pages.",
+    "explanation": "Le cours demande une extension : les cinq lignes sont des données choisies, pas un remplissage original caché. Les bitmaps d’axes distincts se combinent si leurs positions représentent les mêmes lignes.",
+    "skillIds": ["B9.01", "B9.02"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-AUT",
+        "pages": [29]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "AUT-C03",
+    "lessonId": "bitmap",
+    "title": "Cinq taux aujourd’hui : prévoir la croissance",
+    "type": "guided",
+    "prompt": "20 professeurs ont cinq taux horaires observés. Domaine entier1250–2250 ; à terme200 personnes et5 % des valeurs du domaine utilisées. La requête fréquente SELECT * WHERE tauxHoraire=val doit être accélérée. Faut-il automatiquement un bitmap ?",
+    "hints": [
+      "Cinq pour cent porte sur les valeurs du domaine, pas sur les lignes de table.",
+      "Prévoir environ 50 taux pour 200 personnes, puis discuter sélectivité et coût du scan."
+    ],
+    "solution": "Non. Le domaine inclusif contient1001 valeurs ;5 % représentent environ50 taux différents à terme, soit environ quatre professeurs par valeur si répartition uniforme sur200. Ce n’est plus une colonne ne prenant que cinq valeurs ; un B-arbre sur tauxHoraire est un candidat naturel à l’égalité et renvoie ensuite les lignes. Une organisation hachée peut être discutée si seules les égalités dominent et le produit la permet. Sur une table de200 lignes un scan peut encore coûter moins ; bitmap se justifierait surtout selon charge analytique et faibles écritures, pas uniquement le nombre présent de taux.",
+    "explanation": "Cardinalité future, sélectivité de chaque valeur, SELECT * et taille de la table doivent être pris en compte. Le taux de cinq pour cent n’est pas le pourcentage de lignes à sélectionner.",
+    "skillIds": ["B9.02", "B9.03"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-AUT",
+        "pages": [30]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "FT-C01",
+    "lessonId": "texte-like-regex",
+    "title": "Motifs LIKE et présence d’un préfixe",
+    "type": "guided",
+    "prompt": "Titres choisis : Dream, Dreaming, A dream in winter, Daydream. Avec comparaison insensible à la casse, donner les résultats de dream%, %dream%, puis Full Text mot dream. Discuter AND/OR et index title.",
+    "hints": [
+      "Séparer préfixe de caractères, sous-chaîne et mot tokenisé.",
+      "Un joker initial ne borne pas une recherche B-arbre, même si un scan couvrant reste possible."
+    ],
+    "solution": "dream% :Dream et Dreaming. %dream% :les quatre titres. Mot FT dream avec parseur ordinaire sans stemming :Dream et A dream in winter. Un préfixe constant donne un intervalle exploitable par B-arbre title. Un joker initial ne donne pas de borne de recherche sélective ; un scan couvrant reste possible. AND exige les deux motifs ; OR exige de couvrir les deux ensembles et de conserver une ligne une fois. Une regex est utile pour un motif plus riche, pas automatiquement plus rapide. LOWER(title) dans la requête exige un accès adapté à cette expression pour conserver le même potentiel indexé.",
+    "explanation": "Le corpus est choisi pour rendre visibles mots et sous-chaînes. Les résultats dépendent de la collation et du parseur annoncés.",
+    "skillIds": ["B10.01", "B10.02"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FT",
+        "pages": [5, 6, 7, 8, 9, 10, 11, 12]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "FT-C02",
+    "lessonId": "texte-tfidf",
+    "title": "Calculer TF-IDF, cosinus et ranking InnoDB",
+    "type": "guided",
+    "prompt": "Corpus choisi D1=index btree index,D2=index bitmap,D3=recherche texte. Utiliser TF normalisé et log10. Calculer les poids de D1, le cosinus de la requête index avec D1/D2/D3. Puis reprendre les données du cours :database présent dans3 lignes sur27, fréquence6 dans une et1 dans les autres ; calculer le ranking InnoDB présenté.",
+    "hints": [
+      "Définir TF, fréquence documentaire, IDF et norme avant le calcul.",
+      "Le cosinus utilise les vecteurs entiers ; la formule InnoDB du support utilise la fréquence brute et IDF au carré."
+    ],
+    "solution": "IDF(index)=log10(3/2)=0,176091 ;IDF(btree)=log10(3)=0,477121. D1 :index=0,117394,btree=0,159040. D2 :index=0,088046,bitmap=0,238561. Requête index :poids0,176091. Cosinus avec D1≈0,593876 ;D2≈0,346242 ;D3=0. Les coordonnées absentes valent zéro, les normes portent sur tout le vocabulaire. Ranking InnoDB de la diapo :f*[log10(27/3)]² ;IDF²≈0,910579. Ligne de fréquence6≈5,463472 ;autres≈0,910579. Ce score n’est pas un cosinus et peut dépasser1.",
+    "explanation": "La première partie utilise un corpus choisi et une convention définie ; la seconde reprend les nombres du cours. Ne pas normaliser f dans la formule InnoDB du support et ne pas calculer l’IDF de la requête sur un nouveau corpus isolé.",
+    "skillIds": ["B10.03", "B10.05", "B10.06"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FT",
+        "pages": [
+          18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 31, 32, 33, 34
+        ]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "FT-C03",
+    "lessonId": "texte-pretraitement",
+    "title": "Parseur ordinaire, n-gram et collation",
+    "type": "guided",
+    "prompt": "A. Tokeniser « The SQL database is well-known » avec minuscules, minimum3 et stopword the. B. Donner les bigrammes de mysql et database, puis retirer ceux contenant le stopword a. C. Expliquer comment vérifier casse, accents et paramètres dans MySQL.",
+    "hints": [
+      "Appliquer tokenisation, longueur minimale et stopwords dans le contexte annoncé.",
+      "Le n-gram découpe à taille fixe ; sa règle peut éliminer un token contenant le stopword a."
+    ],
+    "solution": "A :sql,database,well,known ;the est stopword,is trop court et le tiret sépare. B :mysql→my,ys,sq,ql ;database→da,at,ta,ab,ba,as,se. Avec a comme stopword n-gram :se seul reste de database. C :SHOW FULL COLUMNS FROM movie; renseigne collation. SHOW VARIABLES LIKE 'innodb_ft_%token_size'; et SHOW VARIABLES LIKE 'ngram_token_size'; renseignent les tailles. SELECT value FROM information_schema.INNODB_FT_DEFAULT_STOPWORD; inspecte la liste par défaut ; vérifier aussi les variables serveur/utilisateur de stoplist. Tester explicitement deux chaînes différant par casse/accents sous la collation choisie, puis reconstruire l’index si la configuration l’exige.",
+    "explanation": "Les paramètres A sont choisis pour l’exercice ; ils ne constituent pas une configuration prétendument observée. Le parser n-gram n’applique pas simplement les mêmes limites de taille de mot que le parser ordinaire.",
+    "skillIds": ["B10.04", "B10.07", "B10.12"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FT",
+        "pages": [36, 37, 39, 40, 41, 42, 46, 47, 48, 49, 50, 51, 52, 53, 54]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "FT-C04",
+    "lessonId": "texte-modes",
+    "title": "Interpréter toutes les expressions booléennes",
+    "type": "guided",
+    "prompt": "Expliquer mysql tutorial ;+mysql +tutorial ;+mysql -tutorial ;+mysql tutorial ;+mysql ~tutorial ;+mysql +(>tutorial <training) ;my* ;\"mysql tutorial\" ;\"dbms mysql\" @4. Comparer naturel, booléen, expansion et index combiné/séparés.",
+    "hints": [
+      "Distinguer obligation de présence et contribution au poids.",
+      "Le moins exclut, le tilde pénalise, l’expansion ajoute des termes lors d’une seconde recherche."
+    ],
+    "solution": "Sans signes :au moins un mot retenu. Deux + :les deux obligatoires. + et - :mysql obligatoire,tutorial exclu. +mysql tutorial :mysql obligatoire,tutorial optionnel contribue au poids. ~tutorial pénalise sans exclure. Le groupe impose tutorial ou training avec poids renforcé pour tutorial et diminué pour training. my* :préfixe de token. Guillemets :phrase, pas deux termes indépendants. @4 :proximité mesurée en mots selon les positions, pas quatre caractères ; l’ordre n’est pas imposé comme dans une phrase exacte. Naturel calcule une pertinence sans rendre tous les mots obligatoires ;booléen ajoute conditions et pondérations ;expansion réalise deux recherches et ajoute des termes de documents pertinents. Prévoir FULLTEXT(title) et FULLTEXT(genres) pour MATCH séparés ;un FULLTEXT(title,genres) donne un contenu combiné et ne remplace pas automatiquement les deux. Écrire ORDER BY score DESC pour un classement garanti.",
+    "explanation": "Un signe moins exclut ;la diapo mal rendue ne justifie pas un point d’interrogation. Le mode booléen peut produire un score même avec des opérateurs. Les contraintes et plans sont propres au moteur MySQL/InnoDB ciblé.",
+    "skillIds": ["B10.08", "B10.09", "B10.10", "B10.11"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FT",
+        "pages": [56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "VEC-C01",
+    "lessonId": "vecteurs-representations",
+    "title": "TF-IDF, GloVe et géométrie",
+    "type": "guided",
+    "prompt": "Pourquoi TF-IDF peut-il manquer la proximité peur/panique ? Comment les cooccurrences interviennent-elles dans GloVe ? Avec peur=(1,0),panique=(0.9,0.1),recette=(0,1), calculer les cosinus et dire quelles valeurs ont été choisies.",
+    "hints": [
+      "TF-IDF attribue une coordonnée par terme ; les embeddings apprennent des relations de contexte.",
+      "Calculer produits et normes sur les vecteurs donnés, sans les attribuer à un modèle réel."
+    ],
+    "solution": "TF-IDF donne une coordonnée par mot ;peur et panique n’ont pas de coordonnée commune s’ils n’apparaissent pas ensemble. Les cooccurrences de contextes peuvent rapprocher leurs embeddings appris. GloVe apprend des vecteurs à partir de statistiques globales de cooccurrence et d’un objectif pondéré sur leur logarithme ;la factorisation du support est une intuition, pas une garantie sémantique. cos(peur,panique)=0,9/sqrt(0,82)≈0,993884 ;cos(peur,recette)=0. Les trois vecteurs sont choisis pour cet entraînement, pas obtenus d’un modèle réel. Comparer des documents impose même modèle, même vocabulaire/espace et même dimension.",
+    "explanation": "La proximité géométrique exprime la représentation choisie/apprise ;elle ne prouve pas que tous les mots proches sont interchangeables dans tous les contextes.",
+    "skillIds": ["B10.13", "B10.14"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-VEC",
+        "pages": [5, 6, 7, 8, 9, 10]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "VEC-C02",
+    "lessonId": "vecteurs-mysql",
+    "title": "Adapter la recherche des voisins et ses limites",
+    "type": "guided",
+    "prompt": "Écrire une version complète de l’exemple Mydocs en dimension3, requête[1,0,0],distance COSINE, dix voisins. Calculer la taille des512 composantes du support. Distinguer génération,stockage,KNN exact et ANN ;indiquer le contexte des restrictions.",
+    "hints": [
+      "Choisir la même dimension complète pour le stockage et la requête.",
+      "Une distance se minimise ; VECTOR ne génère pas l’embedding et ne garantit pas un index ANN."
+    ],
+    "solution": "CREATE TABLE Mydocs(id INT AUTO_INCREMENT PRIMARY KEY,text_body TEXT,embedding VECTOR(3));\nINSERT INTO Mydocs(text_body,embedding) VALUES('A',STRING_TO_VECTOR('[1,0,0]')),('B',STRING_TO_VECTOR('[0,1,0]'));\nSELECT id,text_body,DISTANCE(embedding,STRING_TO_VECTOR('[1,0,0]'),'COSINE') AS distance FROM Mydocs ORDER BY distance ASC,id LIMIT 10;\nLes vecteurs doivent avoir trois composantes sans points de suspension. 512*4=2048 octets=2Kio de composantes, hors surcoûts. STRING_TO_VECTOR convertit, VECTOR_TO_STRING inverse, VECTOR_DIM mesure la dimension :ces fonctions ne fabriquent pas l’embedding du texte. Le support MySQL9/9.3 décrit des limites de contraintes,comparaisons et index ANN ;leur disponibilité dépend de la version/édition/service, notamment DISTANCE. Sans index ANN,un KNN exact parcourt potentiellement tous les vecteurs. ANN utilise une structure approximative et peut manquer certains vrais voisins. Les alternatives citées sont des pistes,pas des prérequis du cours.",
+    "explanation": "Exercice guidé MySQL, pas du SQL DuckDB. Un score de distance se trie en ASC ;le contrat de DOT doit être vérifié avant d’en déduire le sens du tri.",
+    "skillIds": ["B10.15", "B10.16", "B10.17", "B10.18"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-VEC",
+        "pages": [13, 14, 15, 16, 18, 19]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "TP-I-0",
+    "lessonId": "index-tp-methode",
+    "title": "TP index : installation, schéma et preuves",
+    "type": "guided",
+    "prompt": "MySQL guidé. Identifier la version,les tables,effectifs et index initiaux ;distinguer EXPLAIN d’EXPLAIN ANALYZE et préparer une sauvegarde/restauration. Le navigateur fournit un jeu réduit des dumps originaux,pas le serveur MySQL original.",
+    "hints": [
+      "Définir les hypothèses avant de calculer.",
+      "Vérifier les NULL, les doublons et les unités quand ils interviennent."
+    ],
+    "solution": "SELECT VERSION();\nSELECT 'customers' AS table_name,COUNT(*) AS n FROM customers UNION ALL SELECT 'salesman',COUNT(*) FROM salesman UNION ALL SELECT 'orders',COUNT(*) FROM orders;\nSHOW CREATE TABLE customers;\nSHOW CREATE TABLE orders;\nSHOW INDEXES FROM orders;\nEXPLAIN SELECT * FROM orders WHERE customer_id=1350;\nEXPLAIN ANALYZE SELECT * FROM orders WHERE customer_id=1350;\nPour l’environnement enseignant,l’énoncé vise20000 clients,100 vendeurs,500000 commandes ;le corrigé contient aussi une mention50000 incohérente avec son CALL500000. Lire les comptes réels. Sauvegarde shell :mysqldump -u utilisateur -p exo2 > exo2.sql ;restauration sur une base dédiée :mysql -u utilisateur -p exo2_reprise < exo2.sql,après création/adaptation du schéma si nécessaire. Le mot de passe est saisi à l’invite,le dump n’est pas un secret à afficher. Le container et les volumes se distinguent :ne pas supprimer un volume pour un simple redémarrage.",
+    "explanation": "EXPLAIN estime accès,ordre de jointure,index possibles/choisis et cardinalités ;EXPLAIN ANALYZE exécute et ajoute mesures selon la version. ALL peut être un bon choix sur une petite table. Performance_schema/sys permettent d’observer le serveur ;leurs durées ne sont pas celles du navigateur. Vérifier les limites d’affichage Workbench sans les confondre avec un LIMIT de la demande.",
+    "skillIds": ["B9.06", "B9.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-I",
+        "pages": [1, 2, 3, 4, 5, 6]
+      },
+      {
+        "sourceId": "SOL-I",
+        "pages": [1, 2, 3, 4, 5],
+        "section": "Corrigé enseignant à vérifier après la tentative"
+      }
+    ],
+    "origin": "tp",
+    "tpId": "index",
+    "tpQuestion": "0"
+  },
+  {
+    "id": "TP-I-5.1.1",
+    "lessonId": "index-tp-methode",
+    "title": "Tablespaces : espace alloué et pages",
+    "type": "guided",
+    "prompt": "MySQL guidé. Déterminer pour chaque tablespace exo2 son espace et nombre de blocs à partir de INNODB_TABLESPACES. Corriger l’égalité 16384=8K imprimée dans le corrigé.",
+    "hints": [
+      "Lire la taille de page réellement déclarée par le serveur.",
+      "Diviser FILE_SIZE par PAGE_SIZE : 16384 octets correspondent à 16 Kio."
+    ],
+    "solution": "SELECT name,page_size,file_size,file_size/page_size AS pages_allouees FROM information_schema.INNODB_TABLESPACES WHERE name LIKE 'exo2/%';\n16384 octets=16Kio. Exemple de calcul choisi :FILE_SIZE=41943040,PAGE_SIZE=16384 donne2560 pages et40Mio. Consigner les valeurs réelles du serveur ;si FILE_SIZE n’est pas multiple exact,arrondir seulement selon la question posée et expliquer l’allocation observée.",
+    "explanation": "FILE_SIZE mesure l’allocation du fichier,avec espace libre et structures. Ce n’est pas la somme des tailles de lignes ni nécessairement le nombre de pages de données utilisées. Les compteurs et noms de métadonnées dépendent de la version.",
+    "skillIds": ["B7.06", "B7.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-I",
+        "pages": [7]
+      },
+      {
+        "sourceId": "SOL-I",
+        "pages": [6],
+        "section": "Corrigé enseignant à vérifier après la tentative"
+      }
+    ],
+    "origin": "tp",
+    "tpId": "index",
+    "tpQuestion": "5.1.1"
+  },
+  {
+    "id": "TP-I-5.1.2a",
+    "lessonId": "index-tp-methode",
+    "title": "Copie sans commentaires renseignés",
+    "type": "guided",
+    "prompt": "MySQL guidé. Créer orders2 selon le TP avec quatre CHAR(200),copier les cinq colonnes initiales en laissant les commentaires NULL,puis relever les pages. Quel résultat théorique attendre et que vaut l’observation1792 pages du corrigé ?",
+    "hints": [
+      "Les commentaires non renseignés doivent rester NULL.",
+      "Comparer les allocations après un chargement contrôlé : NULL économise le contenu, pas toutes les métadonnées."
+    ],
+    "solution": "CREATE TABLE orders2 (id INT PRIMARY KEY,customer_id INT,date_order DATE,amount DECIMAL(10,2),commentaires1 CHAR(200),commentaires2 CHAR(200),commentaires3 CHAR(200),commentaires4 CHAR(200),salesman_id INT);\nINSERT INTO orders2(id,customer_id,date_order,amount,salesman_id) SELECT id,customer_id,date_order,amount,salesman_id FROM orders;\nSELECT name,file_size,page_size,file_size/page_size AS pages_allouees FROM information_schema.INNODB_TABLESPACES WHERE name LIKE 'exo2/orders%';\nLe corrigé observe1792 pages sur sa copie :1792*16384=29360128 octets=28Mio. Une copie chargée en ordre peut être plus compacte que la table d’origine ;ce nombre n’est pas garanti pour un autre chargement. Les NULL n’occupent pas quatre contenus pleins de200 caractères,mais gardent un coût de représentation.",
+    "explanation": "Le jeu du navigateur possède déjà orders2 pour les requêtes de lecture ;cette manipulation de format physique se fait seulement sur une copie de laboratoire MySQL. Ne pas conclure que NULL a un coût strictement nul ou que la copie est toujours plus petite.",
+    "skillIds": ["B7.06", "B7.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-I",
+        "pages": [7]
+      },
+      {
+        "sourceId": "SOL-I",
+        "pages": [6, 7],
+        "section": "Corrigé enseignant à vérifier après la tentative"
+      }
+    ],
+    "origin": "tp",
+    "tpId": "index",
+    "tpQuestion": "5.1.2a"
+  },
+  {
+    "id": "TP-I-5.1.2b",
+    "lessonId": "index-tp-methode",
+    "title": "Copie avec quatre CHAR renseignés",
+    "type": "guided",
+    "prompt": "MySQL guidé. Refaire le chargement avec c1,c2,c3,c4 et expliquer comment mesurer sans attribuer une taille InnoDB à DuckDB. Utiliser une table de comparaison pour préserver la copie précédente.",
+    "hints": [
+      "Conserver le nombre de lignes et changer seulement les commentaires.",
+      "Quatre CHAR renseignés élargissent les lignes : mesurer les pages sur MySQL, pas sur DuckDB."
+    ],
+    "solution": "CREATE TABLE orders2_char LIKE orders2;\nINSERT INTO orders2_char(id,customer_id,date_order,amount,commentaires1,commentaires2,commentaires3,commentaires4,salesman_id) SELECT id,customer_id,date_order,amount,'c1','c2','c3','c4',salesman_id FROM orders;\nSELECT name,file_size,page_size,file_size/page_size AS pages_allouees FROM information_schema.INNODB_TABLESPACES WHERE name LIKE 'exo2/orders2%';\nL’observation du corrigé30208 pages correspond à494927872 octets=472Mio avec pages16Kio. Les CHAR renseignés augmentent la largeur et donc le nombre de pages. La longueur en octets dépend du charset,du format de ligne et du comportement réel du moteur.",
+    "explanation": "La variante orders2_char est choisie pour comparer sans écraser les observations. Pour suivre exactement la suite du TP,orders2 doit finalement correspondre au remplissage avec commentaires. Les472Mio sont une observation historique,pas un résultat prédit du navigateur.",
+    "skillIds": ["B7.06", "B7.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-I",
+        "pages": [7]
+      },
+      {
+        "sourceId": "SOL-I",
+        "pages": [7],
+        "section": "Corrigé enseignant à vérifier après la tentative"
+      }
+    ],
+    "origin": "tp",
+    "tpId": "index",
+    "tpQuestion": "5.1.2b"
+  },
+  {
+    "id": "TP-I-5.1.2c",
+    "lessonId": "index-tp-methode",
+    "title": "Calculer les lignes par page avec les bonnes limites",
+    "type": "guided",
+    "prompt": "Le corrigé observe orders=2560 pages,orders2 commentairesNULL=1792,orders2 commentairesCHAR renseignés=30208. Supposer500000 lignes. Calculer les rapports lignes/pages et expliquer leur limite.",
+    "hints": [
+      "Calculer nombre de lignes divisé par pages allouées.",
+      "Annoncer l’hypothèse de 500000 lignes ; les pages allouées ne sont pas toutes des feuilles pleines."
+    ],
+    "solution": "500000/2560=195,3125 lignes par page allouée ;500000/1792≈279,0179 ;500000/30208≈16,5519. La copie vide de commentaires est plus compacte dans ce contexte de chargement ;les quatre contenus CHAR élargissent fortement les lignes. Mais FILE_SIZE inclut allocation libre,métadonnées et structures :ces moyennes ne constituent pas la capacité exacte des seules pages feuilles. Pour une capacité théorique,retirer l’en-tête et diviser l’espace utile par la taille d’une ligne,en prenant la partie entière,puis appliquer le taux de remplissage annoncé.",
+    "explanation": "Le corrigé a des nombres de lignes contradictoires à certains endroits :le calcul annonce500000 explicitement. Si le jeu est50000,diviser ces rapports par dix ;ne pas mélanger les deux jeux.",
+    "skillIds": ["B7.06", "B7.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-I",
+        "pages": [7]
+      },
+      {
+        "sourceId": "SOL-I",
+        "pages": [7],
+        "section": "Corrigé enseignant à vérifier après la tentative"
+      }
+    ],
+    "origin": "tp",
+    "tpId": "index",
+    "tpQuestion": "5.1.2c"
+  },
+  {
+    "id": "TP-I-5.1.2d",
+    "lessonId": "index-tp-methode",
+    "title": "Corriger puis comparer CHAR et VARCHAR",
+    "type": "guided",
+    "prompt": "MySQL guidé. Le CREATE TABLE orders2varchar imprimé utilise encore CHAR. Écrire une comparaison réellement en VARCHAR et calculer le rapport historique pour2304 pages et500000 lignes.",
+    "hints": [
+      "Lire les types des colonnes plutôt que le nom de table.",
+      "Passer réellement les quatre commentaires en VARCHAR puis charger les mêmes chaînes courtes."
+    ],
+    "solution": "CREATE TABLE orders2varchar LIKE orders2;\nALTER TABLE orders2varchar MODIFY commentaires1 VARCHAR(200),MODIFY commentaires2 VARCHAR(200),MODIFY commentaires3 VARCHAR(200),MODIFY commentaires4 VARCHAR(200);\nINSERT INTO orders2varchar(id,customer_id,date_order,amount,commentaires1,commentaires2,commentaires3,commentaires4,salesman_id) SELECT id,customer_id,date_order,amount,'c1','c2','c3','c4',salesman_id FROM orders;\nSELECT name,file_size,page_size,file_size/page_size AS pages_allouees FROM information_schema.INNODB_TABLESPACES WHERE name LIKE 'exo2/orders2%';\nHistorique :2304*16384=37748736 octets=36Mio ;500000/2304≈217,0139 lignes par page allouée. VARCHAR stocke ici des chaînes courtes avec leurs informations de longueur plutôt que réserver une largeur CHAR comparable ;vérifier le format et le charset réels.",
+    "explanation": "Changer uniquement le nom de table ne change pas son stockage. Les36Mio et472Mio proviennent d’un contexte enseignant et ne dispensent pas des mesures actuelles sur un même serveur et mêmes données.",
+    "skillIds": ["B7.06", "B9.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-I",
+        "pages": [8]
+      },
+      {
+        "sourceId": "SOL-I",
+        "pages": [7],
+        "section": "Corrigé enseignant à vérifier après la tentative"
+      }
+    ],
+    "origin": "tp",
+    "tpId": "index",
+    "tpQuestion": "5.1.2d"
+  },
+  {
+    "id": "TP-I-5.2.1",
+    "lessonId": "index-tp-methode",
+    "title": "Total par client en gardant les absents",
+    "type": "sql",
+    "prompt": "Sur le jeu index réduit,retourner id,name,total des commandes pour chaque client country_2,y compris ceux sans commande. Préserver NULL pour leur total. Une ligne par client,ordonnée par id. Réécriture de la sous-requête corrélée du TP ;les temps MySQL se comparent séparément.",
+    "hints": [
+      "L’ensemble de départ doit rester celui des clients country_2.",
+      "Grouper aussi par l’identifiant,et ne pas mettre une condition sur o dans WHERE qui enlèverait les clients absents."
+    ],
+    "solution": "SELECT c.id,c.name,SUM(o.amount) AS total\nFROM customers c LEFT JOIN orders o ON o.customer_id=c.id\nWHERE c.country='country_2'\nGROUP BY c.id,c.name\nORDER BY c.id;",
+    "explanation": "LEFT JOIN préserve chaque client. Grouper par id évite de fusionner les homonymes ;SUM renvoie NULL si aucun montant non NULL. L’énoncé projette le nom ;id est ajouté pour identifier et vérifier les clients sur le jeu d’entraînement. Une version par sous-requête est également correcte ;un optimiseur peut la décorréler,le gain doit être mesuré.",
+    "skillIds": ["B2.03", "B9.06", "B9.07", "B9.08", "B9.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-I",
+        "pages": [8]
+      },
+      {
+        "sourceId": "SOL-I",
+        "pages": [8, 9],
+        "section": "Corrigé enseignant à vérifier après la tentative"
+      }
+    ],
+    "origin": "tp",
+    "tpId": "index",
+    "tpQuestion": "5.2.1",
+    "datasetId": "index",
+    "ordered": true,
+    "alternativeDatasetIds": ["index-alt"]
+  },
+  {
+    "id": "TP-I-5.2.2",
+    "lessonId": "index-tp-methode",
+    "title": "Peut-on éliminer la jointure ?",
+    "type": "guided",
+    "prompt": "SELECT c.id,o.salesman_id FROM customers c JOIN orders2 o ON o.customer_id=c.id; Le corrigé remplace c.id par o.id. Vérifier cette correction,puis proposer une suppression correcte et ses préconditions.",
+    "hints": [
+      "Comparer le sens de c.id et de o.id avant toute optimisation.",
+      "Sans FK non NULL garantie, la jointure filtre des commandes ; EXISTS peut conserver ce filtre."
+    ],
+    "solution": "o.id est l’identifiant de commande,alors que c.id est celui du client :la correction imprimée change la colonne demandée. Si chaque orders2.customer_id est non NULL et référence réellement un unique customers.id,la suppression donne SELECT o.customer_id AS id,o.salesman_id FROM orders2 o; et conserve une ligne par commande,donc les doublons de couple. Ces préconditions ne sont pas garanties par le seul DDL imprimé,qui ne déclare pas la FK. Sans elles,garder un filtre de présence :SELECT o.customer_id AS id,o.salesman_id FROM orders2 o WHERE EXISTS(SELECT 1 FROM customers c WHERE c.id=o.customer_id); Cette forme conserve exactement les lignes de la jointure si customers.id est unique.",
+    "explanation": "La jointure initiale élimine les commandes orphelines et les FK NULL. Une projection seule ne le fait pas. Tester existence et unicité avant de présenter une élimination comme équivalente.",
+    "skillIds": ["B9.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-I",
+        "pages": [8]
+      },
+      {
+        "sourceId": "SOL-I",
+        "pages": [9],
+        "section": "Corrigé enseignant à vérifier après la tentative"
+      }
+    ],
+    "origin": "tp",
+    "tpId": "index",
+    "tpQuestion": "5.2.2"
+  },
+  {
+    "id": "TP-I-5.2.3",
+    "lessonId": "index-tp-methode",
+    "title": "Anti-jointure et piège NOT IN",
+    "type": "sql",
+    "prompt": "Compter sur le jeu index réduit les clients sans vendeur ayant le même pays par égalité SQL. Inclure un client de pays NULL dans ce sens d’absence de correspondance. Comparer ensuite sur papier à NOT IN quand le sous-résultat contient NULL.",
+    "hints": [
+      "Définir « aucun vendeur de ce pays » par l’absence de ligne satisfaisant une égalité.",
+      "Une comparaison avec NULL n’est pas vraie."
+    ],
+    "solution": "SELECT COUNT(c.id) AS nombre_clients\nFROM customers c\nWHERE NOT EXISTS(SELECT 1 FROM salesman s WHERE s.country=c.country);",
+    "explanation": "NOT EXISTS ne trouve aucune égalité pour un pays client NULL et conserve ce client. Si un vendeur possède country NULL,NOT IN peut devenir UNKNOWN pour tous les pays non trouvés et les éliminer. Variante LEFT JOIN sûre :ON s.country=c.country puis WHERE s.id IS NULL,s.id étant PK non NULL. Les trois requêtes du cours ne sont donc pas généralement équivalentes sans hypothèses NULL. Le meilleur plan réel se vérifie dans MySQL,avec statistiques et index country.",
+    "skillIds": ["B9.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-I",
+        "pages": [8, 9]
+      },
+      {
+        "sourceId": "SOL-I",
+        "pages": [9, 10],
+        "section": "Corrigé enseignant à vérifier après la tentative"
+      }
+    ],
+    "origin": "tp",
+    "tpId": "index",
+    "tpQuestion": "5.2.3",
+    "datasetId": "index",
+    "ordered": false,
+    "alternativeDatasetIds": ["index-alt"]
+  },
+  {
+    "id": "TP-I-5.2.4",
+    "lessonId": "index-tp-methode",
+    "title": "JOIN ou EXISTS : que compte-t-on ?",
+    "type": "sql",
+    "prompt": "Sur le jeu index réduit,compter une seule fois chaque client ayant au moins un vendeur de même pays. Puis expliquer le résultat d’un JOIN lorsque deux vendeurs partagent un pays.",
+    "hints": [
+      "La demande compte des clients, pas des couples client-vendeur.",
+      "EXISTS retient chaque client une fois, même si plusieurs vendeurs correspondent."
+    ],
+    "solution": "SELECT COUNT(c.id) AS nombre_clients\nFROM customers c\nWHERE EXISTS(SELECT 1 FROM salesman s WHERE s.country=c.country);",
+    "explanation": "EXISTS et IN positif sélectionnent chaque client au plus une fois dans ce WHERE. Une jointure interne produit un couple par vendeur correspondant :un client de pays CH avec deux vendeurs CH est compté deux fois. COUNT(DISTINCT c.id) peut réparer le comptage de la jointure si id identifie un client. Le cas positif IN avec NULL ne reproduit pas le piège anti-jointure de NOT IN :les lignes sans correspondance sont de toute façon rejetées par WHERE.",
+    "skillIds": ["B9.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-I",
+        "pages": [9]
+      },
+      {
+        "sourceId": "SOL-I",
+        "pages": [10],
+        "section": "Corrigé enseignant à vérifier après la tentative"
+      }
+    ],
+    "origin": "tp",
+    "tpId": "index",
+    "tpQuestion": "5.2.4",
+    "datasetId": "index",
+    "ordered": false,
+    "alternativeDatasetIds": ["index-alt"]
+  },
+  {
+    "id": "TP-I-5.2.5",
+    "lessonId": "index-tp-methode",
+    "title": "Au-dessus de la moyenne du vendeur",
+    "type": "sql",
+    "prompt": "Sur orders2 du jeu réduit,compter customer_id non NULL des commandes dont le montant dépasse strictement la moyenne des commandes du même vendeur. Réécrire avec fenêtre et CTE la requête corrélée du TP. Conserver aussi sa sémantique lorsque salesman_id est NULL.",
+    "hints": [
+      "Calculer une moyenne sur chaque partition vendeur dans une étape puis filtrer.",
+      "Tester le vendeur NULL :sa partition ne correspond pas à la corrélation par égalité."
+    ],
+    "solution": "WITH moyennes AS (\n  SELECT customer_id,amount,\n         AVG(amount) OVER(PARTITION BY salesman_id) AS moyenne\n  FROM orders2\n  WHERE salesman_id IS NOT NULL\n)\nSELECT COUNT(customer_id) AS nombre\nFROM moyennes WHERE amount>moyenne;",
+    "explanation": "Le prédicat corrélé o2.salesman_id=o1.salesman_id ne correspond à aucune ligne si o1.salesman_id est NULL :sa moyenne vaut NULL et la ligne est exclue. Une fenêtre sans cette précaution créerait une partition NULL et pourrait ajouter des lignes. COUNT(customer_id),pas COUNT(*),préserve l’exclusion des identifiants clients NULL. AVG ignore les montants NULL ;une égalité à la moyenne n’est pas retenue. Comparer les temps et plans seulement dans le moteur cible.",
+    "skillIds": ["B3.05", "B3.12", "B9.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-I",
+        "pages": [9]
+      },
+      {
+        "sourceId": "SOL-I",
+        "pages": [11],
+        "section": "Corrigé enseignant à vérifier après la tentative"
+      }
+    ],
+    "origin": "tp",
+    "tpId": "index",
+    "tpQuestion": "5.2.5",
+    "datasetId": "index",
+    "ordered": false,
+    "alternativeDatasetIds": ["index-alt"]
+  },
+  {
+    "id": "TP-I-5.3.1",
+    "lessonId": "index-requetes",
+    "title": "Un seul index pour les deux projections",
+    "type": "guided",
+    "prompt": "MySQL guidé. Accélérer SELECT customer_id FROM orders2 WHERE amount=1003.22 et SELECT date_order FROM orders2 WHERE customer_id=1350 AND amount=1003.22 avec un seul index. Expliquer aussi la requête d’exploration amount BETWEEN1000 AND1010.",
+    "hints": [
+      "La première requête ne fixe que amount : ce composant doit permettre l’accès direct.",
+      "Ajouter customer_id puis date_order permet de couvrir les deux projections."
+    ],
+    "solution": "CREATE INDEX idx_orders2_amount_customer_date ON orders2(amount,customer_id,date_order);\nEXPLAIN SELECT customer_id FROM orders2 WHERE amount=1003.22;\nEXPLAIN SELECT date_order FROM orders2 WHERE customer_id=1350 AND amount=1003.22;\nLa première fixe amount et trouve customer_id dans l’index. La seconde fixe amount et customer_id puis lit date_order sans lookup. L’exploration d’une plage amount peut aussi utiliser le préfixe et projeter amount,customer_id depuis l’index. Les valeurs exactes peuvent ne pas exister dans le jeu réduit :choisir un montant visible pour une mesure réelle.",
+    "explanation": "Le composé customer_id,amount,date_order ne sert pas aussi directement à la première requête qui ne fixe pas customer_id. Un index recouvrant ajoute du stockage et du travail aux écritures.",
+    "skillIds": ["B8.09", "B8.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-I",
+        "pages": [9, 10]
+      },
+      {
+        "sourceId": "SOL-I",
+        "pages": [11, 12],
+        "section": "Corrigé enseignant à vérifier après la tentative"
+      }
+    ],
+    "origin": "tp",
+    "tpId": "index",
+    "tpQuestion": "5.3.1"
+  },
+  {
+    "id": "TP-I-5.3.2",
+    "lessonId": "index-requetes",
+    "title": "Dix derniers noms dans l’ordre descendant",
+    "type": "guided",
+    "prompt": "MySQL guidé. Proposer un index pour SELECT id FROM customers ORDER BY name DESC LIMIT10 et rendre l’échantillon déterministe quand des noms sont identiques.",
+    "hints": [
+      "Un tri suivi d’un petit LIMIT peut se lire à l’extrémité d’un index adapté.",
+      "Ajouter id comme ordre secondaire pour choisir les ex æquo de façon déterministe."
+    ],
+    "solution": "CREATE INDEX idx_customers_name_id ON customers(name DESC,id ASC);\nSELECT id FROM customers ORDER BY name DESC,id ASC LIMIT 10;\nLe préfixe respecte l’ordre name DESC et l’index couvre id. L’ajout id tranche les ex æquo et rend les dix lignes reproductibles ;la requête initiale n’imposait pas cet ordre secondaire. Selon moteur/version,un parcours inverse d’un index croissant peut aussi satisfaire un ordre entièrement inversé ;InnoDB emporte souvent la PK dans le secondaire. Vérifier les directions mixtes et le plan réel.",
+    "explanation": "La seule présence DESC n’est pas une garantie de gain ;l’optimiseur doit éviter le tri ou réduire le travail. Les secondaires,la PK implicite et le format des index descendants dépendent de la version.",
+    "skillIds": ["B8.12", "B8.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-I",
+        "pages": [10]
+      },
+      {
+        "sourceId": "SOL-I",
+        "pages": [12, 13],
+        "section": "Corrigé enseignant à vérifier après la tentative"
+      }
+    ],
+    "origin": "tp",
+    "tpId": "index",
+    "tpQuestion": "5.3.2"
+  },
+  {
+    "id": "TP-I-5.3.3",
+    "lessonId": "index-fonctionnel",
+    "title": "Accélérer un suffixe de nom",
+    "type": "guided",
+    "prompt": "MySQL guidé. Pourquoi l’index ordinaire name ne donne-t-il pas une recherche directe pour LIKE '%2' ? Proposer une solution compatible sans copier la syntaxe douteuse du corrigé.",
+    "hints": [
+      "Un suffixe ne correspond pas au début des clés de l’index name.",
+      "Renverser la chaîne transforme le suffixe 2 en préfixe 2 ; prévoir une colonne générée compatible."
+    ],
+    "solution": "ALTER TABLE customers ADD COLUMN name_rev VARCHAR(50) GENERATED ALWAYS AS (REVERSE(name)) STORED;\nCREATE INDEX idx_customers_name_rev ON customers(name_rev);\nSELECT id FROM customers WHERE name_rev LIKE '2%';\nLa chaîne renversée transforme le suffixe2 en préfixe2. Vérifier que la version accepte cette expression déterministe et que charset/collation conservent la sémantique attendue. Une autre version peut proposer un index fonctionnel avec une syntaxe différente. Le REVERSE d’Oracle inverse des octets de clé et n’est pas cette colonne de chaîne inversée.",
+    "explanation": "Un joker initial ne délimite pas un intervalle de l’index name. Il reste possible de scanner un index recouvrant plus petit que la table,mais ce n’est pas un seek sur le suffixe.",
+    "skillIds": ["B8.14", "B10.01"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-I",
+        "pages": [10]
+      },
+      {
+        "sourceId": "SOL-I",
+        "pages": [13],
+        "section": "Corrigé enseignant à vérifier après la tentative"
+      }
+    ],
+    "origin": "tp",
+    "tpId": "index",
+    "tpQuestion": "5.3.3"
+  },
+  {
+    "id": "TP-I-5.3.4",
+    "lessonId": "index-fonctionnel",
+    "title": "Mois et année : réécriture par plage",
+    "type": "guided",
+    "prompt": "MySQL guidé. Réécrire le comptage de janvier2024 sans fonctions sur date_order,choisir l’index et donner une forme qui resterait correcte si date_order devenait un timestamp.",
+    "hints": [
+      "Exprimer janvier comme un intervalle sur la colonne brute.",
+      "Prendre début inclus 2024-01-01 et fin exclusive 2024-02-01, puis indexer date_order."
+    ],
+    "solution": "CREATE INDEX idx_orders2_date ON orders2(date_order);\nSELECT COUNT(id) FROM orders2 WHERE date_order>='2024-01-01' AND date_order<'2024-02-01';\nLa plage borne directement la colonne indexée. La borne haute exclusive inclut toute heure du31janvier si le type devient timestamp. Elle exclut naturellement les datesNULL comme la condition initiale. COUNT(id)=COUNT(*) ici puisque id est PK non NULL. Vérifier EXPLAIN avant/après ;ne pas attribuer un temps du corrigé à la machine utilisée.",
+    "explanation": "BETWEEN avec31janvier convient pour un type DATE,mais avec un timestamp sa borne minuit peut exclure la suite de cette journée. Un index d’expression serait une autre solution selon le moteur.",
+    "skillIds": ["B8.12", "B8.14"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-I",
+        "pages": [10]
+      },
+      {
+        "sourceId": "SOL-I",
+        "pages": [13],
+        "section": "Corrigé enseignant à vérifier après la tentative"
+      }
+    ],
+    "origin": "tp",
+    "tpId": "index",
+    "tpQuestion": "5.3.4"
+  },
+  {
+    "id": "TP-I-5.3.5",
+    "lessonId": "index-requetes",
+    "title": "Couverture et première plage du composé",
+    "type": "guided",
+    "prompt": "MySQL guidé. Index(customer_id,salesman_id,amount). Comparer SELECT * et SELECT amount pour customer_id>=16781 AND salesman_id>=41. L’index peut-il automatiquement restreindre de façon optimale les deux plages ?",
+    "hints": [
+      "Comparer les colonnes projetées aux trois colonnes de l’index.",
+      "Le premier composant est déjà une plage ; le second peut filtrer sans devenir une borne contiguë unique."
+    ],
+    "solution": "CREATE INDEX idx_orders2_customer_salesman_amount ON orders2(customer_id,salesman_id,amount);\nEXPLAIN SELECT * FROM orders2 WHERE customer_id>=16781 AND salesman_id>=41;\nEXPLAIN SELECT amount FROM orders2 WHERE customer_id>=16781 AND salesman_id>=41;\nLe préfixe customer_id fournit la plage initiale. Les salesman_id admissibles sont répartis à l’intérieur de chaque valeur customer_id :leur condition peut filtrer dans l’index,mais ne devient pas une simple seconde borne contiguë globale comme une égalité de premier composant. SELECT amount est recouvert et évite les quatre grands commentaires. SELECT * nécessite leurs données et peut rendre les lookups plus chers qu’un scan. Vérifier Using index/conditions et les lectures réellement exécutées,selon la version.",
+    "explanation": "La couverture peut expliquer un grand gain même quand l’intervalle parcouru reste assez large. Ne pas confondre filtre appliqué à l’index et réduction des bornes de sa première plage.",
+    "skillIds": ["B8.09", "B8.12", "B8.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-I",
+        "pages": [10, 11]
+      },
+      {
+        "sourceId": "SOL-I",
+        "pages": [14],
+        "section": "Corrigé enseignant à vérifier après la tentative"
+      }
+    ],
+    "origin": "tp",
+    "tpId": "index",
+    "tpQuestion": "5.3.5"
+  },
+  {
+    "id": "TP-I-5.3.6",
+    "lessonId": "index-tp-methode",
+    "title": "La même jointure sur orders et orders2",
+    "type": "guided",
+    "prompt": "MySQL guidé. Accélérer les agrégats par nom des clients country_2 sur orders puis orders2. Proposer les index,préserver la sémantique de regroupement et expliquer pourquoi le résultat de temps peut différer.",
+    "hints": [
+      "La jointure demande customer_id et amount, mais pas les grands commentaires.",
+      "Un secondaire couvrant peut éviter les lookups ; vérifier le sens du GROUP BY en présence d’homonymes."
+    ],
+    "solution": "CREATE INDEX idx_customers_country_name_id ON customers(country,name,id);\nCREATE INDEX idx_orders_customer_amount ON orders(customer_id,amount);\nCREATE INDEX idx_orders2_customer_amount ON orders2(customer_id,amount);\nSELECT c.name,SUM(o.amount) AS total FROM customers c JOIN orders2 o ON o.customer_id=c.id WHERE c.country='country_2' GROUP BY c.name;\nLe premier index filtre les clients et contient nom/id ;les deux autres recherchent les commandes du client et couvrent amount,évitant les commentaires de orders2. EXPLAIN ANALYZE sur les deux requêtes révèle ordre de jointure,lignes et éventuels lookups. Grouper par c.name conserve exactement l’énoncé,qui fusionne les homonymes ;si la demande est un total par client,utiliser c.id,c.name et annoncer cette modification.",
+    "explanation": "Un index FK seul peut produire beaucoup de lookups dispersés ;le couvrant peut réduire cet effet. La table large,les index déjà présents et le cache changent le plan. Les phrases contradictoires du corrigé sur amélioration/détérioration ne remplacent pas une mesure contextualisée.",
+    "skillIds": ["B8.12", "B9.06", "B9.08", "B9.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-I",
+        "pages": [11]
+      },
+      {
+        "sourceId": "SOL-I",
+        "pages": [14, 15],
+        "section": "Corrigé enseignant à vérifier après la tentative"
+      }
+    ],
+    "origin": "tp",
+    "tpId": "index",
+    "tpQuestion": "5.3.6"
+  },
+  {
+    "id": "TP-I-5.3.7",
+    "lessonId": "index-tp-methode",
+    "title": "CTE avant la jointure, sans promesse de vitesse",
+    "type": "sql",
+    "prompt": "Sur le jeu index réduit,avec seulement les PK comme point de départ théorique,résumer les commandes orders2 datées depuis2024-01-01 par client puis joindre customers. Retourner customer_id,country,total_spent,ordonné par customer_id. Expliquer la comparaison avec orders :la question n’a pas de corrigé enseignant fourni.",
+    "hints": [
+      "Réduire orders2 aux dépenses par client avant de joindre les clients.",
+      "La CTE filtre la date et groupe par customer_id ; la jointure finale conserve les exclusions de l’original."
+    ],
+    "solution": "WITH depenses AS (\n SELECT customer_id,SUM(amount) AS total_spent\n FROM orders2\n WHERE date_order>=DATE '2024-01-01'\n GROUP BY customer_id\n)\nSELECT c.id AS customer_id,c.country,d.total_spent\nFROM customers c JOIN depenses d ON d.customer_id=c.id\nORDER BY c.id;",
+    "explanation": "Préagréger diminue le nombre de lignes jointes et transporte seulement les colonnes nécessaires. Les commandes orphelines restent éliminées par la jointure ;les clients sans commande dans la plage restent absents comme dans l’énoncé. Remplacer orders2 par orders conserve la demande si leurs cinq colonnes initiales ont les mêmes données. Une CTE peut être fusionnée ou matérialisée selon l’optimiseur ;sur la table étroite le gain peut être plus faible,identique ou nul. Cette correction est dérivée et vérifie la sémantique,pas un temps mesuré.",
+    "skillIds": ["B2.05", "B2.06", "B9.08", "B9.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-I",
+        "pages": [11]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "index",
+    "tpQuestion": "5.3.7",
+    "datasetId": "index",
+    "ordered": true,
+    "alternativeDatasetIds": ["index-alt"]
+  },
+  {
+    "id": "TP-FT-0",
+    "lessonId": "texte-genres-tp",
+    "title": "TP films : comprendre le CSV et sa copie navigateur",
+    "type": "guided",
+    "prompt": "Identifier le CSV disponible,son nombre de lignes,sa première colonne et les étapes d’import MySQL. Expliquer ce qui distingue les données originales de la version navigateur.",
+    "hints": [
+      "Identifier nom réel, en-têtes et séparateurs du CSV avant l’import.",
+      "La première colonne sans nom devient n ; contrôler les champs entre guillemets, le comptage et les avertissements."
+    ],
+    "solution": "Fichier original vérifié :metadata_prep_sample_v2.csv,1288 lignes de données,16 colonnes ;la première en-tête est vide et correspond à n. Les genres sont une chaîne comme «Animation, Comedy, Family»,avec virgules et espaces. Sur MySQL :CREATE DATABASE FT_test_DB; USE FT_test_DB; créer movie avec id INT PRIMARY KEY et imdb_id UNIQUE selon l’énoncé,puis LOAD DATA INFILE '/var/lib/mysql-files/metadata_prep_sample_v2.csv' INTO TABLE movie FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\\n' IGNORE 1 ROWS; Vérifier secure_file_priv,les types numériques,NULL,charset,les guillemets et les avertissements SHOW WARNINGS. Le chemin autorisé dépend du serveur. Après chargement,SELECT COUNT(*) FROM movie; et SHOW CREATE TABLE movie; contrôlent le résultat. Le navigateur charge un extrait annoncé de ce CSV sous DuckDB ;ses effectifs ne doivent pas être appelés1288 s’il ne contient pas toutes les lignes.",
+    "explanation": "Le TP ne possède pas de corrigé séparé. Les colonnes title,genres,overview,les index et la collation déterminent les recherches. Les identifiants et types sont contrôlés à l’import ;les données des films ne sont pas les réponses nominatives de l’ancien examen.",
+    "skillIds": ["B0.01", "B0.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [1, 2, 3, 4, 5]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "0"
+  },
+  {
+    "id": "TP-FT-4.1.1",
+    "lessonId": "texte-genres-tp",
+    "title": "Compter les films du jeu chargé",
+    "type": "sql",
+    "prompt": "Compter toutes les lignes de movie. Comparer ensuite au1288 annoncé pour le CSV original sans l’imposer à un extrait.",
+    "hints": [
+      "Le comptage porte sur les lignes, même si une colonne est NULL.",
+      "COUNT(*) ne dépend pas du nombre de résumés renseignés."
+    ],
+    "solution": "SELECT COUNT(*) AS nombre_films FROM movie;",
+    "explanation": "COUNT(*) compte les lignes,indépendamment des NULL dans une colonne. Le CSV original vérifié a1288 lignes ;un extrait navigateur en a moins selon son catalogue. Une différence ne signifie pas à elle seule une erreur de requête.",
+    "skillIds": ["B0.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [6]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.1.1",
+    "datasetId": "movies",
+    "ordered": false,
+    "alternativeDatasetIds": ["movies-alt"]
+  },
+  {
+    "id": "TP-FT-4.1.2",
+    "lessonId": "texte-genres-tp",
+    "title": "Afficher cinq films reproductibles",
+    "type": "sql",
+    "prompt": "Afficher id,title,genres des cinq films ayant les plus petits id. L’ordre est exigé afin de définir ce que signifie «les cinq premiers».",
+    "hints": [
+      "Sans ORDER BY, les premières lignes n’ont pas de définition stable.",
+      "Trier par id puis limiter à cinq lignes."
+    ],
+    "solution": "SELECT id,title,genres FROM movie ORDER BY id ASC LIMIT 5;",
+    "explanation": "LIMIT seul n’impose pas une sélection stable. La PK id fournit un ordre déterministe ;un index physique ne garantit jamais l’ordre du résultat sans ORDER BY.",
+    "skillIds": ["B2.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [6]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.1.2",
+    "datasetId": "movies",
+    "ordered": true,
+    "alternativeDatasetIds": ["movies-alt"]
+  },
+  {
+    "id": "TP-FT-4.2.1",
+    "lessonId": "texte-like-regex",
+    "title": "Rechercher et compter les comédies",
+    "type": "sql",
+    "prompt": "Compter les films dont genres contient comedy,insensible à la casse,avec LIKE sur le jeu chargé. Après validation,écrire aussi la variante qui affiche cinq id et titres.",
+    "hints": [
+      "Le genre est encore une chaîne ; cette question demande LIKE.",
+      "Rendre la casse explicite, puis compter les lignes contenant comedy dans genres."
+    ],
+    "solution": "SELECT COUNT(*) AS nombre_comedies FROM movie WHERE LOWER(genres) LIKE '%comedy%';",
+    "explanation": "Variante d’échantillon :SELECT id,title FROM movie WHERE LOWER(genres) LIKE '%comedy%' ORDER BY id LIMIT 5; L’énoncé cite463 comédies sur son jeu/configuration ;le décompte évalué ici appartient au jeu chargé. Il s’agit d’un test de sous-chaîne sur une représentation multivaluée,pas encore d’une recherche Full Text.",
+    "skillIds": ["B10.01", "B10.02"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [6]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.2.1",
+    "datasetId": "movies",
+    "ordered": false,
+    "alternativeDatasetIds": ["movies-alt"]
+  },
+  {
+    "id": "TP-FT-4.2.2",
+    "lessonId": "texte-like-regex",
+    "title": "Comédies dont le résumé parle de famille",
+    "type": "sql",
+    "prompt": "Compter les films avec comedy dans genres ET family dans overview,insensible à la casse. On choisit explicitement le mot anglais family pour opérationnaliser la demande du TP ;ne pas ajouter de synonymes à cette question.",
+    "hints": [
+      "Le film doit satisfaire simultanément genre et thème du résumé.",
+      "Relier les filtres par AND et chercher family dans overview."
+    ],
+    "solution": "SELECT COUNT(*) AS nombre FROM movie WHERE LOWER(genres) LIKE '%comedy%' AND LOWER(overview) LIKE '%family%';",
+    "explanation": "Les deux conditions se combinent par AND ;un résumé NULL ne satisfait pas LIKE. Le43 de l’énoncé est historique. Pour l’échantillon :SELECT id,title FROM movie WHERE LOWER(genres) LIKE '%comedy%' AND LOWER(overview) LIKE '%family%' ORDER BY id LIMIT 5; Chercher une sous-chaîne family n’est pas une compréhension exhaustive du thème famille.",
+    "skillIds": ["B10.01", "B10.02"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [6]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.2.2",
+    "datasetId": "movies",
+    "ordered": false,
+    "alternativeDatasetIds": ["movies-alt"]
+  },
+  {
+    "id": "TP-FT-4.2.3",
+    "lessonId": "texte-like-regex",
+    "title": "Dream dans le titre",
+    "type": "sql",
+    "prompt": "Retourner id et title des films dont le titre contient la sous-chaîne dream,insensible à la casse. Ordonner par id.",
+    "hints": [
+      "La demande vise une sous-chaîne, même au milieu d’un mot.",
+      "Entourer dream de deux jokers et ordonner par id."
+    ],
+    "solution": "SELECT id,title FROM movie WHERE LOWER(title) LIKE '%dream%' ORDER BY id;",
+    "explanation": "Le joker initial autorise la présence au milieu d’un mot :Daydream peut correspondre. La réponse5 de l’énoncé dépend du jeu original ;un Full Text dream peut donner un autre résultat car les tokens sont différents.",
+    "skillIds": ["B10.01"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [6]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.2.3",
+    "datasetId": "movies",
+    "ordered": true,
+    "alternativeDatasetIds": ["movies-alt"]
+  },
+  {
+    "id": "TP-FT-4.2.4",
+    "lessonId": "texte-pretraitement",
+    "title": "Vérifier charset et collation plutôt que supposer",
+    "type": "guided",
+    "prompt": "MySQL guidé. Vérifier si la recherche title LIKE '%dream%' est sensible à la casse. Écrire une méthode SQL et distinguer charset de collation.",
+    "hints": [
+      "La casse dépend de la collation, pas du seul jeu de caractères.",
+      "Inspecter INFORMATION_SCHEMA.COLUMNS et comparer la même recherche en minuscules et majuscules."
+    ],
+    "solution": "SHOW FULL COLUMNS FROM movie;\nSELECT column_name,character_set_name,collation_name FROM information_schema.COLUMNS WHERE table_schema=DATABASE() AND table_name='movie' AND column_name='title';\nSELECT title,title LIKE '%dream%' AS recherche_minuscule,title LIKE '%DREAM%' AS recherche_majuscule FROM movie WHERE LOWER(title) LIKE '%dream%' ORDER BY id;\nPour un test sans dépendre des titres présents,appliquer explicitement deux collations compatibles,par exemple avec le charset utf8mb4 :SELECT _utf8mb4'DREAM' COLLATE utf8mb4_0900_ai_ci LIKE _utf8mb4'%dream%' AS ci, _utf8mb4'DREAM' COLLATE utf8mb4_0900_as_cs LIKE _utf8mb4'%dream%' AS cs; sous MySQL8 compatible,on obtient1 et0. Vérifier la disponibilité des noms de collations dans la version cible.",
+    "explanation": "Le charset permet de représenter les caractères ;la collation fixe comparaison,tri,casse et éventuellement accents. Un résultat DuckDB avec LOWER explicite ne prouve pas la collation de la table MySQL.",
+    "skillIds": ["B10.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [6]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.2.4"
+  },
+  {
+    "id": "TP-FT-4.2.5",
+    "lessonId": "texte-like-regex",
+    "title": "Titres commençant par l’article The",
+    "type": "sql",
+    "prompt": "Compter les titres commençant par l’article anglais The suivi d’un espace,sans tenir compte de la casse. L’espace est volontaire pour exclure des mots tels que Theory.",
+    "hints": [
+      "L’article The est suivi d’un espace ; Theory ne doit pas correspondre.",
+      "Le motif possède un préfixe constant avec un seul joker final."
+    ],
+    "solution": "SELECT COUNT(*) AS nombre FROM movie WHERE LOWER(title) LIKE 'the %';",
+    "explanation": "Pour afficher cinq lignes :SELECT id,title FROM movie WHERE LOWER(title) LIKE 'the %' ORDER BY id LIMIT 5; Le248 imprimé correspond aux données et au motif utilisés par l’enseignante ;la présente définition précise l’article avec espace. Un B-arbre sur l’expression ou une collation compatible peut utiliser ce préfixe constant.",
+    "skillIds": ["B10.01"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [6]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.2.5",
+    "datasetId": "movies",
+    "ordered": false,
+    "alternativeDatasetIds": ["movies-alt"]
+  },
+  {
+    "id": "TP-FT-4.2.6",
+    "lessonId": "texte-like-regex",
+    "title": "Quelle requête l’index titre aide-t-il ?",
+    "type": "guided",
+    "prompt": "MySQL guidé. On ajoute CREATE INDEX index_title ON movie(title). Parmi genre contenantComedy,résumé contenantfamily,titre contenantdream,titre commençant parThe,laquelle peut utiliser une plage sélective sur cet index ?",
+    "hints": [
+      "Un B-arbre title est ordonné dès le début du titre.",
+      "The suivi d’un espace est bornable ; le joker initial de %dream% ne l’est pas."
+    ],
+    "solution": "Le préfixe title LIKE 'The %' est le candidat à une plage B-arbre,si sa collation est compatible et si la fonction LOWER n’est pas appliquée sans index adapté. Les filtres genres/overview ne portent pas sur cette clé. title LIKE '%dream%' n’a pas de préfixe fixe :pas de recherche de plage directe ;un scan de l’index peut néanmoins être choisi s’il couvre la requête et est moins large que la table. EXPLAIN SELECT id,title FROM movie WHERE title LIKE 'The %'; permet de contrôler le choix sur le serveur cible.",
+    "explanation": "«L’index n’aide jamais» serait trop absolu pour les motifs à joker initial :il peut aider par couverture et scan,mais pas par la même recherche bornée.",
+    "skillIds": ["B8.12", "B10.01"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [6]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.2.6"
+  },
+  {
+    "id": "TP-FT-4.2.7",
+    "lessonId": "texte-like-regex",
+    "title": "Regex dream et comparaison contrôlée",
+    "type": "guided",
+    "prompt": "MySQL guidé. Refaire la recherche dream avec REGEXP_LIKE,insensible à la casse,puis comparer à LIKE sans promettre le temps historique du TP.",
+    "hints": [
+      "Préciser la sensibilité à la casse pour comparer le même résultat.",
+      "Utiliser le paramètre de mode de REGEXP_LIKE puis comparer les identifiants, pas seulement la durée."
+    ],
+    "solution": "SELECT id,title FROM movie WHERE REGEXP_LIKE(title,'dream','i') ORDER BY id;\nSELECT id,title FROM movie WHERE LOWER(title) LIKE '%dream%' ORDER BY id;\nComparer les ensembles d’identifiants sur le même jeu ;pour ce motif littéral,ils doivent correspondre sous les règles de casse annoncées. EXPLAIN ANALYZE sur le serveur et les mêmes projections donne un contexte de coût. Une regex est utile pour des alternatives,classes,répétitions ou ancrages plus riches,mais n’est pas intrinsèquement meilleure pour une simple sous-chaîne.",
+    "explanation": "Le TP cite5 lignes et des millisecondes historiques ;aucune comparaison de vitesse n’est validée sans exécution MySQL comparable. DuckDB expose d’autres fonctions regex :ne pas présenter REGEXP_LIKE MySQL comme exécuté dans le navigateur.",
+    "skillIds": ["B10.02", "B9.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [6]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.2.7"
+  },
+  {
+    "id": "TP-FT-4.2.8",
+    "lessonId": "texte-like-regex",
+    "title": "Fear, panic ou horror : liste lexicale explicite",
+    "type": "sql",
+    "prompt": "Sur le jeu navigateur,retourner id,title dont overview contient fear OU panic OU horror,sans tenir compte de la casse,ordonné par id. Expliquer les limites de cette liste choisie de sous-chaînes.",
+    "hints": [
+      "La liste des termes équivalents est choisie explicitement.",
+      "Relier fear, panic et horror par OR ; noter la limite des sous-chaînes lexicales."
+    ],
+    "solution": "SELECT id,title FROM movie WHERE LOWER(overview) LIKE '%fear%' OR LOWER(overview) LIKE '%panic%' OR LOWER(overview) LIKE '%horror%' ORDER BY id;",
+    "explanation": "Cette liste ne couvre que les chaînes nommées et peut aussi retenir un mot qui les contient. Un résumé évoquant la peur sans ces mots peut manquer ;un mot présent dans une négation peut être retenu. Une recherche sémantique par embeddings peut compléter,mais ne garantit pas tous les équivalents. Un Full Text peut chercher des tokens et préfixes,avec des résultats différents des sous-chaînes.",
+    "skillIds": ["B10.02", "B10.18"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [6]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.2.8",
+    "datasetId": "movies",
+    "ordered": true,
+    "alternativeDatasetIds": ["movies-alt"]
+  },
+  {
+    "id": "TP-FT-4.2.9a",
+    "lessonId": "texte-genres-tp",
+    "title": "Genres et première forme normale",
+    "type": "guided",
+    "prompt": "Analyser la chaîne «Action, Crime» stockée dans genres. Peut-on déterminer toute la forme normale de movie à partir de cela ?",
+    "hints": [
+      "Chaque genre est-il un élément métier manipulé individuellement ?",
+      "Un VARCHAR scalaire peut encoder une collection : annoncer la convention d’atomicité."
+    ],
+    "solution": "Si le domaine métier de genres est une collection de genres manipulés individuellement,la chaîne encode plusieurs valeurs dans une case et ne satisfait pas l’atomicité attendue de la1FN dans ce modèle pédagogique. Le type SQL VARCHAR est scalaire :l’atomicité doit donc être explicitée relativement au domaine et aux opérations,plutôt que déduite des seules virgules. Aucune DF complète n’étant fournie,on ne peut pas conclure à toute la hiérarchie2FN/3FN. Une solution relationnelle crée Genre(nomGenre PK) et MovieGenre(movie_id,nomGenre,PK composée,FK vers Movie et Genre).",
+    "explanation": "Le problème opérationnel est de contraindre,joindre et compter chaque genre sans parser des chaînes. Un SET spécifique au produit ne supprime pas toutes les limites d’un attribut multivalué.",
+    "skillIds": ["B6.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [6]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.2.9a"
+  },
+  {
+    "id": "TP-FT-4.2.9b",
+    "lessonId": "texte-genres-tp",
+    "title": "Une requête fastidieuse sur les genres",
+    "type": "guided",
+    "prompt": "Donner une requête recherchant les films à la foisAction etCrime,sans dépendre de l’ordre de leurs éléments,d’abord dans la chaîne puis dans une relation d’association.",
+    "hints": [
+      "Action puis Crime impose un ordre textuel absent de la demande métier.",
+      "Tester les deux appartenances ou normaliser avec MovieGenre."
+    ],
+    "solution": "Sur la représentation exacte du CSV,MySQL :SELECT id,title FROM movie WHERE FIND_IN_SET('Action',REPLACE(genres,', ',','))>0 AND FIND_IN_SET('Crime',REPLACE(genres,', ',','))>0;\nLa normalisation permet :SELECT m.id,m.title FROM movie m JOIN MovieGenre g ON g.movie_id=m.id WHERE g.nomGenre IN('Action','Crime') GROUP BY m.id,m.title HAVING COUNT(DISTINCT g.nomGenre)=2;\nUn seul LIKE '%Action%Crime%' ne suffit pas,car il impose l’ordre textuelAction avantCrime ;deux LIKE réduisent ce problème mais ne garantissent pas à eux seuls des membres exactement égaux.",
+    "explanation": "Le REPLACE enlève seulement les espaces après les séparateurs ;il conserve l’espace interne deScience Fiction. La requête relationnelle dispose de types,clés et FK pour garantir les membres.",
+    "skillIds": ["B6.01", "B10.01"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [6]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.2.9b"
+  },
+  {
+    "id": "TP-FT-4.2.9c",
+    "lessonId": "texte-genres-tp",
+    "title": "Contraindre le vocabulaire des genres",
+    "type": "guided",
+    "prompt": "Comparer ENUM,SET,CHECK et table de référence pour les20 genres permis. Proposer les contraintes relationnelles utiles.",
+    "hints": [
+      "ENUM choisit un membre ; SET autorise une combinaison de membres.",
+      "Une table de référence et une FK contraignent chaque genre sans parser des chaînes."
+    ],
+    "solution": "ENUM choisit un seul genre parmi une liste,donc ne représente pas directement plusieurs genres par film. SET MySQL autorise une combinaison de membres déclarés,mais dépend du produit et de ses limites/SQL mode. Un CHECK sur une chaîne peut vérifier un format ou des valeurs,mais une simple condition genres IN(...) n’accepte qu’un seul membre et une regex de validation complète devient fragile. Modèle relationnel :CREATE TABLE Genre(nomGenre VARCHAR(30) PRIMARY KEY); CREATE TABLE MovieGenre(movie_id INT NOT NULL,nomGenre VARCHAR(30) NOT NULL,PRIMARY KEY(movie_id,nomGenre),FOREIGN KEY(movie_id) REFERENCES movie(id),FOREIGN KEY(nomGenre) REFERENCES Genre(nomGenre)); Puis insérer uniquement les20 noms autorisés dansGenre. La FK limite les membres et la PK empêche un doublon par film.",
+    "explanation": "Verrouiller les modifications du dictionnaire peut être une règle applicative ;les FK garantissent la référence,mais ne figent pas à elles seules le contenu deGenre pour tous les utilisateurs autorisés.",
+    "skillIds": ["B0.01", "B6.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [6]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.2.9c"
+  },
+  {
+    "id": "TP-FT-4.2.9d",
+    "lessonId": "texte-genres-tp",
+    "title": "Créer et peupler la variante SET MySQL",
+    "type": "guided",
+    "prompt": "MySQL guidé. Construire movieSet sans perdre les autres colonnes et transformer les séparateurs du CSV. Ne pas supposer qu’un nom de table suffit à changer son type.",
+    "hints": [
+      "Créer réellement le type SET, puis charger des colonnes explicitement nommées.",
+      "Retirer les espaces après virgules, garder celui de Science Fiction et contrôler les avertissements."
+    ],
+    "solution": "CREATE TABLE movieSet LIKE movie;\nALTER TABLE movieSet MODIFY genres SET('Action','Adventure','Animation','Comedy','Crime','Documentary','Drama','Family','Fantasy','Foreign','History','Horror','Music','Mystery','Romance','Science Fiction','Thriller','TV Movie','War','Western');\nINSERT INTO movieSet(n,adult,budget,genres,id,imdb_id,original_title,overview,poster_path,revenue,title,vote_average,vote_count,imdbURL,tmdbURL,ImageURL)\nSELECT n,adult,budget,REPLACE(genres,', ',','),id,imdb_id,original_title,overview,poster_path,revenue,title,vote_average,vote_count,imdbURL,tmdbURL,ImageURL FROM movie;\nSHOW WARNINGS;\nSELECT COUNT(*) FROM movieSet;\nLe REPLACE retire les espaces autour des séparateurs du CSV vérifié ;valider auparavant que chaque membre est autorisé. Ne pas charger silencieusement des valeurs invalides sous un mode permissif. Les NULL restentNULL et un genre vide doit avoir une politique explicite.",
+    "explanation": "La liste d’insertion nommée conserve les seize colonnes. Le SET produit une représentation canonique liée à l’ordre déclaré,qui peut différer de la chaîne d’origine.",
+    "skillIds": ["B6.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [7]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.2.9d"
+  },
+  {
+    "id": "TP-FT-4.2.9e",
+    "lessonId": "texte-genres-tp",
+    "title": "Pourquoi LIKE et FIND_IN_SET diffèrent-ils ?",
+    "type": "guided",
+    "prompt": "Le TP observe48 résultats pour movieSet LIKE '%Action%Crime%',53 pour movie avec le même motif,et53 pour deux FIND_IN_SET sur movieSet. Expliquer le phénomène sans présenter ces nombres comme des mesures du site.",
+    "hints": [
+      "Le SET s’affiche dans l’ordre déclaré de ses membres.",
+      "FIND_IN_SET teste les appartenances sans exiger Action avant Crime."
+    ],
+    "solution": "LIKE '%Action%Crime%' exigeAction avantCrime dans la chaîne affichée. Un SET est réaffiché dans l’ordre de ses membres déclarés,qui peut différer de l’ordre du CSV ou de la déclaration réellement utilisée pendant le TP. SiCrime est déclaré avantAction,une ligne contenant les deux peut s’afficherCrime,Action et manquer le LIKE. SELECT * FROM movieSet WHERE FIND_IN_SET('Action',genres)>0 AND FIND_IN_SET('Crime',genres)>0; teste les deux présences,sans ordre. Les nombres48/53 sont des observations historiques :avec la liste déclarée dans notre correction(Action avantCrime),le résultat textuel peut différer du48 initial. Vérifier SHOW CREATE TABLE movieSet et comparer les id réellement différents plutôt que reproduire un chiffre sans sa déclaration.",
+    "explanation": "La différence dépend des données et de l’ordre exact du SET,pas d’une règle selon laquelle SET perdrait cinq films. Une recherche par membres décrit la demande plus fidèlement qu’un motif imposant un ordre.",
+    "skillIds": ["B10.01", "B10.02"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [7]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.2.9e"
+  },
+  {
+    "id": "TP-FT-4.3.1",
+    "lessonId": "texte-index-mysql",
+    "title": "Préparer movieFT et ses index nécessaires",
+    "type": "guided",
+    "prompt": "MySQL guidé. Dupliquer movie et dire ce qui est indispensable avant MATCH AGAINST. Choisir une méthode dont les contraintes sont explicites.",
+    "hints": [
+      "Il faut un FULLTEXT compatible avec les colonnes utilisées par MATCH.",
+      "La copie peut conserver la PK : inspecter SHOW CREATE TABLE avant d’ajouter une contrainte."
+    ],
+    "solution": "CREATE TABLE movieFT LIKE movie;\nINSERT INTO movieFT SELECT * FROM movie;\nSHOW CREATE TABLE movieFT;\nCREATE FULLTEXT INDEX FTindexTitle ON movieFT(title);\nCREATE FULLTEXT INDEX FTindexGenres ON movieFT(genres);\nLa méthode LIKE conserve notamment les index admissibles de la table source ;vérifier la PK existante. Un index FULLTEXT compatible avec les colonnes de chaque MATCH est nécessaire avant les recherches InnoDB correspondantes ;un B-arbre title ne le remplace pas. Les types textuels et charset/collation doivent être admissibles.",
+    "explanation": "La préparation ne consiste pas à ajouter aveuglément une secondePK. Un CREATE TABLE AS SELECT copie les valeurs mais a des règles différentes pour les contraintes. Le jeu navigateur movieFT sert aux lectures relationnelles et ne constitue pas une implémentation InnoDB Full Text.",
+    "skillIds": ["B10.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [7]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.3.1"
+  },
+  {
+    "id": "TP-FT-4.3.2a",
+    "lessonId": "texte-index-mysql",
+    "title": "Ajouter une PK : vérifier la méthode de copie",
+    "type": "guided",
+    "prompt": "MySQL guidé. L’énoncé demande ALTER TABLE movieFT ADD pk INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY. Quand cette commande est-elle correcte,et quand échoue-t-elle ?",
+    "hints": [
+      "Une table ne peut pas posséder deux PRIMARY KEY.",
+      "CREATE TABLE LIKE et CREATE TABLE AS SELECT ne copient pas les contraintes de la même façon."
+    ],
+    "solution": "SHOW CREATE TABLE movieFT;\nSHOW INDEXES FROM movieFT;\nSi la copie conserve id comme PRIMARY KEY,la commande ajoute une secondePK et échoue :conserver id ou décider explicitement d’un autre schéma. Si movieFT a été créée par CREATE TABLE movieFT AS SELECT * FROM movie; sansPK,alors ALTER TABLE movieFT ADD pk INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY; est une option correcte ;vérifier ensuite SHOW CREATE TABLE. Un id unique métier peut aussi être rétabli selon la demande. Le besoin interne d’un identifiant FullText ne signifie pas qu’une colonne nommée pk soit toujours obligatoire.",
+    "explanation": "La bonne réponse dépend du schéma réellement copié. Distinguer PK utilisateur et identifiant de document interne InnoDB.",
+    "skillIds": ["B0.01"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [7]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.3.2a"
+  },
+  {
+    "id": "TP-FT-4.3.2b",
+    "lessonId": "texte-index-mysql",
+    "title": "Créer FULLTEXT sur le titre",
+    "type": "guided",
+    "prompt": "MySQL guidé. Écrire la création puis le contrôle de l’index Full Text title. Peut-on utiliser MATCH(title,genres) grâce à cet index seul ?",
+    "hints": [
+      "Un index B-arbre title n’est pas un FULLTEXT.",
+      "Créer FULLTEXT(title), puis contrôler type et colonnes avec SHOW INDEXES."
+    ],
+    "solution": "CREATE FULLTEXT INDEX FTindexTitle ON movieFT(title);\nSHOW INDEXES FROM movieFT;\nSELECT id,title FROM movieFT WHERE MATCH(title) AGAINST('dream' IN NATURAL LANGUAGE MODE);\nCet index est compatible avec la recherche surtitle. Il ne remplace pas un FULLTEXT(title,genres) demandé pour une recherche combinée ni un index séparé genres. Si FTindexTitle existe déjà,ne pas le créer en double :inspecter son nom,type et colonnes.",
+    "explanation": "Les colonnes utilisées par MATCH doivent disposer d’un index compatible selon les règles du moteur et du mode. Les résultats FT portent sur les tokens retenus,pas toutes les sous-chaînes.",
+    "skillIds": ["B10.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [7]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.3.2b"
+  },
+  {
+    "id": "TP-FT-4.3.2c",
+    "lessonId": "texte-index-mysql",
+    "title": "Inspecter les termes persistés et en cache",
+    "type": "guided",
+    "prompt": "MySQL guidé. À quoi sert innodb_ft_aux_table ? Écrire les requêtes d’inspection et expliquer pourquoi une seule table d’information peut sembler vide.",
+    "hints": [
+      "Choisir la table à inspecter avec innodb_ft_aux_table.",
+      "Lire les entrées persistées et en cache avant de conclure que des tokens manquent."
+    ],
+    "solution": "SET GLOBAL innodb_ft_aux_table='FT_test_DB/movieFT';\nSELECT word,doc_count,doc_id,position FROM information_schema.INNODB_FT_INDEX_TABLE ORDER BY word DESC,doc_id,position LIMIT 15;\nSELECT word,doc_count,doc_id,position FROM information_schema.INNODB_FT_INDEX_CACHE ORDER BY word DESC,doc_id,position LIMIT 15;\nLa variable désigne la table dont on veut lire les métadonnéesFT. INDEX_TABLE expose des entrées persistées ;INDEX_CACHE peut contenir des entrées pas encore fusionnées. Une liste vide ne prouve donc pas à elle seule que l’index n’existe pas ou que le texte est vide. Vérifier nom exact,droits,index créés et état du chargement.",
+    "explanation": "Les positions et identifiants de documents expliquent les postings d’un index inversé. Cette inspection nécessite le serveur MySQL et les privilèges appropriés ;le simulateur du site n’en est pas une copie exacte.",
+    "skillIds": ["B10.03", "B10.12"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [7]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.3.2c"
+  },
+  {
+    "id": "TP-FT-4.3.2d",
+    "lessonId": "texte-pretraitement",
+    "title": "Compter et examiner les stopwords",
+    "type": "guided",
+    "prompt": "MySQL guidé. Écrire l’inspection de la stoplist par défaut et prévoir l’effet de in sur la recherche death in. Peut-on en déduire la liste réellement utilisée sans regarder les variables ?",
+    "hints": [
+      "La liste par défaut ne prouve pas à elle seule qu’elle est active.",
+      "Inspecter aussi les variables serveur et utilisateur ; vérifier le traitement du mot in lors de la construction."
+    ],
+    "solution": "SELECT COUNT(*) AS nombre FROM information_schema.INNODB_FT_DEFAULT_STOPWORD;\nSELECT value FROM information_schema.INNODB_FT_DEFAULT_STOPWORD ORDER BY value;\nSHOW VARIABLES LIKE 'innodb_ft%stopword%';\nDans la configuration illustrée,«in» est ignoré,donc death in se comporte surtout comme death pour les tokens retenus. La liste par défaut ne prouve pas qu’elle est active :une liste serveur ou table dédiée peut remplacer les valeurs,ou les stopwords peuvent être désactivés. La configuration doit être en vigueur lors de la construction de l’index concerné ;si elle change,étudier la reconstruction nécessaire.",
+    "explanation": "Ne pas inventer un nombre de stopwords mesuré sans serveur. Les requêtes donnent la mesure à réaliser et l’interprétation attendue ;le comportement retenu dépend aussi de la taille minimale des tokens et du parseur.",
+    "skillIds": ["B10.04", "B10.12"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [7, 8]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.3.2d"
+  },
+  {
+    "id": "TP-FT-4.3.2e",
+    "lessonId": "texte-index-mysql",
+    "title": "Tables auxiliaires avant et après un second index",
+    "type": "guided",
+    "prompt": "MySQL guidé. Observer les structures auxiliaires avant et après l’ajout de FULLTEXT(genres). Que faut-il comparer et que signifie leur nombre ?",
+    "hints": [
+      "Comparer deux états de métadonnées sur le même serveur.",
+      "Les tables auxiliaires servent à l’index et à sa maintenance : leur nombre n’est pas un nombre de mots."
+    ],
+    "solution": "SELECT name,table_id FROM information_schema.INNODB_TABLES WHERE name LIKE 'FT_test_DB/fts%' ORDER BY name;\nCREATE FULLTEXT INDEX FTindexGenres ON movieFT(genres);\nSELECT name,table_id FROM information_schema.INNODB_TABLES WHERE name LIKE 'FT_test_DB/fts%' ORDER BY name;\nSauvegarder les deux listes pour comparer noms et identifiants. Le secondFT crée des structures d’index associées ;certaines structures de suivi des documents peuvent être communes à la table selon la version. Ces tables répartissent notamment les termes et leur maintenance :une table auxiliaire n’est pas un terme ni un film. Lire aussi SHOW INDEXES FROM movieFT pour relier les index logiques aux structures.",
+    "explanation": "Le nombre exact et le nommage dépendent du moteur et de sa version ;aucun résultat numérique actuel n’est affirmé ici. Un contrôle par préfixe peut nécessiter une casse compatible avec le schéma réellement créé.",
+    "skillIds": ["B10.12"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [8]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.3.2e"
+  },
+  {
+    "id": "TP-FT-4.3.3",
+    "lessonId": "texte-index-mysql",
+    "title": "Deux index séparés ou un index combiné ?",
+    "type": "guided",
+    "prompt": "Analyser sans exécuter,comme demandé dans le TP :CREATE FULLTEXT INDEX FTindexTitleGenres ON movieFT(title,genres). Comparer à deux index surtitle puisgenres.",
+    "hints": [
+      "Analyser seulement : l’énoncé demande de ne pas exécuter ce CREATE.",
+      "Le combiné cherche dans le contenu réuni ; les index séparés permettent deux MATCH distincts."
+    ],
+    "solution": "L’index combiné constitue un document textuel regroupanttitle etgenres pour MATCH(title,genres). Il sert à chercher un terme dans ce contenu combiné,avec des statistiques de pertinence correspondantes ;il ne permet pas de dire directement que le terme vient uniquement dutitle. Les deux index séparés permettent MATCH(title) et MATCH(genres),avec des conditions et scores distincts :par exemple titre contenantdeath ET genreComedy. Le combiné ne remplace donc pas automatiquement ces deux usages ;les règles de compatibilité des colonnesMATCH dépendent du moteur cible. Ne pas exécuter leCREATE de cette question :il s’agit d’une comparaison conceptuelle.",
+    "explanation": "Le Full Text combiné ne correspond pas à un préfixe gauche d’index B-arbre. Les colonnes ne jouent pas le même rôle que dans un ordre lexicographique.",
+    "skillIds": ["B10.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [8]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.3.3"
+  },
+  {
+    "id": "TP-FT-4.4.1",
+    "lessonId": "texte-modes",
+    "title": "Comédies dans les trois modes Full Text",
+    "type": "guided",
+    "prompt": "MySQL guidé. Avec FULLTEXT(genres),écrire les comptages des comédies en naturel,booléen et expansion,puis les comparer à LIKE. Ne pas annoncer de temps mesuré si le serveur n’a pas été utilisé.",
+    "hints": [
+      "Écrire la recherche avec les trois modes de AGAINST.",
+      "L’expansion ajoute des termes des premiers résultats et peut dépasser les seules comédies."
+    ],
+    "solution": "SELECT COUNT(*) FROM movieFT WHERE MATCH(genres) AGAINST('Comedy' IN NATURAL LANGUAGE MODE);\nSELECT COUNT(*) FROM movieFT WHERE MATCH(genres) AGAINST('+Comedy' IN BOOLEAN MODE);\nSELECT COUNT(*) FROM movieFT WHERE MATCH(genres) AGAINST('Comedy' WITH QUERY EXPANSION);\nSELECT COUNT(*) FROM movie WHERE genres LIKE '%Comedy%';\nNaturel et booléen à mot obligatoire recherchent un tokenComedy admissible. L’expansion peut ajouter des films via d’autres termes des premiers résultats :elle n’est pas obligée de garder seulementComedy. LIKE cherche une sous-chaîne et n’applique pas de stoplist. Comparer les ensembles d’id et non seulement les comptes,puis les plans/temps sur même moteur,jeu,cache et projection.",
+    "explanation": "Le463 de l’énoncé appartient au jeu original et à sa rechercheLIKE. L’expansion peut avoir un autre résultat pertinent ou plus bruité. Les temps historiques ne sont pas une validation du moteur du site.",
+    "skillIds": ["B10.09", "B10.10", "B10.11", "B9.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [8]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.4.1"
+  },
+  {
+    "id": "TP-FT-4.4.2",
+    "lessonId": "texte-ranking-innodb",
+    "title": "Scores de comédies et ordre des résultats",
+    "type": "guided",
+    "prompt": "MySQL guidé. Afficher id,title et score pour les trois modes de la question précédente,en limitant à dix lignes et en garantissant l’ordre. Un score est-il un pourcentage ?",
+    "hints": [
+      "Le score doit être projeté et son ordre explicité.",
+      "Répéter le même MATCH dans le filtre, puis ORDER BY score DESC, id et LIMIT 10."
+    ],
+    "solution": "SELECT id,title,MATCH(genres) AGAINST('Comedy' IN NATURAL LANGUAGE MODE) AS score FROM movieFT WHERE MATCH(genres) AGAINST('Comedy' IN NATURAL LANGUAGE MODE) ORDER BY score DESC,id LIMIT 10;\nSELECT id,title,MATCH(genres) AGAINST('+Comedy' IN BOOLEAN MODE) AS score FROM movieFT WHERE MATCH(genres) AGAINST('+Comedy' IN BOOLEAN MODE) ORDER BY score DESC,id LIMIT 10;\nSELECT id,title,MATCH(genres) AGAINST('Comedy' WITH QUERY EXPANSION) AS score FROM movieFT WHERE MATCH(genres) AGAINST('Comedy' WITH QUERY EXPANSION) ORDER BY score DESC,id LIMIT 10;\nLes formules et l’ensemble de termes diffèrent selon mode,configuration et corpus. Le score n’est ni un pourcentage ni nécessairement borné par1. Le booléen peut calculer un score avec opérateurs ;ORDER BY explicite garantit le classement et id stabilise les ex æquo.",
+    "explanation": "Comparer des scores calculés sur des requêtes ou corpus différents n’équivaut pas à comparer une probabilité absolue de pertinence. La requête évaluée dans ce laboratoire reste guidée MySQL.",
+    "skillIds": ["B10.06", "B10.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [8]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.4.2"
+  },
+  {
+    "id": "TP-FT-4.4.3",
+    "lessonId": "texte-modes",
+    "title": "Death in : expliquer les cinq résultats historiques",
+    "type": "guided",
+    "prompt": "Le TP observe2 titres pour LIKE '%death%in%',7 pour LIKE '%death%',6 pour MATCH(title) naturel 'death in',6 en booléen sans opérateurs,71 avec expansion. Expliquer chaque différence et les vérifications à faire,sans prétendre retrouver ces comptes sur un extrait.",
+    "hints": [
+      "Séparer sous-chaînes ordonnées, tokens, mots ignorés et termes ajoutés.",
+      "Les comptes 7 et 6 ne révèlent pas le film manquant : comparer les identifiants du jeu original."
+    ],
+    "solution": "LIKE '%death%in%' exige la sous-chaînedeath puisin plus loin,dans cet ordre,mais pas nécessairement comme mots distincts. LIKE '%death%' exige seulement la sous-chaîne,donc peut retenir un mot plus long contenantdeath. Full Text tokenise :death doit être un token reconnu ;in est ignoré dans la configuration du TP car stopword et/ou taille. Cela explique qu’un résultat de sous-chaîne puisse manquer enFT. Le booléen sans+ni- conserve ici les mêmes termes utiles et peut donner les mêmes six lignes ;ce n’est pas une preuve que tous les modes sont équivalents. L’expansion ajoute des termes des premiers documents et peut atteindre71 lignes,n’ayant pas toutesdeath dans le titre. Vérifier collation,parseur,stoplist,tokens,MATCH(title) compatible avec l’index et liste desid. Les comptes2/7/6/6/71 sont ceux de l’énoncé.",
+    "explanation": "Une explication rigoureuse ne déduit pas le mot exact qui cause la différence7contre6 sans consulter les lignes concernées. Le mécanisme mots contre sous-chaînes est justifié ;l’identité du film manquant reste à vérifier sur le serveur et son jeu/configuration.",
+    "skillIds": ["B10.02", "B10.04", "B10.09", "B10.10", "B10.11"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-FT",
+        "pages": [8, 9]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "fulltext",
+    "tpQuestion": "4.4.3"
+  },
+  {
+    "id": "IDX-Q-PREFIX",
+    "lessonId": "index-bulk-composite",
+    "title": "Un index composé suffit-il ?",
+    "type": "quiz",
+    "prompt": "Index(country,name,id). Quelle recherche délimite directement un intervalle par son préfixe gauche ?",
+    "hints": [
+      "Définir les hypothèses avant de calculer.",
+      "Vérifier les NULL, les doublons et les unités quand ils interviennent."
+    ],
+    "solution": "country='CH' AND name LIKE 'A%'",
+    "explanation": "Le premier composant est fixé,puis un préfixe constant sur le deuxième donne une plage. Chercher seulementname peut nécessiter un scan ou une optimisation distincte.",
+    "skillIds": ["B8.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-IDX",
+        "pages": [50]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "country='CH' AND name LIKE 'A%'",
+      "name='Adam' sans condition country",
+      "id=42 sans autre condition",
+      "Toute condition donne exactement le même accès"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "FT-Q-BOOLEAN",
+    "lessonId": "texte-modes",
+    "title": "Exclure ou pénaliser ?",
+    "type": "quiz",
+    "prompt": "Que signifie +mysql ~tutorial dans le mode booléen présenté ?",
+    "hints": [
+      "Définir les hypothèses avant de calculer.",
+      "Vérifier les NULL, les doublons et les unités quand ils interviennent."
+    ],
+    "solution": "mysql obligatoire ;tutorial pénalise sans exclure.",
+    "explanation": "Le tilde diminue la contribution ;le signe moins aurait exclu. Les mots optionnels ne remplacent pas la condition obligatoire.",
+    "skillIds": ["B10.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FT",
+        "pages": [61, 62]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "mysql obligatoire ;tutorial pénalise sans exclure.",
+      "mysql et tutorial sont tous deux obligatoires.",
+      "tutorial est systématiquement exclu.",
+      "Le tilde recherche une sous-chaîne."
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "VEC-Q-DISTANCE",
+    "lessonId": "vecteurs-distances",
+    "title": "Quel sens pour la distance cosinus ?",
+    "type": "quiz",
+    "prompt": "Une fonction renvoie1-cosinus. Quel résultat désigne un voisin plus proche ?",
+    "hints": [
+      "Définir les hypothèses avant de calculer.",
+      "Vérifier les NULL, les doublons et les unités quand ils interviennent."
+    ],
+    "solution": "0,05 plutôt que0,8.",
+    "explanation": "Une distance se minimise ;la similarité cosinus se maximise. Ne pas se fier à un alias SQL nommé sim.",
+    "skillIds": ["B10.16"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-VEC",
+        "pages": [15, 16]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "0,05 plutôt que0,8.",
+      "0,8 plutôt que0,05.",
+      "Toujours le vecteur le plus long.",
+      "Une distance doit se trier enDESC."
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "IDX-Q04",
+    "lessonId": "index-produits",
+    "title": "Localisateur d’un index secondaire",
+    "type": "quiz",
+    "prompt": "Dans une table MySQL InnoDB possédant une clé primaire, que contient principalement une entrée de feuille d’un index secondaire pour retrouver la ligne ?",
+    "hints": [
+      "Distinguer la feuille de l’index clustered de celle de l’index secondaire.",
+      "Une recherche secondaire peut nécessiter une seconde descente sur la clé primaire."
+    ],
+    "solution": "La clé secondaire et la valeur de clé primaire permettant la recherche dans l’index clustered.",
+    "explanation": "La feuille de l’index principal contient les lignes. Le localisateur secondaire est la clé primaire, pas un ROWID Oracle ni un RID de heap SQL Server.",
+    "skillIds": ["B8.10", "B8.11"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-IDX",
+        "pages": [57, 58, 59, 60, 61, 62]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "La clé secondaire avec la valeur de clé primaire",
+      "Une adresse ROWID Oracle",
+      "La ligne complète dans tous les cas"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "AUT-Q01",
+    "lessonId": "hachage",
+    "title": "Collisions et égalité",
+    "type": "quiz",
+    "prompt": "Avec h(k)=k modulo 5, où vont les clés 2,7,12 et pourquoi faut-il encore comparer les clés ?",
+    "hints": [
+      "Revenir à la définition de la structure étudiée.",
+      "Dérouler la recherche avec les clés ou mots de cet énoncé."
+    ],
+    "solution": "Dans le même seau ; la collision ne signifie pas égalité",
+    "explanation": "Les trois restes valent 2. Le chaînage ou une autre résolution conserve les clés et permet de retrouver la bonne entrée.",
+    "skillIds": ["B9.03"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-AUT",
+        "pages": [11, 12, 13, 14, 15, 16, 17, 18]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Dans le même seau ; la collision ne signifie pas égalité",
+      "Dans trois seaux distincts",
+      "Dans le même seau ; elles deviennent égales"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "AUT-Q02",
+    "lessonId": "clusters",
+    "title": "À quoi sert un cluster Oracle ?",
+    "type": "quiz",
+    "prompt": "Deux tables sont souvent jointes sur la même clé. Quel est le but du cluster décrit dans le cours ?",
+    "hints": [
+      "Revenir à la définition de la structure étudiée.",
+      "Dérouler la recherche avec les clés ou mots de cet énoncé."
+    ],
+    "solution": "Regrouper physiquement les lignes partageant la clé de cluster",
+    "explanation": "Le cluster de tables rapproche physiquement les lignes accédées ensemble. La clé de cluster ne remplace pas les PK et le mot cluster n’y désigne pas un groupe de serveurs.",
+    "skillIds": ["B9.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-AUT",
+        "pages": [19, 20, 21, 22, 23, 24]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Regrouper physiquement les lignes partageant la clé de cluster",
+      "Imposer que la clé de cluster soit unique dans chaque table",
+      "Répliquer la base sur plusieurs serveurs"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "FT-Q01",
+    "lessonId": "texte-index-inverse",
+    "title": "Lire une liste de documents",
+    "type": "quiz",
+    "prompt": "D1 contient chat maison, D2 chien maison, D3 chat. Quelle liste l’index inversé associe-t-il au terme chat ?",
+    "hints": [
+      "Revenir à la définition de la structure étudiée.",
+      "Dérouler la recherche avec les clés ou mots de cet énoncé."
+    ],
+    "solution": "D1,D3",
+    "explanation": "L’index part du terme pour accéder aux documents qui le contiennent. La liste peut aussi conserver fréquences et positions selon le moteur.",
+    "skillIds": ["B10.03"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FT",
+        "pages": [15, 16, 17, 18]
+      }
+    ],
+    "origin": "created",
+    "options": ["D1,D3", "D1,D2", "D1,D2,D3"],
+    "correctIndex": 0
+  }
+]

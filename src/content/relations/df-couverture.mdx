@@ -1,0 +1,60 @@
+export const meta = {
+  "id": "df-couverture",
+  "moduleId": "df",
+  "title": "Construire une couverture minimale",
+  "summary": "Simplifier sans changer les contraintes ; plusieurs résultats peuvent être corrects.",
+  "objectives": [
+    "Séparer les cibles",
+    "Tester un attribut superflu et une DF redondante",
+    "Vérifier l’équivalence et accepter la non-unicité"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "C-DF",
+      "pages": [
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32
+      ]
+    }
+  ],
+  "skillIds": [
+    "B5.08",
+    "B5.06"
+  ],
+  "order": 5
+}
+
+## Réduire les règles, pas leur sens
+
+Une couverture minimale a des cibles simples, des sources sans attribut superflu et aucune DF redondante. Elle doit conserver exactement la même fermeture que les règles initiales. « Minimale » ne signifie pas résultat unique ni forcément nombre global minimal d'attributs écrits.
+
+Procède ainsi : décompose les cibles ; pour chaque `X → a`, tente de retirer un attribut b de X en calculant `(X moins b)⁺` ; puis pour tester si la DF entière est redondante, retire-la et calcule `X⁺` avec les autres règles. Recommence si une modification rend un autre test possible. Termine par les implications dans les deux sens.
+
+## Exemple déroulé
+
+```text
+A → B ; A → C ; B → C ; AB → C ; AC → D
+```
+
+`A → C` vient de `A → B → C`. `AB → C` est inutile puisque B fournit C. C peut être retiré de `AC → D` car A fournit C. Une couverture est donc :
+
+```text
+A → B ; B → C ; A → D
+```
+
+Les trois règles sont nécessaires : sans la première, A ne fournit plus B ; sans la seconde B ne fournit plus C ; sans la troisième D n'est jamais obtenu. On ne peut pas simplifier AC → D en C → D : C seul ne fournit ni A ni D.
+
+## Deux réponses différentes peuvent être bonnes
+
+`A → B ; C → B ; B → C` et `A → C ; C → B ; B → C` sont deux couvertures minimales équivalentes. Le cycle B/C permet le changement de cible pour A.
+
+Sur l'exercice à déterminants composés `A → B ; ABCD → E ; EF → GH ; ACDF → EG`, une couverture possible est `A → B ; ACD → E ; EF → G ; EF → H`. Vérifie : A fournit B, puis ACD fournit E et EF fournit G/H ; les deux règles finales ACDF sont alors déduites. La simplification ABCD → E utilise A → B.
+
+## Critère de réussite
+
+Justifie chaque suppression avec la fermeture utilisée. Une liste finale copiée sans les tests ne démontre ni l'équivalence ni la minimalité.

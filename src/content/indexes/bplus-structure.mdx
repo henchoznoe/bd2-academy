@@ -1,0 +1,32 @@
+export const meta = {"id": "bplus-structure", "moduleId": "btree", "title": "B+arbre : feuilles, séparateurs et parcours", "summary": "Distinguer B et B+ et expliquer leur effet sur les intervalles.", "objectives": ["Distinguer B et B+ et expliquer leur effet sur les intervalles.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-IDX", "pages": [36, 37, 38, 39, 40, 41, 42, 43]}], "skillIds": ["B8.05", "B8.06", "B8.07", "B8.08"], "order": 4};
+
+Dans un B+arbre, les nœuds internes contiennent des clés de guidage et des pointeurs d’index ; les références aux lignes sont toutes dans les feuilles. Les feuilles sont généralement chaînées pour lire efficacement un intervalle après une seule descente. Une clé interne reste représentée dans une feuille, contrairement à la promotion retirant une clé d’un B-arbre.
+
+### Séquence du cours
+
+La figure utilise des feuilles de deux clés au maximum et des séparateurs comme bornes supérieures du fils gauche. Pour les insertions 20,40,25,15,17, les états de feuilles sont :
+
+```text
+20       : [20]
+40       : [20,40]
+25       : [20,25] -> [40] ; séparateur 25
+15       : [15,20] -> [25] -> [40] ; séparateurs 20,25
+17       : [15,17] -> [20] -> [25] -> [40]
+           racine [20], fils internes [17] et [25]
+```
+
+Une convention prenant le minimum du fils droit afficherait d’autres séparateurs. Il faut juger le respect des intervalles, le contenu et le chaînage, pas imposer une unique écriture.
+
+### Ordre interne et capacité des feuilles
+
+```text
+Interne B+ : k*c+(k+1)*p <=4096
+c=4 ; p=8 : 12k+8 <=4096 => kmax=340 => dmax=170
+Feuille : clés + pointeurs de données + pointeur(s) de chaînage
+```
+
+Le gain sur les internes augmente le fan-out. La capacité des feuilles dépend de leur format : elle n’est pas automatiquement 340 références. Dans un index clustered, une entrée de feuille est une ligne entière, beaucoup plus large.
+
+Une clé de quatre octets autorise 2^32 codes possibles. La diapo p.42 annonce quatre niveaux en utilisant une capacité élevée. **Ce n’est pas une borne maximale de hauteur indépendante du remplissage.** Avec des nœuds et feuilles moins remplis, cinq niveaux peuvent être possibles. Toujours préciser capacité feuille et occupation avant d’inverser une formule.
+
+L’annexe UUID compare CHAR(36) et BINARY(16). Une clé plus courte augmente le nombre d’entrées par page et réduit aussi les index secondaires InnoDB qui emportent la clé primaire. L’ordre d’arrivée des clés influence les éclatements : la représentation binaire seule ne résout pas tous les coûts d’UUID aléatoires.

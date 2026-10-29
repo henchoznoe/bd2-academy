@@ -1,0 +1,39 @@
+export const meta = {"id": "index-fonctionnel", "moduleId": "btree", "title": "Expressions, JSON, suffixes et conversions", "summary": "Rendre une condition compatible avec l’ordre d’un index.", "objectives": ["Rendre une condition compatible avec l’ordre d’un index.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-IDX", "pages": [87, 88, 89, 105]}], "skillIds": ["B8.14", "B9.08", "B10.01"], "order": 10};
+
+Un index ordinaire contient les valeurs d’une colonne. Si la requête applique une fonction à cette colonne, cet ordre peut ne plus permettre de localiser directement l’intervalle recherché. Deux solutions : réécrire la condition sur la colonne brute ou indexer l’expression compatible.
+
+### Date : réécriture portable
+
+```sql
+SELECT COUNT(*) FROM orders2
+WHERE date_order >= DATE '2024-01-01'
+  AND date_order < DATE '2024-02-01';
+```
+
+Cette plage remplace MONTH(date_order)=1 et YEAR(date_order)=2024. La borne haute exclusive convient aussi à un timestamp contenant des heures. Un index sur date_order peut servir directement à la plage.
+
+### Suffixe : exercice guidé MySQL
+
+```sql
+ALTER TABLE customers
+  ADD COLUMN name_rev VARCHAR(50)
+  GENERATED ALWAYS AS (REVERSE(name)) STORED;
+CREATE INDEX idx_customers_name_rev ON customers(name_rev);
+SELECT id FROM customers WHERE name_rev LIKE '2%';
+```
+
+Chercher une chaîne finissant par 2 revient à chercher une chaîne renversée commençant par 2. Cette proposition via colonne générée dépend de la version MySQL ; ce n’est pas la syntaxe Oracle `REVERSE` ni la syntaxe imprimée invalide de l’ancien corrigé. Vérifier `EXPLAIN` dans le moteur cible.
+
+### Oracle et JSON
+
+```sql
+CREATE INDEX uppercase_idx ON Emp(UPPER(Nom));
+CREATE UNIQUE INDEX po_ref_idx ON j_commande(
+  JSON_VALUE(cmd_doc, '$.Reference'
+    RETURNING VARCHAR2(200) ERROR ON ERROR NULL ON EMPTY)
+);
+```
+
+Le premier permet une recherche sur la même expression UPPER(Nom). Le second indexe un scalaire extrait du document JSON ; les options d’erreur, de type et d’absence font partie de sa sémantique. Les slides décrivent un contexte Oracle 12.2 avec JSON dans un CLOB : ne pas en déduire l’absence de tout type ou index JSON dans des versions ultérieures.
+
+Comparer une colonne entière à une colonne flottante peut introduire une conversion, modifier la sémantique et gêner un accès indexé. Pour des entiers, IntCol supérieur à 3 et IntCol au moins 4 sont équivalents ; aucun gain certain sans plan. MAX(NumCol)*2 peut exploiter un maximum déjà ordonné, tandis que MAX(NumCol*2) demande que le moteur reconnaisse la monotonie. Débordements et types numériques restent à vérifier.

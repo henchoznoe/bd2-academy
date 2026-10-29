@@ -1,0 +1,32 @@
+export const meta = {"id": "sql-pivot-variants", "moduleId": "sql", "title": "Variantes : FILTER, XML et transposition inverse", "summary": "Reconnaître les variantes du pivot et leur portée dans le programme.", "objectives": ["Reconnaître les variantes du pivot et leur portée dans le programme.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [24, 25, 35, 36, 37]}], "skillIds": ["B1.08", "B4.A2"], "order": 5}
+
+## Variantes : FILTER, XML et transposition inverse
+
+Un même besoin de tableau croisé peut être exprimé par CASE avec agrégat, FILTER ou une clause PIVOT propre au moteur. Le besoin reste identique ; les syntaxes et plans ne le sont pas nécessairement.
+
+```sql
+SELECT status,
+ COUNT(*) FILTER (WHERE category_name='CPU') AS cpu,
+ COUNT(*) FILTER (WHERE category_name='Video Card') AS video
+FROM commande GROUP BY status;
+```
+
+Le PIVOT Oracle ordinaire demande une liste connue dans IN. Le support présente l'extension `PIVOT XML`, qui autorise une sous-requête ou ANY pour une sélection dynamique : la sortie est XML, pas automatiquement une nouvelle grille de colonnes SQL ordinaires.
+
+Pour revenir d'une structure large vers une structure longue, on peut utiliser UNION ALL :
+
+```sql
+WITH large AS (
+ SELECT status,
+ COUNT(*) FILTER(WHERE category_name='CPU') AS cpu,
+ COUNT(*) FILTER(WHERE category_name='Video Card') AS video
+ FROM commande GROUP BY status
+)
+SELECT status,'CPU' AS categorie,cpu AS nombre FROM large
+UNION ALL
+SELECT status,'Video Card',video FROM large;
+```
+
+La clause Oracle UNPIVOT est mentionnée mais explicitement non vue dans le cours. Comprendre le principe suffit ici. De même, « PIVOT est plus rapide » ne constitue pas une garantie indépendante des données, du moteur et du plan.
+
+**À retenir :** ne pas confondre tableau logique souhaité, syntaxe disponible et performance réellement observée.

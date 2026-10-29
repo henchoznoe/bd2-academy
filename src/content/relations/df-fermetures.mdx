@@ -1,0 +1,58 @@
+export const meta = {
+  "id": "df-fermetures",
+  "moduleId": "df",
+  "title": "Calculer X⁺ et comprendre F⁺",
+  "summary": "Une fermeture d’attributs teste une implication ; une fermeture de DF contient toutes les conséquences.",
+  "objectives": [
+    "Calculer un point fixe",
+    "Tester X → Y par inclusion",
+    "Distinguer X⁺ et F⁺ et vérifier une équivalence"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "C-DF",
+      "pages": [
+        16,
+        17,
+        19,
+        21,
+        22,
+        23,
+        37
+      ]
+    }
+  ],
+  "skillIds": [
+    "B5.05",
+    "B5.06"
+  ],
+  "order": 4
+}
+
+## La fermeture d'un ensemble d'attributs
+
+`X⁺` est l'ensemble des attributs déterminés par X sous les règles F. On initialise avec X. Tant qu'une DF possède toute sa source dans le résultat, on ajoute sa cible. On continue jusqu'à ce qu'un passage complet n'ajoute rien. L'ordre des règles peut changer les étapes intermédiaires, jamais le résultat final.
+
+## Exemple déroulé
+
+Pour `F = A → BC ; B → E ; CD → EF` :
+
+| Départ | Application | Résultat |
+|---|---|---|
+| AD | A → BC | ABCD |
+| ABCD | B → E | ABCDE |
+| ABCDE | CD → EF | ABCDEF |
+
+Donc `AD → F`. En revanche `AB⁺ = ABCE` : D n'est jamais obtenu, donc CD → EF ne démarre pas et `AB → F` ne découle pas de F.
+
+Le F attribut et l'ensemble de règles F ont parfois la même lettre dans les exercices ; précise toujours ce que tu manipules.
+
+## La fermeture d'un ensemble de règles
+
+`F⁺` contient toutes les DF logiquement impliquées par F, y compris les triviales et les augmentations. On ne l'énumère généralement pas : sa taille est grande. Les diapositives montrent surtout les conséquences utiles, sans prétendre lister tout l'ensemble formel.
+
+Pour prouver `F⁺ = G⁺`, vérifie chaque DF de F avec une fermeture sous G, puis chaque DF de G sous F. Il n'est pas nécessaire que les listes de règles soient identiques.
+
+## À faire sans aide
+
+Compare `A → B ; AB → C ; D → AC ; D → E` et `A → BC ; D → AE`. Dans le premier, A fournit B donc C ; dans le second, D fournit A, puis BC, et E. Les deux ensembles s'impliquent réciproquement. Réussite : toutes les règles sont couvertes dans les deux sens, pas seulement une DF choisie.

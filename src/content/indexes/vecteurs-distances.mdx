@@ -1,0 +1,30 @@
+export const meta = {"id": "vecteurs-distances", "moduleId": "vecteurs", "title": "Cosinus, produit scalaire et distance euclidienne", "summary": "Calculer des voisins et choisir le sens du classement.", "objectives": ["Calculer des voisins et choisir le sens du classement.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-VEC", "pages": [9, 15, 16]}], "skillIds": ["B10.16", "B10.17"], "order": 25};
+
+Une similarité se maximise ; une distance se minimise. Une colonne appelée sim dans un exemple peut contenir une distance : c’est la définition de la fonction qui fixe le tri.
+
+```text
+dot(a,b) = somme_i a_i*b_i
+norme(a) = racine(somme_i a_i^2)
+similarité_cosinus(a,b) = dot(a,b)/(norme(a)*norme(b))
+distance_cosinus(a,b) = 1 - similarité_cosinus(a,b)
+distance_euclidienne(a,b) = racine(somme_i(a_i-b_i)^2)
+```
+
+### Exemple déroulé
+
+```text
+q=(1,0), A=(2,0), B=(1,1), C=(0,1)
+              A        B          C
+Produit       2        1          0
+Cosinus       1        0,707107   0
+Dist. cosinus 0        0,292893   1
+Dist. euclid. 1        1          1,414214
+```
+
+A et B sont ex æquo en distance euclidienne mais pas au cosinus. Multiplier A par dix conserve son angle mais modifie produit et distance euclidienne. Sur des vecteurs normalisés de norme 1, les classements par produit scalaire, cosinus et distance euclidienne sont liés, car le carré de la distance euclidienne vaut deux moins deux fois le produit.
+
+Un vecteur nul rend le cosinus indéfini. Deux dimensions différentes rendent ces comparaisons invalides. Ajouter un ordre sur id permet de rendre les ex æquo déterministes sans prétendre qu’un document est plus pertinent que l’autre.
+
+Le nom DOT dans une API peut désigner un produit ou une distance dérivée, par exemple son opposé. Le support cite une méthode de DISTANCE mais ne définit pas sa convention numérique : vérifier le contrat du moteur avant de choisir ASC ou DESC. Pour les exercices pédagogiques, le produit simple est une similarité que l’on maximise.
+
+Un KNN exact calcule la distance à toutes les lignes puis garde les k plus petites. Un ANN réduit les candidats grâce à une structure spécialisée, au prix d’une possible perte de voisins exacts. La disponibilité et les performances d’ANN ne se déduisent pas du seul type de stockage VECTOR.

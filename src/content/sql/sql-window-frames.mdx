@@ -1,0 +1,22 @@
+export const meta = {"id": "sql-window-frames", "moduleId": "sql", "title": "Cadres ROWS et RANGE", "summary": "Calculer des cumuls et reconnaître l’effet des ex æquo.", "objectives": ["Calculer des cumuls et reconnaître l’effet des ex æquo.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [107, 108, 109, 110, 111, 112, 113, 114, 115]}], "skillIds": ["B3.06", "B3.07", "B3.08"], "order": 15}
+
+> **Les mots du cours.** Le cadre de fenêtre indique les lignes retenues dans la partition. Le mot pairs signifie seulement ex æquo sur les expressions ORDER BY ; il ne désigne pas un nouveau classement.
+
+## Cadres ROWS et RANGE
+
+Le ORDER BY de OVER fixe l'ordre de calcul dans une partition ; il ne garantit pas le tri final affiché. Le cadre précise les lignes participant au calcul pour chaque ligne courante.
+
+```sql
+SELECT compte,id,val,
+ SUM(val) OVER(PARTITION BY compte ORDER BY id
+ ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS solde
+FROM t ORDER BY compte,id;
+```
+
+Pour un compte avec les valeurs +20 puis -10, le cumul est 20 puis 10. À la partition suivante, le calcul redémarre. UNBOUNDED PRECEDING indique le début de partition, CURRENT ROW la ligne courante. `ROWS BETWEEN 1 PRECEDING AND CURRENT ROW` additionne au plus deux lignes ; avec AVG, c'est une moyenne mobile.
+
+ROWS raisonne en positions physiques dans l'ordre ; RANGE raisonne selon les valeurs de la clé de tri et inclut les pairs. Pour des lignes `(ordre=1,val=10),(ordre=1,val=20),(ordre=2,val=5)`, un cumul RANGE donne 30,30,35. Un cumul ROWS avec ordre déterministe donne 10,30,35.
+
+Dans les cas étudiés, le cadre implicite d'un agrégat avec ORDER BY est généralement RANGE du début à la ligne courante. L'équivalence avec un ROWS explicite n'est pas générale en présence d'ex æquo, même si l'exemple du support sans doublon donne le même résultat.
+
+**À retenir :** tester un ex æquo, un changement de partition et une première ligne. Écrire le cadre explicitement lorsque son choix change la sémantique.

@@ -1,0 +1,70 @@
+export const meta = {
+  "id": "fn-bcnf",
+  "moduleId": "normalisation",
+  "title": "Décomposer en BCNF",
+  "summary": "Chaque déterminant non trivial doit être une superclé ; on projette à chaque étape.",
+  "objectives": [
+    "Tester BCNF",
+    "Décomposer récursivement sans perte",
+    "Repérer les DF qui ne sont plus locales"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "C-FN",
+      "pages": [
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61
+      ]
+    }
+  ],
+  "skillIds": [
+    "B6.08",
+    "B6.09",
+    "B6.10"
+  ],
+  "order": 7
+}
+
+## Une condition plus stricte que la 3FN
+
+BCNF exige que chaque DF non triviale ait une **superclé** comme source. La cible première ne constitue plus une exception. Plusieurs clés candidates ne suffisent pas à provoquer une violation : dans PLACE, Étudiant,Matière → Rang et Matière,Rang → Étudiant ont toutes deux une clé pour source.
+
+## Algorithme de décomposition
+
+Dans un morceau W non BCNF, choisis une DF X → Y avec X non superclé et Y réduit aux attributs hors X. Remplace W par `X union Y` et `W moins Y`, puis calcule les DF projetées sur chacun. L'intersection X détermine le premier morceau : Heath garantit l'absence de perte de contenu. Recommence jusqu'à ce que tous les morceaux soient BCNF. Supprime les inclusions inutiles.
+
+## Exemple déroulé : AVION
+
+```text
+noavion → type,proprietaire
+type → constructeur,capacite
+```
+
+La clé est noavion. type n'est pas superclé : on sépare `Type(type,constructeur,capacite)` et `Avion(noavion,type,proprietaire)`. Ces deux tables sont BCNF, sans perte et avec les DF préservées.
+
+## Exemple où une contrainte est perdue
+
+Pour `Enseignement(Etudiant,Matiere,Prof)`, `Prof → Matiere` et `Etudiant,Matiere → Prof`, les clés sont Étudiant,Matière et Étudiant,Prof. La table est 3FN mais pas BCNF. On obtient `Enseignant(Prof,Matiere)` et `Cours(Etudiant,Prof)`. Les deux sont BCNF. L'unicité d'un professeur par étudiant et matière n'est plus locale : on peut inscrire un étudiant chez deux professeurs de mathématiques.
+
+## Ne pas oublier les règles déduites
+
+Dans R(A,B,C,D), A → B et B → C, séparer AB et ACD laisse A → C dans ACD. Il faut encore séparer AC et AD. Cette décomposition perd B → C comme contrainte locale. Un choix initial B → C aurait donné BC puis AB et AD, qui préservent les règles initiales. L'ordre peut donc modifier les garanties finales.
+
+## Validation
+
+Pour chaque étape : règle utilisée, fermeture du déterminant, intersection et DF projetées. La synthèse 3FN garantit la préservation des DF ; la décomposition BCNF garantit le contenu mais peut perdre des DF. Compare les résultats au lieu de déclarer BCNF toujours préférable.

@@ -1,0 +1,48 @@
+export const meta = {
+  "id": "fn-1fn-2fn",
+  "moduleId": "normalisation",
+  "title": "De la 1FN à la 2FN",
+  "summary": "Vérifier les valeurs atomiques, puis les dépendances partielles de toutes les clés candidates.",
+  "objectives": [
+    "Expliquer l’atomicité dans le modèle choisi",
+    "Identifier les attributs premiers",
+    "Détecter une dépendance partielle sur toute clé candidate"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "C-FN",
+      "pages": [
+        24,
+        25,
+        26,
+        27,
+        42
+      ]
+    }
+  ],
+  "skillIds": [
+    "B6.05",
+    "B5.10"
+  ],
+  "order": 4
+}
+
+## 1FN : une valeur du domaine par cellule
+
+Une relation est en première forme normale quand ses attributs sont simples et monovalués selon la modélisation retenue. Une liste de prénoms dans une cellule n'est pas une ligne par prénom. Une adresse peut être traitée comme une chaîne opaque ou décomposée si le modèle doit distinguer rue et ville : l'atomicité dépend du domaine et de l'usage, pas du nombre de caractères.
+
+## 2FN : pas de dépendance partielle vers un attribut non premier
+
+Une relation en 1FN est en 2FN si aucun attribut **non premier** ne dépend d'une partie stricte d'une clé candidate. Il faut donc trouver **toutes** les clés et tous les attributs premiers avant de conclure. Choisir une PK simple ne dispense pas d'examiner les autres clés candidates.
+
+## Exemple déroulé
+
+`Commande(Nopiece,NomFour,Qte,Adr)` possède `Nopiece,NomFour → Qte` et `NomFour → Adr`. La clé est Nopiece,NomFour. Adr n'est premier et dépend de NomFour, partie stricte de la clé : violation de 2FN.
+
+On sépare `Commande(Nopiece,NomFour,Qte)` et `Fournisseur(NomFour,Adr)`. L'intersection NomFour détermine Fournisseur : le contenu est préservé ; les deux règles sont locales.
+
+Avec `COMPAGNIE(VOL,AVION,PILOTE)`, VOL est l'unique clé et elle est simple : aucune dépendance partielle non triviale n'est possible. La table est en 2FN, mais AVION → PILOTE cause encore des anomalies. La 2FN ne suffit donc pas.
+
+## Application
+
+Pour `R(A,B,C)` avec A → B et B → C, A est la seule clé. La relation est 2FN mais pas 3FN. Réussite : tu expliques pourquoi B → C est un problème transitif, et non une dépendance à une partie stricte de la clé A.

@@ -1,0 +1,38 @@
+export const meta = {"id": "clusters", "moduleId": "autres-index", "title": "Clusters Oracle et panorama des organisations", "summary": "Distinguer regroupement multitable, hash cluster et index clustered.", "objectives": ["Distinguer regroupement multitable, hash cluster et index clustered.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-AUT", "pages": [22, 23, 24, 25, 26, 27]}], "skillIds": ["B9.05", "B9.10"], "order": 15};
+
+Un cluster Oracle regroupe physiquement les lignes d’une ou plusieurs tables ayant la même valeur de clé de cluster. Des tables restent logiquement indépendantes en SQL, même si leurs lignes partagent des blocs physiques. Cela peut accélérer une jointure fréquente sur cette clé.
+
+### Cluster indexé du cours
+
+```sql
+-- Oracle : exercice guidé, pas une commande DuckDB
+CREATE CLUSTER DeptClust (n_dept NUMBER);
+CREATE TABLE Dept (
+  ndep NUMBER PRIMARY KEY,
+  nom VARCHAR2(50)
+) CLUSTER DeptClust(ndep);
+CREATE TABLE Emp (
+  emp_id NUMBER PRIMARY KEY,
+  nodep NUMBER NOT NULL
+) CLUSTER DeptClust(nodep);
+CREATE INDEX idx_dpt ON CLUSTER DeptClust;
+```
+
+L’index du cluster est nécessaire avant les insertions dans ce type d’organisation. Il mène au groupe physique d’une clé, qui contient le département et ses employés. On peut aussi créer des index sur d’autres colonnes de chaque table.
+
+Le bénéfice porte sur les accès au groupe, pas sur toutes les lectures. Balayer uniquement EMP peut parcourir des blocs contenant aussi DEPT et du vide réservé aux groupes. Un très grand département peut déborder sur plusieurs blocs : le schéma « un groupe égale un bloc » est une illustration, pas une garantie.
+
+Un **hash cluster** choisit le groupe par hachage plutôt que par index de cluster ; il peut être monota­ble ou multitable. Un **index clustered** de SQL Server ou InnoDB désigne une autre idée : les feuilles d’un index sont les lignes d’une table. Le mot cluster ne suffit donc pas à identifier la structure.
+
+### Glossaire opérationnel
+
+| Organisation | Recherche naturelle | Limite à expliquer |
+| --- | --- | --- |
+| Heap | Scan ou localisateur externe | Pas d’ordre utile imposé |
+| Fichier trié | Dichotomie, plages | Insertion et maintien de l’ordre |
+| ISAM | Index hiérarchique plutôt statique | Zones de débordement, réorganisation |
+| B+arbre | Égalités et plages | Maintenance et place |
+| Hachage | Égalités | Plages et collisions |
+| Bitmap | Combinaisons analytiques | Écritures et concurrence |
+
+La disponibilité de chaque organisation et le comportement de reconstruction sont propres au SGBD. Le glossaire ne remplace pas la lecture d’un plan réel.

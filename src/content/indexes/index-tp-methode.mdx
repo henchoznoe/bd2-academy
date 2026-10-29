@@ -1,0 +1,39 @@
+export const meta = {"id": "index-tp-methode", "moduleId": "btree", "title": "TP index : prouver la sémantique avant les performances", "summary": "Lire un plan et comparer des réécritures sans perdre de lignes.", "objectives": ["Lire un plan et comparer des réécritures sans perdre de lignes.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-IDX", "pages": [74, 75, 76, 85, 95, 105]}], "skillIds": ["B9.06", "B9.07", "B9.08", "B9.09"], "order": 12};
+
+Le laboratoire reprend un jeu réduit des dumps du TP : customers, salesman, orders et orders2. Les comptages et performances ne sont pas ceux des 20 000 clients, 100 vendeurs et 500 000 commandes du scénario enseignant. Le navigateur utilise DuckDB ; les métadonnées et index InnoDB sont étudiés dans les exercices guidés MySQL.
+
+### Garder les clients sans commande
+
+```sql
+SELECT c.id, c.name, SUM(o.amount) AS total
+FROM customers c
+LEFT JOIN orders o ON o.customer_id = c.id
+WHERE c.country = 'country_2'
+GROUP BY c.id, c.name;
+```
+
+La sous-requête scalaire SUM du TP renvoie NULL en l’absence de commandes. La jointure externe préserve ce comportement. Grouper par le nom seul fusionnerait deux homonymes : ajouter id. Transformer NULL en zéro est possible si la demande le précise, mais cela change le résultat d’origine.
+
+### Semi-jointure et anti-jointure
+
+```sql
+SELECT COUNT(*) FROM customers c
+WHERE EXISTS (SELECT 1 FROM salesman s WHERE s.country=c.country);
+
+SELECT COUNT(*) FROM customers c
+WHERE NOT EXISTS (SELECT 1 FROM salesman s WHERE s.country=c.country);
+```
+
+EXISTS compte un client une seule fois même si plusieurs vendeurs ont son pays. Une jointure interne compte les couples client-vendeur. NOT IN peut devenir UNKNOWN si le sous-résultat contient NULL ; NOT EXISTS exprime plus directement l’absence de correspondance par égalité, y compris pour un pays client NULL.
+
+Une CTE sert à exprimer une étape, pas à imposer automatiquement une matérialisation ni à promettre un gain. Préagréger orders2 peut réduire les lignes jointes et la largeur transportée ; vérifier l’équivalence avant les temps.
+
+### Occupation physique guidée
+
+```sql
+SELECT name, page_size, file_size, file_size/page_size AS pages_allouees
+FROM information_schema.INNODB_TABLESPACES
+WHERE name LIKE 'exo2/%';
+```
+
+16 384 octets représentent 16 Kio. FILE_SIZE donne l’espace alloué, pas uniquement les pages remplies de lignes. NULL économise le contenu de la colonne mais a un coût de métadonnées ; CHAR et VARCHAR dépendent aussi du charset et du format. Le corrigé fournit des observations anciennes, à distinguer d’une mesure actuelle.

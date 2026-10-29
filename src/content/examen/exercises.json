@@ -1,0 +1,654 @@
+[
+  {
+    "id": "EX-1.1",
+    "lessonId": "exam-sql",
+    "title": "Résultat d’une requête fenêtrée",
+    "type": "sql",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. Sur les tables pédagogiques course emp/dept affichées, écrire la requête conservant chaque employé avec les colonnes e_id,ename,salaire,total_global,total_dep,rang. total_global somme tous les salaires connus, total_dep ceux du même deptno ; rang classe les salaires décroissants, NULL en dernier, en gardant les ex æquo. Aucun tri final exigé.",
+    "hints": [
+      "Les totaux globaux et de département doivent être répétés sur les lignes détaillées.",
+      "Utiliser deux SUM avec OVER, puis RANK sur le salaire seul en fixant la place des NULL."
+    ],
+    "solution": "SELECT e_id,ename,salaire,SUM(salaire) OVER() AS total_global,SUM(salaire) OVER(PARTITION BY deptno) AS total_dep,RANK() OVER(ORDER BY salaire DESC NULLS LAST) AS rang FROM emp;",
+    "explanation": "OVER conserve les lignes. SUM ignore les NULL ; une partition entièrement sans salaire connu donne NULL, pas zéro. RANK laisse des trous après les ex æquo. La question visible demande un résultat SQL, mais l’annexe est absente : cet exercice porte sur une requête et un jeu choisis, dont on peut prédire le résultat avant exécution.",
+    "skillIds": ["B3.04", "B3.05", "B3.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [2]
+      }
+    ],
+    "origin": "exam",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "id": "EX-1.2",
+    "lessonId": "exam-sql",
+    "title": "Expliquer la requête choisie",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. La requête D de l’annexe est absente. Expliquer ce remplacement choisi : SELECT e.e_id,e.ename,e.salaire FROM emp e WHERE e.salaire>(SELECT AVG(q.salaire) FROM emp q WHERE q.deptno=e.deptno). Préciser population, NULL et stricte inégalité.",
+    "hints": [
+      "Chercher la référence à la ligne extérieure dans la sous-requête.",
+      "Choisir un employé, calculer la moyenne de son département, puis vérifier le sens strict de >."
+    ],
+    "solution": "Pour chaque employé e, la sous-requête corrélée calcule la moyenne des salaires non NULL des employés ayant un deptno égal à e.deptno. On affiche e seulement si son salaire est strictement supérieur à cette moyenne. Les salariés égaux à la moyenne sont exclus ; un salaire ou une moyenne NULL ne rend pas le prédicat vrai. deptno NULL ne se compare pas égal à un autre NULL avec =.",
+    "explanation": "Dans le jeu de base choisi, Ben dépasse 3000 dans le département 10 et Gus dépasse 2750 dans le 30. Les deux salaires de 5500 du département 20 égalent leur moyenne et sont exclus. Ces exemples ne reconstruisent pas la requête D originale.",
+    "skillIds": ["B2.01", "B2.03", "B3.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [2]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-1.3",
+    "lessonId": "exam-sql",
+    "title": "DF minimales du DDL choisi",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. DDL choisi : dept_ex(deptno PRIMARY KEY,dname UNIQUE NOT NULL) ; emp_ex(e_id PRIMARY KEY,ename UNIQUE NOT NULL,deptno REFERENCES dept_ex(deptno),taux,salaire,commission). Déduire une couverture minimale des DF garanties, les clés, et expliquer la portée de la FK.",
+    "hints": [
+      "Repérer d’abord les identifiants garantis par PK et par UNIQUE NOT NULL.",
+      "Décomposer les cibles et exploiter l’équivalence des deux clés ; tester la fausse DF deptno→e_id avec deux employés du même département."
+    ],
+    "solution": "Dans dept_ex : deptno→dname et dname→deptno. Dans emp_ex, une couverture minimale possible est e_id→ename, ename→e_id, e_id→deptno, e_id→taux, e_id→salaire, e_id→commission. Les clés sont {e_id} et {ename} ; chacune détermine tous les autres attributs par transitivité. La FK n’ajoute pas deptno→e_id : plusieurs employés peuvent référencer le même département.",
+    "explanation": "PK et UNIQUE NOT NULL garantissent des identifiants. Des couvertures minimales équivalentes répartissant certaines cibles sur ename au lieu de e_id sont également correctes. La FK ne constitue pas une DF inverse et ne crée pas une nouvelle DF sur la table référencée.",
+    "skillIds": ["B0.01", "B5.01", "B5.08", "B5.09", "B5.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [2]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-2.1",
+    "lessonId": "exam-df",
+    "title": "Prouver AG détermine I",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. R(A,B,C,D,E,G,H,I), avec F1 A→BC, F2 B→D, F3 DG→I, F4 D→E, F5 ABC→D, F6 I→A. Prouver AG→I par fermeture et avec les axiomes d’Armstrong.",
+    "hints": [
+      "Pour obtenir I, chercher une DF dont la cible contient I.",
+      "F3 demande D et G : G est déjà disponible, il faut donc déduire D à partir de A."
+    ],
+    "solution": "Fermeture : AG → ABCG par A→BC, puis ABCDG par B→D, puis ABCDEG par D→E, puis ABCDEGI par DG→I. H reste absent. Preuve : A→B par décomposition de F1 ; A→D par transitivité avec B→D ; AG→DG par augmentation avec G ; DG→I par F3 ; donc AG→I par transitivité.",
+    "explanation": "Une preuve d’implication n’exige pas que AG soit une clé de tout R : H n’est jamais obtenu. Dans la fermeture, l’ordre de certaines applications peut varier sans changer le point fixe.",
+    "skillIds": ["B5.04", "B5.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [3]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-2.2",
+    "lessonId": "exam-df",
+    "title": "Six décisions de couverture minimale",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. R(A,B,C,D,E,G,H,I), avec F1 A→BC, F2 B→D, F3 DG→I, F4 D→E, F5 ABC→D, F6 I→A. Traiter F1 à F6, justifier décomposition, suppression ou conservation, puis prouver l’équivalence et la minimalité.",
+    "hints": [
+      "Séparer d’abord la cible double de F1 sans changer le sens.",
+      "F5 contient B dans sa source : vérifier si F2 suffit déjà à sa cible ; tester ensuite chaque DF restante en la retirant."
+    ],
+    "solution": "F1 devient A→B et A→C. F2 B→D est conservée. F3 DG→I est conservée : D+={D,E} et G+={G}, donc aucun attribut de DG n’est superflu. F4 D→E est conservée. F5 ABC→D est redondante via B→D et augmentation ; la supprimer. F6 I→A est conservée. Couverture : {A→B,A→C,B→D,DG→I,D→E,I→A}. La nouvelle couverture implique F1 par union et F5 par augmentation de B→D ; chaque nouvelle DF vient de F. En retirant séparément A→B,A→C,B→D,DG→I,D→E,I→A, les fermetures de leurs sources ne contiennent respectivement plus B,C,D,I,E,A : aucune n’est redondante.",
+    "explanation": "La simplicité des sources des autres DF est immédiate car elles n’ont qu’un attribut ; aucune n’est constante avec la source vide. La comparaison textuelle d’une couverture proposée ne suffit pas : accepter une autre couverture si équivalence et minimalité sont prouvées.",
+    "skillIds": ["B5.06", "B5.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [3, 4]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-2.3",
+    "lessonId": "exam-df",
+    "title": "Toutes les clés candidates",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. R(A,B,C,D,E,G,H,I), avec F1 A→BC, F2 B→D, F3 DG→I, F4 D→E, F5 ABC→D, F6 I→A. Trouver toutes les clés candidates, prouver leur minimalité et l’exhaustivité de la liste.",
+    "hints": [
+      "Commencer par les attributs jamais produits par une DF.",
+      "Fixer GH et chercher les plus petits ajouts capables de déclencher la chaîne A,B,D,I ; expliquer pourquoi C/E ne déclenchent rien."
+    ],
+    "solution": "G et H ne sont jamais à droite, donc toute clé les contient. GH ne détermine rien d’autre. Ajouter A donne B,C,D,E puis I grâce à DG ; ajouter B donne D,E,I puis A,C ; ajouter D donne E,I puis A,B,C ; ajouter I donne A,B,C,D,E. Les clés sont AGH,BGH,DGH,IGH. En retirer G ou H perd un attribut jamais produit ; en retirer le troisième attribut laisse GH. Toute autre combinaison avec GH soit contient A/B/D/I et donc une clé déjà trouvée, soit ne contient que C/E en plus et ne peut produire A/B/D/I.",
+    "explanation": "Les attributs premiers sont A,B,D,G,H,I ; les non premiers C,E. Une seule clé trouvée ne répond pas à une demande de toutes les clés.",
+    "skillIds": ["B5.09", "B5.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [4]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-2.4",
+    "lessonId": "exam-df",
+    "title": "Synthèse 3FN complète",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. R(A,B,C,D,E,G,H,I), avec F1 A→BC, F2 B→D, F3 DG→I, F4 D→E, F5 ABC→D, F6 I→A. Dérouler une synthèse 3FN avec préservation des DF et du contenu ; donner PK et FK possibles sans prétendre imposer toutes les DF par une PK seule.",
+    "hints": [
+      "Construire une relation par source de la couverture minimale puis rechercher une clé universelle contenue dans une relation.",
+      "Examiner spécialement DGI : I détermine D par les DF initiales, mais ne détermine pas G."
+    ],
+    "solution": "À partir de la couverture minimale, regrouper A→B et A→C en ABC ; créer BD,DGI,DE,IA. Aucune de ces relations ne contient une clé universelle : ajouter AGH. Il n’y a pas d’inclusion à supprimer ni de déterminants équivalents distincts à fusionner ici. Clés locales : ABC : A ; BD : B ; DGI : DG et GI ; DE : D ; IA : I ; AGH : AGH. La décomposition est {ABC,BD,DGI,DE,IA,AGH}. Elle préserve les DF de la couverture et la relation AGH contenant une clé garantit la jointure sans perte dans la synthèse. PK possibles : ABC(A),BD(B),DGI(D,G) avec UNIQUE(G,I),DE(D),IA(I),AGH(A,G,H). Exemple de FK valide pour des projections de R : ABC.B→BD.B et BD.D→DE.D. La DF projetée I→D de DGI ne se réduit pas à une contrainte UNIQUE(I), car celle-ci imposerait à tort I→G.",
+    "explanation": "DGI a toutes ses colonnes premières et est en 3FN, mais pas BCNF. PK/FK ne suffisent pas toujours à exprimer une DF projetée dont le déterminant n’est pas une clé ; ne pas inventer un UNIQUE excessivement fort.",
+    "skillIds": ["B6.07", "B6.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [5]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-2.5",
+    "lessonId": "exam-df",
+    "title": "Vérifier la 2FN",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. R(A,B,C,D,E,G,H,I), avec F1 A→BC, F2 B→D, F3 DG→I, F4 D→E, F5 ABC→D, F6 I→A. Comparer la 2FN de R avec celle des relations ABC,BD,DGI,DE,IA,AGH issues de la synthèse.",
+    "hints": [
+      "Identifier les attributs non premiers avant de chercher une dépendance partielle.",
+      "Dans R, essayer A→C avec la clé AGH ; dans DGI, recalculer les clés et demander s’il reste un attribut non premier."
+    ],
+    "solution": "R n’est pas en 2FN : A est une partie propre de la clé AGH et détermine C, qui est non premier ; D est une partie propre de DGH et détermine E, non premier. Dans ABC,BD,DE,IA les clés candidates sont simples, donc pas de dépendance partielle d’une clé composée. Dans DGI, clés DG et GI, tous les attributs sont premiers ; aucune dépendance vers un attribut non premier ne viole 2FN. Dans AGH, aucune DF projetée non triviale ne détermine un attribut à partir d’une partie de la clé. Toutes ces relations sont au moins en 2FN.",
+    "explanation": "Le fait que I→D viole BCNF dans DGI ne signifie pas une violation de 2FN ou de 3FN : D est premier. Le test doit considérer toutes les clés candidates de chaque relation.",
+    "skillIds": ["B6.05", "B6.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [5]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-3.1",
+    "lessonId": "exam-index",
+    "title": "Nature des blocs",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. B+arbre choisi : ordre d=2, au plus 4 clés et 5 enfants internes ; racine bloc 1 [Aube,Ciel] ; feuilles bloc 2 [Andes,Aube], bloc 3 [Brume,Ciel], bloc 4 [Delta,Écho], chaînées 2→3→4. Six lignes de données : bloc 10 (Andes,Aube), 11 (Brume), 12 (Ciel,Delta), 13 (Écho). Index dense nonclustered sur titre ; ordre lexical déclaré Andes,Aube,Brume,Ciel,Delta,Écho. Cache initialement vide sauf indication contraire. Identifier les blocs 1,2,3 : interne, feuille d’index ou bloc de table. Pourquoi l’index n’est-il pas clustered ?",
+    "hints": [
+      "Chercher quels blocs ont des enfants et lesquels ont des RIDs.",
+      "Ne pas confondre le numéro d’un bloc de feuille avec celui des données auxquelles ses RIDs mènent."
+    ],
+    "solution": "Le bloc 1 est la racine interne : séparateurs et pointeurs enfants. Les blocs 2 et 3 sont des feuilles d’index contenant clés et RIDs ; le bloc 4 est aussi une feuille. Les blocs de table sont 10,11,12,13. L’index est nonclustered car les entrées de feuilles pointent vers des lignes dans des blocs de table distincts, sans confondre la feuille avec la ligne complète.",
+    "explanation": "Un arbre ayant sa racine et ses feuilles ne stocke pas nécessairement les lignes complètes dans ses feuilles. Ici le choix nonclustered est explicite ; ne pas attribuer cette organisation à la figure originale absente.",
+    "skillIds": ["B8.01", "B8.02", "B8.03", "B8.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [6]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-3.2",
+    "lessonId": "exam-index",
+    "title": "Flèches des feuilles",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. B+arbre choisi : ordre d=2, au plus 4 clés et 5 enfants internes ; racine bloc 1 [Aube,Ciel] ; feuilles bloc 2 [Andes,Aube], bloc 3 [Brume,Ciel], bloc 4 [Delta,Écho], chaînées 2→3→4. Six lignes de données : bloc 10 (Andes,Aube), 11 (Brume), 12 (Ciel,Delta), 13 (Écho). Index dense nonclustered sur titre ; ordre lexical déclaré Andes,Aube,Brume,Ciel,Delta,Écho. Cache initialement vide sauf indication contraire. Dans notre convention, les flèches horizontales en pointillés vont de 2 vers 3 puis vers 4. Expliquer leur rôle et les distinguer des pointeurs vers les données.",
+    "hints": [
+      "Une recherche par intervalle doit continuer après la dernière clé d’une feuille.",
+      "Comparer la destination d’une flèche horizontale à celle d’un RID de Delta."
+    ],
+    "solution": "Elles chaînent les feuilles voisines dans l’ordre des clés. Après avoir trouvé une première clé dans une feuille, une recherche d’intervalle peut parcourir les feuilles suivantes sans repartir de la racine. Les RIDs des entrées de feuilles pointent, eux, vers des lignes de table, pas vers la feuille suivante.",
+    "explanation": "Le chaînage ne modifie pas le nombre de lignes. Dans une autre figure, il faudrait lire sa légende avant d’interpréter un pointillé.",
+    "skillIds": ["B8.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [6]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-3.3",
+    "lessonId": "exam-index",
+    "title": "Compléter les entrées du bloc 2",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. B+arbre choisi : ordre d=2, au plus 4 clés et 5 enfants internes ; racine bloc 1 [Aube,Ciel] ; feuilles bloc 2 [Andes,Aube], bloc 3 [Brume,Ciel], bloc 4 [Delta,Écho], chaînées 2→3→4. Six lignes de données : bloc 10 (Andes,Aube), 11 (Brume), 12 (Ciel,Delta), 13 (Écho). Index dense nonclustered sur titre ; ordre lexical déclaré Andes,Aube,Brume,Ciel,Delta,Écho. Cache initialement vide sauf indication contraire. Écrire précisément le contenu utile du bloc 2 : clés, références aux données et pointeur de feuille suivante.",
+    "hints": [
+      "Retrouver les blocs de table contenant Andes et Aube dans la légende.",
+      "Ajouter séparément les deux références de lignes et le lien vers la feuille suivante."
+    ],
+    "solution": "Bloc 2 : entrée (Andes,RID vers bloc 10) ; entrée (Aube,RID vers bloc 10) ; pointeur suivant vers feuille bloc 3. Les deux RIDs désignent des lignes différentes dans le même bloc de données ; un RID complet comporte aussi l’identification de ligne dans ce bloc.",
+    "explanation": "Deux clés peuvent mener au même bloc de table. Le pointeur de chaînage vers 3 ne doit pas être confondu avec les RIDs vers 10.",
+    "skillIds": ["B8.02", "B8.03", "B8.04", "B8.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [6]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-3.4a",
+    "lessonId": "exam-index",
+    "title": "Ordre maximal déclaré",
+    "type": "result",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. B+arbre choisi : ordre d=2, au plus 4 clés et 5 enfants internes ; racine bloc 1 [Aube,Ciel] ; feuilles bloc 2 [Andes,Aube], bloc 3 [Brume,Ciel], bloc 4 [Delta,Écho], chaînées 2→3→4. Six lignes de données : bloc 10 (Andes,Aube), 11 (Brume), 12 (Ciel,Delta), 13 (Écho). Index dense nonclustered sur titre ; ordre lexical déclaré Andes,Aube,Brume,Ciel,Delta,Écho. Cache initialement vide sauf indication contraire. Avec la convention ordre d du cours, avec au plus 2d clés et 2d+1 enfants internes, quel est d ? Répondre par le nombre.",
+    "hints": [
+      "Séparer capacité maximale et nombre d’enfants actuellement visibles.",
+      "Relire la convention choisie au début de l’énoncé plutôt que compter seulement les flèches présentes."
+    ],
+    "solution": "2",
+    "explanation": "Le cours définit l’ordre d par d à 2d clés hors racine et au plus 2d+1 enfants internes. Ici la capacité annoncée est 4 clés, donc d=2. Le nombre d’enfants réellement occupés de la racine ne suffit pas à déduire cette capacité.",
+    "skillIds": ["B8.03", "B8.06"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [6]
+      }
+    ],
+    "origin": "exam",
+    "acceptedAnswers": ["2", "d=2", "d = 2"]
+  },
+  {
+    "id": "EX-3.4b",
+    "lessonId": "exam-index",
+    "title": "Hauteur en niveaux",
+    "type": "result",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. B+arbre choisi : ordre d=2, au plus 4 clés et 5 enfants internes ; racine bloc 1 [Aube,Ciel] ; feuilles bloc 2 [Andes,Aube], bloc 3 [Brume,Ciel], bloc 4 [Delta,Écho], chaînées 2→3→4. Six lignes de données : bloc 10 (Andes,Aube), 11 (Brume), 12 (Ciel,Delta), 13 (Écho). Index dense nonclustered sur titre ; ordre lexical déclaré Andes,Aube,Brume,Ciel,Delta,Écho. Cache initialement vide sauf indication contraire. Avec hauteur = nombre de niveaux, racine et feuilles incluses, quelle est la hauteur ? Répondre par le nombre.",
+    "hints": [
+      "Compter les étages de blocs, pas les clés ni les flèches horizontales.",
+      "Le chemin racine → feuille traverse deux blocs."
+    ],
+    "solution": "2",
+    "explanation": "Un niveau de racine puis un niveau de feuilles donnent deux niveaux. La distance racine-feuille vaut une arête : répondre 1 correspondrait à une autre convention, exclue ici.",
+    "skillIds": ["B8.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [7]
+      }
+    ],
+    "origin": "exam",
+    "acceptedAnswers": ["2", "2 niveaux", "deux"]
+  },
+  {
+    "id": "EX-3.4c",
+    "lessonId": "exam-index",
+    "title": "Nombre de lignes indexées",
+    "type": "result",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. B+arbre choisi : ordre d=2, au plus 4 clés et 5 enfants internes ; racine bloc 1 [Aube,Ciel] ; feuilles bloc 2 [Andes,Aube], bloc 3 [Brume,Ciel], bloc 4 [Delta,Écho], chaînées 2→3→4. Six lignes de données : bloc 10 (Andes,Aube), 11 (Brume), 12 (Ciel,Delta), 13 (Écho). Index dense nonclustered sur titre ; ordre lexical déclaré Andes,Aube,Brume,Ciel,Delta,Écho. Cache initialement vide sauf indication contraire. Combien d’enregistrements de table les feuilles représentent-elles ? Répondre par le nombre.",
+    "hints": [
+      "Dans un index dense choisi, compter les entrées de feuilles.",
+      "Ne pas additionner à nouveau Brume et Delta lorsqu’ils apparaissent comme séparateurs internes."
+    ],
+    "solution": "6",
+    "explanation": "Chaque feuille possède deux entrées et il y a trois feuilles : six entrées d’un index dense représentent six lignes. Les deux séparateurs de la racine ne comptent pas comme deux nouvelles lignes.",
+    "skillIds": ["B8.02", "B8.07", "B8.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [7]
+      }
+    ],
+    "origin": "exam",
+    "acceptedAnswers": ["6", "six"]
+  },
+  {
+    "id": "EX-3.5a",
+    "lessonId": "exam-index",
+    "title": "Un filtre sans aide de l’index",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. B+arbre choisi : ordre d=2, au plus 4 clés et 5 enfants internes ; racine bloc 1 [Aube,Ciel] ; feuilles bloc 2 [Andes,Aube], bloc 3 [Brume,Ciel], bloc 4 [Delta,Écho], chaînées 2→3→4. Six lignes de données : bloc 10 (Andes,Aube), 11 (Brume), 12 (Ciel,Delta), 13 (Écho). Index dense nonclustered sur titre ; ordre lexical déclaré Andes,Aube,Brume,Ciel,Delta,Écho. Cache initialement vide sauf indication contraire. La table films possède aussi annee, absente de cet index. Proposer une requête justifiant un full scan et donner son coût dans notre modèle froid.",
+    "hints": [
+      "La colonne filtrée doit pouvoir servir à naviguer ou à répondre dans l’index.",
+      "Choisir le filtre annee, puis compter les blocs de données sans ajouter les feuilles inutilisées."
+    ],
+    "solution": "SELECT * FROM films WHERE annee=2000; L’index titre ne permet pas de chercher directement les années : scanner les blocs de données 10,11,12,13 coûte quatre E/S physiques dans le modèle annoncé.",
+    "explanation": "Le modèle ne suppose aucun autre index. Une réécriture arbitraire ne rend pas annee accessible dans un index ne stockant que titre et RID.",
+    "skillIds": ["B8.12"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [7]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-3.5b",
+    "lessonId": "exam-index",
+    "title": "Recherche de Delta et coût froid",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. B+arbre choisi : ordre d=2, au plus 4 clés et 5 enfants internes ; racine bloc 1 [Aube,Ciel] ; feuilles bloc 2 [Andes,Aube], bloc 3 [Brume,Ciel], bloc 4 [Delta,Écho], chaînées 2→3→4. Six lignes de données : bloc 10 (Andes,Aube), 11 (Brume), 12 (Ciel,Delta), 13 (Écho). Index dense nonclustered sur titre ; ordre lexical déclaré Andes,Aube,Brume,Ciel,Delta,Écho. Cache initialement vide sauf indication contraire. Écrire une requête SELECT * accélérée par l’index qui atteint le bloc 4, puis donner les blocs lus et le coût, avec et sans racine déjà en cache.",
+    "hints": [
+      "Suivre le séparateur Delta vers la feuille de droite.",
+      "Après la feuille, demander si toutes les colonnes de SELECT * sont déjà connues ou si un RID doit être suivi."
+    ],
+    "solution": "SELECT * FROM films WHERE titre='Delta'; Cache vide : lire 1 (racine),4 (feuille),12 (ligne), soit trois E/S. Racine déjà en cache mais feuille et données froides : lire 4 et 12, soit deux E/S physiques.",
+    "explanation": "La recherche dans l’index ne suffit pas au SELECT * : la ligne complète exige le bloc de données 12. Une lecture logique d’une racine en cache n’est pas une E/S physique.",
+    "skillIds": ["B8.07", "B8.10", "B8.11", "B8.12"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [7]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-3.5c",
+    "lessonId": "exam-index",
+    "title": "Petite table : comparer les chemins",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. B+arbre choisi : ordre d=2, au plus 4 clés et 5 enfants internes ; racine bloc 1 [Aube,Ciel] ; feuilles bloc 2 [Andes,Aube], bloc 3 [Brume,Ciel], bloc 4 [Delta,Écho], chaînées 2→3→4. Six lignes de données : bloc 10 (Andes,Aube), 11 (Brume), 12 (Ciel,Delta), 13 (Écho). Index dense nonclustered sur titre ; ordre lexical déclaré Andes,Aube,Brume,Ciel,Delta,Écho. Cache initialement vide sauf indication contraire. Comparer un accès indexé pour une seule ligne Delta à un full scan des quatre blocs de table. Puis expliquer le cas d’une requête SELECT * qui demande les six lignes. Supposer qu’un bloc chargé reste en cache pendant la requête.",
+    "hints": [
+      "Séparer le besoin très sélectif du besoin couvrant presque toute la table.",
+      "Pour les six lignes avec SELECT *, compter les blocs d’index et les blocs de table distincts, puis comparer au scan des données seules."
+    ],
+    "solution": "Pour Delta, l’accès indexé froid coûte trois blocs contre quatre pour un full scan complet ; dans ce simple comptage il économise un bloc. Pour les six lignes, parcourir racine et trois feuilles puis les quatre blocs de table distincts coûte huit lectures de blocs, contre quatre pour le full scan. Le scan est donc meilleur pour cette large sélection dans le modèle.",
+    "explanation": "Le nombre d’E/S n’est pas à lui seul le temps réel : lecture séquentielle ou aléatoire, cache, prélecture et CPU comptent aussi. La petite taille ne rend pas un index toujours inutile ni toujours préférable.",
+    "skillIds": ["B8.12", "B9.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [7]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-3.5d",
+    "lessonId": "exam-index",
+    "title": "Requête recouverte vers la droite",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. B+arbre choisi : ordre d=2, au plus 4 clés et 5 enfants internes ; racine bloc 1 [Aube,Ciel] ; feuilles bloc 2 [Andes,Aube], bloc 3 [Brume,Ciel], bloc 4 [Delta,Écho], chaînées 2→3→4. Six lignes de données : bloc 10 (Andes,Aube), 11 (Brume), 12 (Ciel,Delta), 13 (Écho). Index dense nonclustered sur titre ; ordre lexical déclaré Andes,Aube,Brume,Ciel,Delta,Écho. Cache initialement vide sauf indication contraire. Construire une requête qui retourne seulement les titres à partir de Delta, sans lecture de table. Donner son coût froid.",
+    "hints": [
+      "Limiter la projection aux informations réellement stockées dans les feuilles.",
+      "La borne Delta conduit directement à la dernière feuille : il n’y a pas de feuille suivante à parcourir."
+    ],
+    "solution": "SELECT titre FROM films WHERE titre>='Delta'; L’index contient les titres et leur ordre. Lire la racine bloc 1 puis la feuille bloc 4, qui fournit Delta et Écho : deux E/S. Aucun bloc 12 ou 13 n’est nécessaire.",
+    "explanation": "La requête est recouverte : toutes ses colonnes demandées et filtrées sont dans l’index. SELECT * perdrait cette propriété.",
+    "skillIds": ["B8.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [7]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-4.1",
+    "lessonId": "exam-index",
+    "title": "Taille minimale des données",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. N=1 000 000 lignes, blocs B=4096 octets, enregistrement R=100 octets non fragmenté, clé K=20 octets, pointeur P=8 octets, en-têtes H=0, remplissage maximal, index dense. Feuilles : réserver 8 octets de chaînage, puis des entrées de K+P octets. Modèle interne simplifié : autant de clés que de pointeurs. Calculer lignes par bloc, nombre minimal de blocs de table et taille allouée en octets. Distinguer charge utile et allocation.",
+    "hints": [
+      "Calculer d’abord combien de lignes entières tiennent dans un bloc.",
+      "Arrondir la capacité vers le bas, le nombre de blocs vers le haut, puis multiplier le nombre de blocs par B."
+    ],
+    "solution": "Lignes/bloc = floor(4096/100)=40. Blocs = ceil(1000000/40)=25000. Allocation = 25000×4096=102400000 octets, soit 102,4 Mo décimaux ou 97,65625 Mio. La charge utile vaut 1000000×100=100000000 octets ; les 2400000 octets restants sont de l’espace inutilisé des blocs.",
+    "explanation": "Le modèle exclut fragmentation, en-têtes et réserve de remplissage. Arrondir seulement la taille globale 100000000/4096 sous-estimerait les blocs, car une ligne de 100 octets ne peut pas chevaucher deux blocs.",
+    "skillIds": ["B7.09", "B8.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [8]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-4.2",
+    "lessonId": "exam-index",
+    "title": "Fanout simplifié maximal",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. N=1 000 000 lignes, blocs B=4096 octets, enregistrement R=100 octets non fragmenté, clé K=20 octets, pointeur P=8 octets, en-têtes H=0, remplissage maximal, index dense. Feuilles : réserver 8 octets de chaînage, puis des entrées de K+P octets. Modèle interne simplifié : autant de clés que de pointeurs. Calculer l’ordre d maximal dans la convention du cours (2d clés), puis la capacité en couples clé/pointeur du modèle simplifié. Distinguer d du nombre maximal de pointeurs.",
+    "hints": [
+      "Le modèle imposé réserve un pointeur pour chaque clé interne.",
+      "Additionner K et P avant de calculer une capacité entière."
+    ],
+    "solution": "Capacité de page du modèle simplifié : floor(4096/(20+8))=146 couples clé/pointeur. Dans la convention du cours, 2d=146, donc d maximal=73. Pour les calculs suivants, le modèle simplifié annoncé retient 146 pointeurs par page interne. Le format réel m pointeurs et m−1 clés autoriserait m=147 ; annoncer le modèle avant de compter les niveaux.",
+    "explanation": "Ordre d, nombre maximal de clés et nombre maximal de pointeurs sont des quantités différentes. Le support B-arbres p.14 définit d ; la simplification historique de l’exercice ne transforme pas 146 en l’ordre d.",
+    "skillIds": ["B8.06"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [8]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-4.3",
+    "lessonId": "exam-index",
+    "title": "Nombre de feuilles",
+    "type": "result",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. N=1 000 000 lignes, blocs B=4096 octets, enregistrement R=100 octets non fragmenté, clé K=20 octets, pointeur P=8 octets, en-têtes H=0, remplissage maximal, index dense. Feuilles : réserver 8 octets de chaînage, puis des entrées de K+P octets. Modèle interne simplifié : autant de clés que de pointeurs. Combien de blocs feuilles faut-il au minimum ? Répondre par le nombre et tenir compte du chaînage.",
+    "hints": [
+      "Une feuille réserve huit octets avant de ranger les entrées.",
+      "Diviser N par la capacité entière d’une feuille et arrondir le nombre de feuilles vers le haut."
+    ],
+    "solution": "6850",
+    "explanation": "Capacité feuille=floor((4096−8)/(20+8))=146 entrées. Nombre de feuilles=ceil(1000000/146)=6850. Les entrées sont une par ligne car l’index est dense. Les niveaux parents ne sont pas compris dans cette réponse.",
+    "skillIds": ["B8.07", "B8.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [8, 9]
+      }
+    ],
+    "origin": "exam",
+    "acceptedAnswers": ["6850", "6 850"]
+  },
+  {
+    "id": "EX-4.4",
+    "lessonId": "exam-index",
+    "title": "Deux niveaux sont-ils possibles ?",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. N=1 000 000 lignes, blocs B=4096 octets, enregistrement R=100 octets non fragmenté, clé K=20 octets, pointeur P=8 octets, en-têtes H=0, remplissage maximal, index dense. Feuilles : réserver 8 octets de chaînage, puis des entrées de K+P octets. Modèle interne simplifié : autant de clés que de pointeurs. La hauteur compte les niveaux racine et feuilles inclus. Une hauteur de 2 suffit-elle ? Donner aussi les blocs nécessaires à chaque niveau et la taille totale de l’index.",
+    "hints": [
+      "Deux niveaux signifient une racine directement au-dessus des feuilles.",
+      "Multiplier fanout racine par capacité feuille, puis, si insuffisant, calculer les parents des 6850 feuilles."
+    ],
+    "solution": "Non : avec 146 enfants au maximum et 146 entrées par feuille, deux niveaux stockent au plus 146²=21316 entrées, bien moins qu’un million. Il faut 6850 feuilles, ceil(6850/146)=47 blocs parents, puis une racine. Hauteur=3 niveaux ; index=6850+47+1=6898 blocs, soit 28254208 octets.",
+    "explanation": "La hauteur n’est pas le logarithme arrondi sans vérifier les niveaux : une feuille et un nœud interne n’ont pas forcément la même capacité. Ici les deux valent 146 grâce aux paramètres choisis.",
+    "skillIds": ["B8.07", "B8.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [9]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-4.5",
+    "lessonId": "exam-index",
+    "title": "Clé réduite à 12 octets",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. N=1 000 000 lignes, blocs B=4096 octets, enregistrement R=100 octets non fragmenté, clé K=20 octets, pointeur P=8 octets, en-têtes H=0, remplissage maximal, index dense. Feuilles : réserver 8 octets de chaînage, puis des entrées de K+P octets. Modèle interne simplifié : autant de clés que de pointeurs. Ne changer que K=12 octets. Recalculer capacité interne, capacité feuille, feuilles, parents, racine, hauteur et taille de l’index. La table change-t-elle ?",
+    "hints": [
+      "Recalculer les capacités avec une entrée de vingt octets avant tout comptage de blocs.",
+      "Remonter des feuilles par plafonds successifs jusqu’à une seule racine ; conserver N et R."
+    ],
+    "solution": "Capacité interne=floor(4096/(12+8))=204. Capacité feuille=floor((4096−8)/20)=204. Feuilles=ceil(1000000/204)=4902 ; parents=ceil(4902/204)=25 ; racine=1. Hauteur=3 ; index=4902+25+1=4928 blocs, soit 20185088 octets. La table garde R=100 et ses 25000 blocs.",
+    "explanation": "Réduire la clé affecte les entrées de feuilles et les séparateurs internes. Cela ne réduit pas automatiquement la largeur des lignes de table : seul K a été modifié ici.",
+    "skillIds": ["B8.06", "B8.07", "B8.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [9]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-4.6",
+    "lessonId": "exam-index",
+    "title": "Lignes divisées par deux",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. N=1 000 000 lignes, blocs B=4096 octets, enregistrement R=100 octets non fragmenté, clé K=20 octets, pointeur P=8 octets, en-têtes H=0, remplissage maximal, index dense. Feuilles : réserver 8 octets de chaînage, puis des entrées de K+P octets. Modèle interne simplifié : autant de clés que de pointeurs. Revenir à K=20 et ne changer que R=50 octets. Calculer blocs et taille allouée des données. Expliquer ce qui arrive à l’index dense.",
+    "hints": [
+      "Séparer largeur de ligne R et largeur d’entrée d’index K+P.",
+      "Remplacer seulement R dans la capacité des données ; demander si N, K ou P ont changé avant de recalculer l’index."
+    ],
+    "solution": "Lignes/bloc=floor(4096/50)=81. Blocs=ceil(1000000/81)=12346. Allocation=12346×4096=50569216 octets. L’index garde une entrée par ligne, K=20 et P=8 : il reste à 6850 feuilles,47 parents,1 racine, soit 6898 blocs et hauteur3.",
+    "explanation": "Le nombre de blocs de table est presque divisé par deux mais l’arrondi non fragmenté empêche une division exacte. Les RIDs de taille fixe sont une hypothèse de l’énoncé : ne pas les réduire sans nouvelle consigne.",
+    "skillIds": ["B7.09", "B8.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [9]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-V1",
+    "lessonId": "exam-sql",
+    "title": "Transfert : filtre avant ou après classement",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. Données pédagogiques course. Deux requêtes classent par salaire décroissant NULL en dernier puis ne montrent que deptno=10. Dans A, WHERE deptno=10 est au même niveau que RANK ; dans B, le RANK global est dans une CTE et le filtre est externe. Expliquer la différence et donner les rangs d’Ana et Ben dans le jeu de base choisi.",
+    "hints": [
+      "Le WHERE du même niveau précède les fenêtres.",
+      "Compter les salaires strictement supérieurs à chaque employé, dans la population locale puis dans la population globale."
+    ],
+    "solution": "Dans A, la population est le département 10 : Ben(3500) est rang1, Ana(2500) rang2. Dans B, la population contient tous les employés : Ben est rang4, Ana rang5 dans le jeu de base, car les deux 5500 partagent rang1 et 4500 est rang3. Une CTE est nécessaire si l’on veut filtrer après le rang global.",
+    "explanation": "Le transfert ne consiste pas seulement à réciter RANK : identifier la population au moment de son calcul. Les rangs chiffrés sont ceux du jeu de base indiqué, pas du jeu alternatif ni de l’examen original.",
+    "skillIds": ["B3.09", "B3.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [2]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-V2",
+    "lessonId": "exam-sql",
+    "title": "Transfert : département inconnu et unicité",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. Ajouter deux employés de salaires 100 et 200, tous deux avec deptno NULL. Une sous-requête corrélée utilise q.deptno=e.deptno ; une fenêtre AVG(salaire) OVER(PARTITION BY deptno) est-elle toujours un remplacement équivalent ? Autre changement indépendant : retirer NOT NULL de dname UNIQUE dans un scénario autorisant plusieurs NULL dans UNIQUE. dname reste-t-il une clé candidate garantie ?",
+    "hints": [
+      "Comparer le comportement de = sur NULL à celui de PARTITION BY sur NULL.",
+      "Pour la seconde partie, essayer deux départements distincts portant tous deux la valeur NULL autorisée par le scénario."
+    ],
+    "solution": "Non : avec =, la corrélation ne trouve aucune ligne au deptno NULL et sa moyenne vaut NULL, donc aucun de ces deux employés n’est retenu par salaire>moyenne. La fenêtre regroupe les deux NULL en une partition, moyenne150, et retient le salaire200. Une comparaison NULL-safe ou une convention métier explicite serait nécessaire pour l’équivalence. Si UNIQUE dname autorise plusieurs NULL, dname n’est plus garanti comme identifiant non NULL ; on ne le déclare pas clé candidate relationnelle sur la seule contrainte nullable.",
+    "explanation": "Un remplacement peut être correct sur un jeu sans NULL mais faux sur un cas de transfert. Déduire les DF et clés des contraintes effectivement imposées, avec leurs règles de NULL, pas d’un nom de colonne.",
+    "skillIds": ["B2.03", "B3.05", "B5.01", "B5.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [2]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-V3",
+    "lessonId": "exam-df",
+    "title": "Transfert : retirer une DF",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. R(A,B,C,D,E,G,H,I), avec F1 A→BC, F2 B→D, F3 DG→I, F4 D→E, F5 ABC→D, F6 I→A. Retirer uniquement F4 D→E. Quels attributs deviennent obligatoires dans toute clé et quelles sont les nouvelles clés candidates ?",
+    "hints": [
+      "Refaire la liste des attributs absents de toutes les cibles après suppression de F4.",
+      "Commencer les fermetures avec EGH puis ajouter séparément A,B,D,I."
+    ],
+    "solution": "E ne peut désormais plus être produit ; comme G et H, il doit apparaître dans toute clé. Les clés sont AEGH,BEGH,DEGH,EGHI. Le raisonnement sur le déclencheur A/B/D/I reste identique : chacun génère les autres avec G, tandis que C ne déclenche rien. Retirer E, G ou H perd un attribut jamais produit ; retirer le déclencheur ne ferme pas tout R.",
+    "explanation": "La liste des clés ne se met pas à jour en conservant une conclusion mémorisée : reconstruire les RHS et les fermetures. Ajouter E aux quatre clés antérieures suffit ici, mais cette règle n’est pas universelle.",
+    "skillIds": ["B5.05", "B5.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [3, 4]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-V4",
+    "lessonId": "exam-index",
+    "title": "Transfert : recherche sans résultat",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. B+arbre choisi : ordre d=2, au plus 4 clés et 5 enfants internes ; racine bloc 1 [Aube,Ciel] ; feuilles bloc 2 [Andes,Aube], bloc 3 [Brume,Ciel], bloc 4 [Delta,Écho], chaînées 2→3→4. Six lignes de données : bloc 10 (Andes,Aube), 11 (Brume), 12 (Ciel,Delta), 13 (Écho). Index dense nonclustered sur titre ; ordre lexical déclaré Andes,Aube,Brume,Ciel,Delta,Écho. Cache initialement vide sauf indication contraire. Chercher SELECT * FROM films WHERE titre='Cosmos'. Cosmos est situé après Ciel et avant Delta dans l’ordre choisi. Quel chemin est parcouru et combien d’E/S froides sont nécessaires si aucune telle clé n’existe ?",
+    "hints": [
+      "Utiliser les séparateurs pour choisir l’intervalle contenant Cosmos.",
+      "Une fois son absence établie dans la feuille pertinente, demander s’il existe un RID à suivre."
+    ],
+    "solution": "Cosmos est supérieur à Ciel : la racine bloc 1 conduit à la feuille bloc 4 [Delta,Écho]. Cosmos n’y figure pas. Deux lectures d’index à cache vide, aucune lecture de bloc de table. Les séparateurs suivent la convention de borne supérieure du fils gauche du dessin du cours.",
+    "explanation": "Une recherche infructueuse atteint une feuille mais ne suit aucun RID. L’ordre d=2 limite la capacité ; il ne se lit pas dans le nombre de clés actuellement présentes.",
+    "skillIds": ["B8.02", "B8.07", "B8.12"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [6, 7]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-V5",
+    "lessonId": "exam-index",
+    "title": "Transfert : petite population",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. N=1 000 000 lignes, blocs B=4096 octets, enregistrement R=100 octets non fragmenté, clé K=20 octets, pointeur P=8 octets, en-têtes H=0, remplissage maximal, index dense. Feuilles : réserver 8 octets de chaînage, puis des entrées de K+P octets. Modèle interne simplifié : autant de clés que de pointeurs. Remplacer uniquement N par 10000. Deux niveaux deviennent-ils possibles ? Donner le nombre de feuilles, de blocs d’index et de blocs de table.",
+    "hints": [
+      "Ne recalculer aucune largeur : seul l’effectif change.",
+      "Calculer d’abord les feuilles puis comparer leur nombre au fanout disponible d’une racine."
+    ],
+    "solution": "La capacité par feuille et le fanout restent146. Feuilles=ceil(10000/146)=69 ; une racine peut les référencer car69≤146. Hauteur2, index70 blocs. Les données occupent ceil(10000/40)=250 blocs, soit1024000 octets.",
+    "explanation": "Le changement d’effectif peut modifier la hauteur par palier ; diminuer N ne réduit pas les capacités d’un bloc. La limite de21316 entrées pour deux niveaux est maintenant suffisante.",
+    "skillIds": ["B7.09", "B8.07", "B8.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "EX",
+        "pages": [8, 9]
+      }
+    ],
+    "origin": "exam"
+  },
+  {
+    "id": "EX-V6",
+    "lessonId": "exam-index",
+    "title": "Complément : bitmap, texte et vecteurs",
+    "type": "guided",
+    "prompt": "Donnée choisie pour l’entraînement ; l’annexe originale manque et cet énoncé ne la reconstitue pas. Cas supplémentaires, non attestés par les pages visibles. (a) Bitmaps A=101100 et B=011010 : calculer AND, OR et leurs effectifs. Pour hash h(k)=k modulo4, placer2,6,10 et discuter un filtre d’intervalle. (b) Corpus d1=« chat noir »,d2=« chat blanc »,d3=« chien noir » : construire l’index inversé, les IDF avec log10(N/df), et expliquer recherche du mot chat contre sous-chaîne cha. TF est le nombre d’occurrences brut. (c) q=(1,0),u=(2,0),v=(1,1),w=(0,1) : calculer similarités cosinus, distances cosinus et euclidiennes ; classer et interpréter.",
+    "hints": [
+      "Pour les bitmaps, comparer chaque position ; pour le texte, dresser une liste de documents par token.",
+      "Dans le cosinus, calculer produit scalaire et normes séparément ; comparer ensuite aux distances euclidiennes plutôt que réutiliser le même classement."
+    ],
+    "solution": "(a) AND=001000, effectif1 ; OR=111110, effectif5. Avec h(k)=k mod4,2,6,10 vont tous dans le bucket2 : il faut une stratégie de collision, par exemple une chaîne, puis vérifier la clé réelle. Le hachage aide l’égalité mais ne conserve pas l’ordre nécessaire à un intervalle ; un B+arbre est plus adapté à ce besoin.\n(b) Index inversé : chat→{d1,d2}, noir→{d1,d3}, blanc→{d2}, chien→{d3}. IDF(chat)=IDF(noir)=log10(3/2)≈0,17609 ; IDF(blanc)=IDF(chien)=log10(3)≈0,47712. Tous les TF présents valent1. Une recherche de mot chat trouve d1,d2 ; un LIKE contenant cha cherche une sous-chaîne et pourrait trouver des fragments sans respecter les tokens. Le prétraitement déclaré ne retire aucun mot de ce corpus. Les poids TF-IDF sont obtenus en multipliant chaque TF par son IDF ; ne pas confondre cette convention pédagogique et la pertinence InnoDB exacte.\n(c) Normes : ||q||=1,||u||=2,||v||=√2,||w||=1. Similarités cosinus : u=1,v=1/√2≈0,7071,w=0. Distances cosinus 1−similarité : u=0,v≈0,2929,w=1 ; voisins du plus proche au plus loin : u,v,w. Distances euclidiennes depuis q : u=1,v=1,w=√2 ; u et v sont ex æquo. Le cosinus ignore ici la différence de norme entre q et u, tandis que l’euclidienne la mesure. Un embedding apprend une représentation ; stocker un VECTOR ne crée ni l’embedding ni un index ANN.",
+    "explanation": "Le thème n’apparaît pas clairement dans la copie disponible, ce qui ne l’exclut pas du cours. Les trois parties distinguent combinaison de filtres, recherche de tokens et proximité vectorielle ; annoncer les conventions avant les scores.",
+    "skillIds": [
+      "B9.01",
+      "B9.03",
+      "B10.03",
+      "B10.05",
+      "B10.13",
+      "B10.16",
+      "B10.17"
+    ],
+    "sourceRefs": [
+      {
+        "sourceId": "C-AUT",
+        "pages": [4, 5, 6, 14, 15, 16]
+      },
+      {
+        "sourceId": "C-FT",
+        "pages": [18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+      },
+      {
+        "sourceId": "C-VEC",
+        "pages": [5, 6, 7, 8, 12, 13, 14, 15, 16, 17]
+      }
+    ],
+    "origin": "exam"
+  }
+]

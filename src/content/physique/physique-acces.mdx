@@ -1,0 +1,21 @@
+export const meta = {"id": "physique-acces", "moduleId": "physique", "title": "Accès séquentiel et accès aléatoire", "summary": "Compter les positionnements avant de multiplier les temps.", "objectives": ["Décomposer un accès disque", "Calculer des coûts avec les unités correctes"], "sourceRefs": [{"sourceId": "C-PHY", "pages": [10, 11, 12, 13, 14, 15, 16, 17]}], "skillIds": ["B7.03", "B7.05"], "order": 2}
+
+## Décomposer le coût
+Pour le disque mécanique du modèle du cours, un accès comprend le déplacement de la tête, l'attente de rotation et le transfert du bloc. La proximité des blocs peut éviter de répéter les positionnements.
+
+Un bloc est l'unité d'échange disque/RAM, même si la requête veut une seule ligne.
+
+### Exemple du cours : 500 blocs
+Hypothèses : positionnement 10 ms, transfert 1 ms par bloc, un seul positionnement pour les blocs contigus.
+
+```text
+Séquentiel = 10 + 500 × 1 = 510 ms = 0,510 s
+Aléatoire  = 500 × (10 + 1) = 5 500 ms = 5,5 s
+```
+
+On ne peut pas multiplier 500 par le même coût unitaire dans les deux cas : c'est précisément le coût initial répété qui les différencie. Ces formules décrivent le modèle annoncé ; les lectures groupées, préchargements et supports modernes peuvent le modifier.
+
+### Application à un index
+Un index peut lire peu de feuilles mais pointer vers beaucoup de blocs de table dispersés. Le nombre de lignes sélectionnées seul ne décrit pas le coût. Des données regroupées physiquement rendent un parcours par intervalle plus favorable.
+
+**Piège :** 2 Kio décrivent une quantité de données, 2 ms un temps. Garder les unités à chaque ligne du calcul.

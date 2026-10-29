@@ -1,0 +1,39 @@
+export const meta = {"id": "texte-ranking-innodb", "moduleId": "fulltext", "title": "Pertinence InnoDB : distinguer les formules", "summary": "Calculer le ranking du support sans le confondre avec un cosinus.", "objectives": ["Calculer le ranking du support sans le confondre avec un cosinus.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-FT", "pages": [31, 32, 33, 34]}], "skillIds": ["B10.06"], "order": 19};
+
+Le support présente InnoDB comme utilisant TF-IDF et des idées de BM25. Il donne une formule de ranking fondée sur une fréquence **brute** et un IDF au carré. Cette formule n’est ni le TF normalisé de la leçon précédente ni une similarité cosinus.
+
+```text
+N : nombre total de lignes
+df(t) : lignes contenant t
+f(t,d) : occurrences de t dans la ligne d
+score(d,q) = somme des f(t,d) * [log10(N/df(t))]^2
+             pour les termes retenus de q
+```
+
+### Exemple original à un mot
+
+Le mot database est présent dans trois lignes sur vingt-sept. Dans la première ligne, il apparaît six fois ; dans les deux autres, une fois.
+
+```text
+IDF = log10(27/3) = log10(9) ≈0,954243
+IDF^2 ≈0,910579
+Première ligne : 6*0,910579 ≈5,463472
+Autres lignes : 1*0,910579 ≈0,910579 chacune
+```
+
+La première est mieux classée dans ce modèle. Son score supérieur à 1 est parfaitement possible : ce n’est pas une probabilité ni un cosinus. Pour deux mots, on additionne leurs contributions, avec une fréquence documentaire différente pour chacun.
+
+### Annexe BM25
+
+BM25 ajoute notamment une saturation de la fréquence et une normalisation de longueur : doubler les occurrences ne double pas forcément son score. L’annexe p.32 sert de repère, sans imposer de mémoriser des paramètres non travaillés dans le cours.
+
+```sql
+-- MySQL/InnoDB : exercice guidé
+SELECT id, title,
+       MATCH(title,overview) AGAINST('database') AS score
+FROM movieFT
+WHERE MATCH(title,overview) AGAINST('database')
+ORDER BY score DESC, id;
+```
+
+Cette requête nécessite un index FULLTEXT compatible sur title et overview. Le mini-corpus et la formule pédagogique permettent de vérifier un calcul, pas de prédire tous les scores de chaque version MySQL, parseur et mode. Changer les colonnes indexées, les stopwords ou le corpus peut modifier le classement.

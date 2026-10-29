@@ -1,0 +1,58 @@
+export const meta = {
+  "id": "fn-anomalies",
+  "moduleId": "normalisation",
+  "title": "Pourquoi normaliser ?",
+  "summary": "Une donnée répétée peut entraîner des anomalies d’insertion, de modification et de suppression.",
+  "objectives": [
+    "Identifier les trois anomalies",
+    "Relier la redondance à une DF",
+    "Choisir une décomposition porteuse de sens"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "C-FN",
+      "pages": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        75,
+        76,
+        77,
+        78,
+        79
+      ]
+    }
+  ],
+  "skillIds": [
+    "B6.01"
+  ],
+  "order": 1
+}
+
+## Séparer les faits qui décrivent des objets différents
+
+`Livraison(Nop,Designation,Nof,NomF,TelF,Date,Quantite)` mélange produit, fournisseur et livraison. Avec `Nof → TelF`, le téléphone d'un fournisseur se répète pour chaque livraison. Cette répétition entraîne des risques concrets.
+
+| Anomalie | Exemple |
+|---|---|
+| Modification | Changer TelF exige de modifier toutes les lignes du fournisseur. |
+| Insertion | Enregistrer un fournisseur sans livraison oblige à inventer produit/date ou des NULL. |
+| Suppression | Supprimer sa dernière livraison fait disparaître son téléphone. |
+
+## Exemple déroulé : comparer deux schémas
+
+Le schéma 1 place TelF dans `Fournisseur(Nof,NomF,Adr,TelF)`. Le schéma 2 le laisse dans Livraison. Le premier exprime directement le fait métier : le téléphone décrit le fournisseur, pas une occurrence de livraison. Le fournisseur peut vivre indépendamment des livraisons.
+
+Une décomposition cohérente est `Piece(Nop,Designation,Couleur,Poids)`, `Fournisseur(Nof,NomF,Adr,TelF)` et `Livraison(Nop,Nof,Date,Quantite)`. Les numéros servent de clés et de références ; toutes les répétitions ne sont pas mauvaises : une FK répétée porte l'association nécessaire.
+
+## Ce que la normalisation ne promet pas
+
+Elle vise les redondances dues aux dépendances étudiées ; elle ne supprime pas toutes les contraintes calculées, comme `stock = acheté moins vendu`, ni tous les coûts. Des lectures nécessiteront davantage de jointures. Le cours discute aussi des choix sémantiques et pratiques : une dénormalisation éventuelle doit être consciente, justifiée et accompagnée de contrôles.
+
+## À toi de repérer le problème
+
+Dans Zoo, supprimer le dernier animal d'une espèce peut faire disparaître son origine et sa classe. Modifier le salaire d'un gardien dans une seule ligne peut contredire les autres. Normaliser consiste à donner une place stable à ces faits, puis à préserver leur lien avec les animaux.

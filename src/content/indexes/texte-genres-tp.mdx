@@ -1,0 +1,23 @@
+export const meta = {"id": "texte-genres-tp", "moduleId": "fulltext", "title": "TP films : genres multiples et recherche reproductible", "summary": "Séparer la sémantique des genres, les échantillons et les mesures historiques.", "objectives": ["Séparer la sémantique des genres, les échantillons et les mesures historiques.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-FT", "pages": [5, 11, 41, 42, 44, 56, 68]}], "skillIds": ["B10.01", "B10.02", "B10.07", "B10.08", "B6.05", "B6.13"], "order": 23};
+
+Le CSV original disponible contient 1 288 films. Le navigateur peut utiliser un extrait annoncé comme tel : il ne faut pas imposer à cet extrait les comptages historiques 463 comédies ou 43 comédies parlant de famille. Les requêtes corrigées portent sur le jeu réellement affiché.
+
+```sql
+SELECT COUNT(*) FROM movie WHERE LOWER(genres) LIKE '%comedy%';
+SELECT id,title FROM movie
+WHERE LOWER(genres) LIKE '%comedy%'
+  AND LOWER(overview) LIKE '%family%'
+ORDER BY id LIMIT 5;
+```
+
+Ici family est une sous-chaîne anglaise choisie pour la demande famille. Cela ne couvre pas tous les termes du même sens. Chercher fear, panic ou horror exige une liste choisie explicitement ; un moteur lexical ne devine pas les équivalents omis.
+
+### Pourquoi genres pose problème
+
+Une chaîne comme Action,Crime représente une collection de genres. Si le domaine attendu est « un genre », ce regroupement n’est pas atomique pour les opérations métier de première forme normale. Un type chaîne est techniquement scalaire : il faut annoncer cette convention plutôt que prétendre déduire toute forme normale à partir du nom du type seul. Sans les DF, on ne conclut pas à la 2FN ou 3FN.
+
+Une normalisation crée Genre(nomGenre) et MovieGenre(movie_id,nomGenre), avec PK composée et deux FK. Elle permet de compter les genres, garantir le vocabulaire et interroger Action ET Crime sans dépendre d’un ordre dans une chaîne.
+
+Le type MySQL SET autorise un ensemble de valeurs déclarées, stocké et affiché selon l’ordre de déclaration des membres. Une recherche LIKE '%Action%Crime%' exige cet ordre textuel. `FIND_IN_SET('Action',genres)` et la même condition pour Crime testent la présence des deux membres indépendamment de leur ordre. Le SET reste spécifique à MySQL et ne remplace pas une relation d’association portable.
+
+Les temps et nombres 48/53, 2/7/6/71 figurant dans le TP sont des observations du jeu et de sa configuration. Pour comparer au Full Text, noter moteur, index, stopwords, collation et décompte vérifié ; aucun temps DuckDB ne prouve une accélération InnoDB.

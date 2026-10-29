@@ -1,0 +1,40 @@
+export const meta = {"id": "texte-index-mysql", "moduleId": "fulltext", "title": "Créer et inspecter un index FULLTEXT MySQL", "summary": "Associer MATCH aux colonnes indexées et suivre les structures auxiliaires.", "objectives": ["Associer MATCH aux colonnes indexées et suivre les structures auxiliaires.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-FT", "pages": [44, 46, 47, 48, 49, 50, 51, 52, 54, 56, 57, 65, 66, 68, 70, 71]}], "skillIds": ["B10.08", "B10.12"], "order": 21};
+
+Les exercices de cette leçon sont guidés **MySQL/InnoDB**. DuckDB exécute les requêtes relationnelles du site, mais ne valide pas la syntaxe MATCH AGAINST ni les structures internes InnoDB.
+
+```sql
+CREATE FULLTEXT INDEX ft_title ON movieFT(title);
+CREATE FULLTEXT INDEX ft_genres ON movieFT(genres);
+-- Autre choix : index combiné, pas substitut aux deux précédents.
+CREATE FULLTEXT INDEX ft_title_genres ON movieFT(title,genres);
+-- Retirer un index identifié :
+ALTER TABLE movieFT DROP INDEX ft_title_genres;
+```
+
+Les colonnes concernées doivent être de types textuels admissibles et compatibles en charset/collation. MATCH(title) doit disposer d’un index compatible pour cette recherche ; l’index combiné ne remplace pas automatiquement les recherches séparées. Les limitations de tables partitionnées et les détails d’admissibilité du cours décrivent le contexte MySQL des diapositives, à vérifier dans la version cible.
+
+### Dupliquer sans ajouter deux PK
+
+```sql
+CREATE TABLE movieFT LIKE movie;
+INSERT INTO movieFT SELECT * FROM movie;
+SHOW CREATE TABLE movieFT;
+```
+
+CREATE TABLE LIKE copie les index et contraintes pris en charge par cette instruction. L’ajout d’une deuxième PK échoue si id est déjà PK. CREATE TABLE AS SELECT a d’autres règles : ne pas supposer que sa copie conserve la PK. Une table InnoDB a de toute façon besoin d’un identifiant de document pour le Full Text ; cet identifiant interne n’impose pas de remplacer la clé métier.
+
+### Inspecter les mots et les tables auxiliaires
+
+```sql
+SET GLOBAL innodb_ft_aux_table='FT_test_DB/movieFT';
+SELECT word, doc_count, doc_id, position
+FROM information_schema.INNODB_FT_INDEX_TABLE
+ORDER BY word, doc_id, position LIMIT 15;
+SELECT * FROM information_schema.INNODB_FT_INDEX_CACHE LIMIT 15;
+SELECT name FROM information_schema.INNODB_TABLES
+WHERE name LIKE 'FT_test_DB/fts%';
+```
+
+Ces opérations peuvent exiger des privilèges et dépendent de la version. Plusieurs tables auxiliaires servent à répartir les termes, suivre les documents et gérer les suppressions ; leur nombre n’est pas un nombre de mots.
+
+Pour un gros import, construire les index après le chargement évite leur entretien ligne par ligne. Le nettoyage Full Text et `innodb_optimize_fulltext_only` sont des opérations d’administration guidées ; un changement de stoplist nécessite une stratégie de reconstruction. Un hash pour égalité doit garder une vérification de la valeur d’origine, car des collisions restent possibles.

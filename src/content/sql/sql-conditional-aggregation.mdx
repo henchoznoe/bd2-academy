@@ -1,0 +1,29 @@
+export const meta = {"id": "sql-conditional-aggregation", "moduleId": "sql", "title": "Compter selon une condition", "summary": "Construire les colonnes d’un tableau croisé avec CASE et un agrégat.", "objectives": ["Construire les colonnes d’un tableau croisé avec CASE et un agrégat.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [20, 21, 22, 23, 24]}], "skillIds": ["B1.05"], "order": 3}
+
+> **Les mots du cours.** Le support nomme cette transformation PIVOT via CASE. Le site emploie aussi « agrégation conditionnelle » pour expliquer comment CASE choisit les valeurs transmises à COUNT ou SUM.
+
+## Compter selon une condition
+
+`GROUP BY` définit les lignes du résultat, tandis que les conditions CASE définissent les catégories à compter. Dans un tableau par statut et par catégorie de produit, on regroupe donc par statut et on teste la catégorie.
+
+```sql
+SELECT status,
+ COUNT(CASE WHEN category_name = 'CPU' THEN 1 END) AS cpu,
+ COUNT(CASE WHEN category_name = 'Video Card' THEN 1 END) AS video,
+ SUM(CASE WHEN category_name = 'CPU' THEN order_value ELSE 0 END) AS valeur_cpu
+FROM commande GROUP BY status;
+```
+
+Pour un groupe contenant CPU, CPU, Video Card, le premier CASE produit `1,1,NULL`. COUNT ignore NULL et retourne 2. Avec `ELSE 0`, il produirait `1,1,0` : COUNT retournerait alors 3. `SUM(CASE ... THEN 1 ELSE 0 END)` retourne également 2, car il additionne les indicateurs.
+
+Une catégorie absente d'un groupe donne zéro avec COUNT. `SUM(CASE ... THEN montant END)` peut au contraire donner NULL si aucune valeur non NULL n'est présente ; `ELSE 0` ou COALESCE exprime alors explicitement le remplacement voulu. Un groupe qui n'existe pas dans les données n'est pas créé automatiquement.
+
+La clause FILTER exprime aussi l'agrégation conditionnelle dans les moteurs qui la prennent en charge :
+
+```sql
+SELECT status,
+ COUNT(*) FILTER (WHERE category_name='CPU') AS cpu
+FROM commande GROUP BY status;
+```
+
+**À retenir :** COUNT compte des valeurs non NULL, SUM additionne des nombres. Les deux opérations n'ont pas les mêmes valeurs par défaut.

@@ -1,0 +1,27 @@
+export const meta = {"id": "bitmap", "moduleId": "autres-index", "title": "Bitmap : transformer un filtre en opérations sur bits", "summary": "Combiner des vecteurs et choisir leur contexte d’utilisation.", "objectives": ["Combiner des vecteurs et choisir leur contexte d’utilisation.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-AUT", "pages": [3, 4, 5, 6, 7, 8, 9, 10, 29, 30]}], "skillIds": ["B9.01", "B9.02"], "order": 13};
+
+Un index bitmap associe à une valeur un vecteur de bits : le bit i vaut 1 si la ligne i possède cette valeur. Avec peu de valeurs distinctes et beaucoup de lignes, les longues suites de bits peuvent se compresser. Les environnements analytiques OLAP, avec lectures combinées et peu de modifications concurrentes, sont des candidats classiques.
+
+### Exemple original des produits
+
+Dans l’ordre des cinq lignes du support : poivron rouge, poivron vert, poivron jaune, tomate rouge, poivron vert.
+
+```text
+Rouge  = 10010 ; Vert   = 01001 ; Jaune = 00100
+Tomate = 00010 ; Poivron= 11101
+Rouge OR Vert       = 11011 => quatre lignes
+Rouge AND NOT Tomate= 10000 => une ligne
+Rouge               = 10010 => deux lignes
+```
+
+NOT inverse les bits **dans l’univers des lignes de la table**, pas un nombre entier d’une largeur arbitraire. Si la colonne est nullable, prévoir aussi la sémantique SQL de NULL : « non rouge » et « autre couleur connue » ne sont pas toujours identiques.
+
+Pour professeur, un bitmap spécialité=info et un bitmap catégorie=3 permettent un AND puis un comptage sans charger toutes les lignes. `SELECT *` exige encore les données. Un index bitmap sur JSON_EXISTS illustre une condition à deux valeurs ; JSON_VALUE peut convenir si son résultat a une faible cardinalité, dans le contexte Oracle du support.
+
+Les seuils de cardinalité donnés en annexe ne sont pas des lois. Une mise à jour peut affecter des segments bitmap représentant plusieurs lignes et gêner la concurrence. Le nombre de valeurs **futur**, la fréquence d’écriture, la sélectivité de la requête et la taille de table comptent. Pour 200 professeurs et environ 50 taux distincts, un petit B-arbre ou même un scan peut être préférable à un bitmap simplement parce qu’il n’y avait que cinq taux au départ.
+
+```sql
+-- Syntaxe Oracle, exercice guidé
+CREATE BITMAP INDEX idx_prof_specialite ON professeur(specialite);
+CREATE BITMAP INDEX idx_prof_categorie ON professeur(categorie);
+```

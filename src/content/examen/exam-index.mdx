@@ -1,0 +1,65 @@
+export const meta = {"id": "exam-index", "moduleId": "examen", "title": "Ancien examen : lire et dimensionner un B+arbre", "summary": "Compter les accès et les blocs avec des conventions explicites.", "objectives": ["Compter les accès et les blocs avec des conventions explicites.", "Justifier les résultats sans confondre données choisies et annexe originale."], "sourceRefs": [{"sourceId": "EX", "pages": [6, 7, 8, 9]}], "skillIds": ["B7.09", "B8.01", "B8.03", "B8.05", "B8.06", "B8.07", "B8.08", "B8.10", "B8.12", "B8.13"], "order": 3}
+
+## Ancien examen : lire et dimensionner un B+arbre
+
+La figure et les paramètres d'annexe manquent. La figure et tous les nombres ci-dessous sont une **donnée choisie pour l’entraînement**. Ils ne reconstruisent pas la figure originale.
+
+## Figure choisie et légende
+
+```text
+                   Bloc 1 : racine [Aube | Ciel]
+                     /             |             \
+                    /              |              \
+ Bloc 2 [Andes,Aube] --> Bloc 3 [Brume,Ciel] --> Bloc 4 [Delta,Écho]
+          |                         |                         |
+          | RIDs                    | RIDs                    | RIDs
+          v                         v                         v
+  Données bloc 10           Brume -> bloc 11          Delta -> bloc 12
+  Andes, Aube               Ciel  -> bloc 12          Écho  -> bloc 13
+```
+
+Les flèches horizontales représentent le chaînage des feuilles dans l'ordre des clés ; on les assimile ici aux flèches en pointillés de l'exercice choisi. Les RIDs référencent les blocs de données. L'index est dense et nonclustered ; les données ne sont donc pas nécessairement dans l'ordre des feuilles. L'ordre déclaré des titres est Andes, Aube, Brume, Ciel, Delta, Écho. L'ordre au sens du cours est d=2 : au plus 2d=4 clés et 2d+1=5 enfants internes ; la racine utilise ici trois enfants. Sa hauteur est deux niveaux, ou une arête : annoncer la convention.
+
+Les séparateurs Aube et Ciel de la racine guident la recherche ; ce ne sont pas deux lignes supplémentaires de table. Les six entrées des feuilles représentent six lignes.
+
+## Trois coûts différents
+
+Cache vide et comptage d'une E/S par bloc lu : `SELECT * FROM films WHERE titre='Delta'` lit la racine 1, la feuille 4 puis les données 12, soit trois E/S. Si la racine est déjà en cache, il reste deux E/S physiques.
+
+La projection `SELECT titre FROM films WHERE titre >= 'Delta'` est recouverte : elle lit 1 et 4, soit deux E/S, sans les blocs de données. Un filtre sur année, absente de cet index, peut imposer de lire les quatre blocs de données 10 à 13. Sur une petite table, comparer ces coûts plutôt qu'appliquer « index toujours plus rapide ». Un SELECT * large peut nécessiter beaucoup de lectures de données dispersées.
+
+## Dimensionnement : deuxième cas choisi
+
+```text
+N = 1 000 000 lignes ; B = 4096 octets
+R = 100 octets/ligne ; K = 20 octets/clé ; P = 8 octets/pointeur
+En-têtes = 0 ; lignes non fragmentées ; remplissage maximal
+Index dense ; chaque feuille réserve un pointeur de chaînage de 8 octets
+Interne simplifié : autant de clés que de pointeurs
+```
+
+Les divisions de capacité sont arrondies vers le bas ; les nombres de blocs nécessaires sont arrondis vers le haut.
+
+| Calcul | Résultat |
+|---|---|
+| Lignes/bloc : partie entière de 4096/100 | 40 |
+| Blocs de table : plafond de 1000000/40 | 25000 |
+| Taille allouée minimale : 25000 fois 4096 | 102400000 octets |
+| Fanout simplifié : partie entière de 4096/(20+8) | 146 |
+| Entrées/feuille : partie entière de (4096-8)/(20+8) | 146 |
+| Feuilles : plafond de 1000000/146 | 6850 |
+| Parents de feuilles : plafond de 6850/146 | 47 |
+| Racine | 1 |
+| Index complet | 6898 blocs, 3 niveaux |
+
+Le modèle interne réel avec m pointeurs et m moins un séparateurs donnerait un fanout de 147 : il ne faut pas mélanger les modèles en cours de calcul. Deux niveaux ne pourraient accueillir que 146 fois 146, soit 21316 entrées ; c'est insuffisant.
+
+Avec une clé de 12 octets : capacité interne et feuille 204, puis 4902 feuilles, 25 parents et une racine, soit 4928 blocs. Avec des lignes divisées par deux à 50 octets mais les mêmes clés/RIDs, 81 lignes tiennent par bloc : 12346 blocs de données. L'index dense reste inchangé, car ni le nombre de lignes ni les tailles de clé et pointeur n'ont changé.
+
+**Vérification :** écrire les unités, hypothèses de cache et conventions avant toute réponse numérique. Les compléments bitmap, Full Text et vecteurs restent au programme même s'ils ne sont pas identifiables dans la copie visible.
+
+
+### Vocabulaire du cours à conserver
+L’ordre d n’est pas le nombre maximal d’enfants : un B-arbre d’ordre d contient au plus 2d clés et 2d+1 pointeurs enfants par nœud interne. La variante de dimensionnement emploie l’hypothèse simplifiée autant de clés que de pointeurs : 146 couples donnent d=73 pour les clés, et le modèle simplifié retient 146 pointeurs. Le format réel donne 147 pointeurs. Ces hypothèses sont annoncées séparément pour éviter de confondre ordre et capacité.
+
+Les séparateurs Aube et Ciel sont les bornes supérieures des fils de gauche, suivant la convention de la figure du cours. Les entrées de données restent toutes dans les feuilles.

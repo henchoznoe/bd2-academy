@@ -1,0 +1,35 @@
+export const meta = {"id": "texte-tfidf", "moduleId": "fulltext", "title": "TF-IDF et similarité cosinus, pas à pas", "summary": "Définir le corpus et calculer les vecteurs dans le même vocabulaire.", "objectives": ["Définir le corpus et calculer les vecteurs dans le même vocabulaire.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-FT", "pages": [18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]}], "skillIds": ["B10.03", "B10.05"], "order": 18};
+
+TF mesure le poids local d’un mot ; IDF mesure sa rareté dans le corpus. Le cours utilise un TF normalisé par la longueur du document. Il existe d’autres conventions : toujours écrire celle employée.
+
+```text
+f(t,d) : nombre d’occurrences du terme t dans d
+L(d) : nombre total de termes retenus dans d
+N : nombre de documents ; df(t) : documents contenant t
+TF(t,d) = f(t,d)/L(d)
+IDF(t) = log10(N/df(t))
+w(t,d) = TF(t,d)*IDF(t)
+```
+
+### Exemple calculé
+
+Reprenons D1=index btree index, D2=index bitmap, D3=recherche texte. Il y a trois documents. index apparaît dans deux documents : son IDF vaut log10(3/2)=0,176091. btree n’apparaît que dans D1 : son IDF vaut log10(3)=0,477121.
+
+Pour D1, le poids d’index vaut deux tiers fois 0,176091, soit 0,117394 ; le poids de btree vaut un tiers fois 0,477121, soit 0,159040. Pour D2, index vaut 0,088046 et bitmap vaut 0,238561.
+
+### Comparer à une requête
+
+La requête index est un document d’un terme, projeté dans **le vocabulaire du corpus** avec l’IDF du corpus. Sa norme vaut 0,176091.
+
+```text
+cos(q,d) = somme_t(w(t,q)*w(t,d)) / (norme(q)*norme(d))
+cos(q,D1) ≈ 0,593876
+cos(q,D2) ≈ 0,3462
+cos(q,D3) = 0
+```
+
+D1 est mieux aligné sur index ; il ne gagne pas uniquement parce qu’il est plus long. Multiplier un vecteur entier par une constante positive ne change pas son cosinus. En revanche, la distance euclidienne change.
+
+Un terme présent partout a un IDF nul avec cette convention. Une requête composée uniquement de tels termes peut devenir un vecteur nul : son cosinus est indéfini, pas automatiquement égal à 1. Un terme inconnu n’obtient pas arbitrairement df=0 dans une division : il faut une politique explicite d’ignorance, lissage ou vocabulaire.
+
+L’ordre des mots est perdu dans ces vecteurs. Ils ne détectent donc pas à eux seuls la différence entre « chien mord homme » et « homme mord chien ».

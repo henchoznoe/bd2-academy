@@ -1,0 +1,31 @@
+export const meta = {"id": "hachage", "moduleId": "autres-index", "title": "Hachage : buckets, collisions et débordement", "summary": "Expliquer le coût d’une égalité et la limite des recherches de plage.", "objectives": ["Expliquer le coût d’une égalité et la limite des recherches de plage.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-AUT", "pages": [12, 13, 14, 15, 16, 17, 18, 19, 20]}], "skillIds": ["B9.03", "B9.04"], "order": 14};
+
+Une organisation hachée applique une fonction H à une clé pour choisir un bucket, composé d’une ou plusieurs pages. Le but est d’atteindre rapidement la donnée pour une égalité. Un bucket n’est pas nécessairement une seule ligne : des clés différentes peuvent avoir le même hash.
+
+### Exemple calculé
+
+```text
+H(k)=k modulo 5 ; capacité primaire de chaque bucket : deux lignes
+Insertion 7,12,22 : toutes les clés vont au bucket 2.
+Après 7 et 12, le bucket est plein ; 22 nécessite un débordement.
+Chercher 22 : lire le bucket 2 puis sa page de débordement.
+```
+
+Une collision n’est pas un doublon de clé. Il faut comparer la valeur exacte après le hash, surtout si une empreinte n’est pas unique. Une bonne distribution réduit les collisions ; un fort taux de remplissage peut allonger les chaînes. Une suppression peut laisser de l’espace réutilisable sans régler la répartition globale.
+
+L’ordre des hashes ne préserve pas l’ordre des clés. Une plage de prix ne correspond pas à des buckets contigus : un B+arbre est généralement plus adapté. En hachage statique, la taille primaire est choisie à l’avance ; une croissance inattendue impose débordements et parfois réorganisation. Le hachage dynamique existe mais n’est qu’un repère ici.
+
+### Oracle du support
+
+```sql
+CREATE CLUSTER DeptClust (dpt_id NUMBER(4))
+  SIZE 8192 HASHKEYS 100;
+CREATE TABLE Emp (
+  emp_id NUMBER PRIMARY KEY,
+  department_id NUMBER(4)
+) CLUSTER DeptClust(department_id);
+```
+
+SIZE décrit la taille moyenne des lignes associées à une même clé de cluster, pas la taille d’une ligne. HASHKEYS décrit le dimensionnement de la zone de hachage ; HASH IS peut choisir une expression. Une mauvaise estimation gaspille de la place ou crée des débordements.
+
+L’annexe p.20 distingue **fichier de données haché** et **index secondaire de hachage** : le second garde des clés et localisateurs et nécessite encore l’accès à la donnée. L’expression « hash index » est parfois employée pour les deux ; préciser ce qui est stocké dans le bucket.

@@ -1,0 +1,30 @@
+export const meta = {"id": "texte-like-regex", "moduleId": "fulltext", "title": "LIKE et expressions régulières : mots ou sous-chaînes ?", "summary": "Prédire les correspondances et l’apport d’un B-arbre.", "objectives": ["Prédire les correspondances et l’apport d’un B-arbre.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-FT", "pages": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}], "skillIds": ["B10.01", "B10.02"], "order": 16};
+
+Une égalité compare une valeur entière selon son type et sa collation. LIKE compare un motif : `%` représente zéro ou plusieurs caractères et `_` exactement un caractère. Une expression régulière décrit des motifs plus riches. Le Full Text travaille plutôt avec les mots produits par un parseur.
+
+### Exemple déroulé
+
+```text
+Titres : Dream ; Dreaming ; A dream in winter ; Daydream
+LIKE 'Dream%' : les deux premiers, selon la casse/collation
+LIKE '%dream%' : les quatre si comparaison insensible à la casse
+Mot Full Text 'dream' : Dream et A dream in winter, sous parseur ordinaire
+```
+
+Un B-arbre sur le titre est ordonné dès le début de la chaîne. Il peut isoler un préfixe constant comme The suivi d’un espace. Un motif débutant par `%` n’a pas cette borne : un scan d’index recouvrant reste parfois possible, mais ce n’est pas une recherche sélective de suffixe.
+
+```sql
+SELECT id, title FROM movie
+WHERE LOWER(title) LIKE '%dream%'
+ORDER BY id;
+
+SELECT id, title FROM movie
+WHERE LOWER(title) LIKE 'the %'
+ORDER BY id;
+```
+
+Ces formes rendent explicite l’insensibilité à la casse sur le jeu navigateur. Appliquer LOWER peut gêner un index ordinaire sur title ; un index d’expression correspondant change le cas. En MySQL, une collation adaptée peut éviter cette fonction.
+
+Un AND de deux motifs impose les deux conditions, un OR conserve une ligne satisfaisant au moins l’une. Le motif `%death%in%` impose la présence de death puis de in **après**, y compris au milieu d’un mot ; ce n’est pas « les deux mots dans n’importe quel ordre ».
+
+Un index de préfixe MySQL tel que title(10) stocke seulement les premiers caractères : il est plus petit, mais peut exiger un filtre résiduel et ne couvre pas le titre complet. Ce n’est pas un index partiel par prédicat au sens d’autres produits. Les regex n’obtiennent pas automatiquement un index efficace simplement parce que des index fonctionnels sont disponibles.

@@ -1,0 +1,21 @@
+export const meta = {"id": "physique-cache", "moduleId": "physique", "title": "Buffer, lectures et hit ratio", "summary": "Distinguer demande logique et accès physique.", "objectives": ["Calculer un hit ratio", "Expliquer LRU, LFU, MRU et les blocs modifiés"], "sourceRefs": [{"sourceId": "C-PHY", "pages": [18, 19, 20, 21, 22, 23, 24]}], "skillIds": ["B7.04", "B7.05", "B7.A1"], "order": 3}
+
+## Une lecture logique peut éviter le disque
+Le buffer manager recherche le bloc demandé en RAM. Si le bloc y est, c'est un succès de cache. Sinon une lecture physique est nécessaire, puis le bloc entre dans le buffer.
+
+```text
+Hit ratio = (lectures logiques - lectures physiques) / lectures logiques
+Lectures physiques = lectures logiques × (1 - hit ratio)
+```
+
+### Exemple déroulé
+Pour 10 000 lectures logiques et 800 lectures physiques, le hit ratio vaut 0,92, soit 92 %. Les 9 200 autres demandes ont trouvé le bloc en mémoire. Cela ne veut pas dire que le processeur n'a rien fait ni que les écritures sont gratuites.
+
+Si le nombre de lectures logiques est nul, le quotient est indéfini : on ne lui attribue pas arbitrairement zéro ou 100 %.
+
+### Quand le buffer est plein
+LRU évince le bloc le moins récemment utilisé ; LFU celui le moins fréquemment utilisé ; MRU le plus récent, utile dans certains parcours. Il n'existe pas une politique optimale pour tous les accès. Un bloc modifié doit être traité selon les règles de persistance et de journalisation avant son éviction.
+
+Le buffer manager gère le cache. Le recovery manager participe à la reprise et à la durabilité. Un buffer trop grand peut faire paginer le système d'exploitation : augmenter la RAM réservée au SGBD ne garantit donc pas une amélioration.
+
+**À expliquer :** après un deuxième parcours de la même table, quelles lectures restent logiques et lesquelles peuvent disparaître physiquement ?

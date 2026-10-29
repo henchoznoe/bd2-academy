@@ -1,0 +1,63 @@
+export const meta = {
+  "id": "fn-synthese",
+  "moduleId": "normalisation",
+  "title": "Synthétiser en 3FN",
+  "summary": "Conserver les règles et une clé universelle, avec toutes les étapes justifiées.",
+  "objectives": [
+    "Appliquer les six étapes du support",
+    "Comprendre l’ajout d’une relation-clé",
+    "Contrôler les fusions et la forme normale finale"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "C-FN",
+      "pages": [
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        43
+      ]
+    }
+  ],
+  "skillIds": [
+    "B6.07",
+    "B6.10"
+  ],
+  "order": 6
+}
+
+## Les six étapes du cours
+
+1. Construire une couverture minimale à cibles simples et rechercher les clés universelles.
+2. Grouper les DF ayant la même source.
+3. Étudier la fusion de groupes dont les sources se déterminent mutuellement.
+4. Construire une relation avec les attributs de chaque groupe.
+5. Retirer les schémas inclus dans un autre, sans perdre les règles qu'ils représentent.
+6. Si aucun morceau ne contient une clé universelle, ajouter une relation contenant cette clé.
+
+La version canonique sûre crée les relations à partir de la couverture minimale, retire les inclusions et ajoute la clé. Une fusion supplémentaire doit conserver les DF **et la 3FN des relations obtenues** ; sources équivalentes ne justifient pas toute fusion arbitraire. Ce contrôle est particulièrement utile dans FN-C07.
+
+## Exemple déroulé du cours
+
+```text
+U = A,B,C,Q,E,F
+A → B ; B → A ; A → F ; AC → Q ; C → E
+Clés : AC et BC.
+```
+
+La couverture est déjà minimale. Groupes : A → BF, B → A, AC → Q, C → E. A et B sont équivalents ; leur fusion est ici valide. On obtient `Fournisseur(A,B,F)`, `Commande(A,C,Q)`, `Piece(C,E)`. Aucun schéma n'est inclus dans un autre. Commande contient AC, clé universelle : rien à ajouter. Dans Fournisseur, A et B sont tous deux clés ; chaque DF a une source superclé.
+
+## Pourquoi l'étape 6 compte
+
+Dans `Prets(nomSuccurs,ville,actifs,nomClient,numPret,montant)`, les règles `nomSuccurs → ville,actifs` et `numPret → montant,nomSuccurs` donnent Succursale et PretInfo. Mais nomClient n'est déterminé par rien : la clé universelle est nomClient,numPret. Il faut ajouter `Emprunteur(nomClient,numPret)`. Sinon l'association client/prêt disparaît.
+
+## Validation
+
+Écris couverture, clés, groupes, éventuelles fusions, relations, inclusions et test de la clé. Termine en contrôlant la 3FN de chaque projection et la préservation des DF. Plusieurs décompositions peuvent être correctes ; on juge les garanties, pas les noms des tables.

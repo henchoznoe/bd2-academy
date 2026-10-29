@@ -1,0 +1,20 @@
+export const meta = {"id": "sql-windows", "moduleId": "sql", "title": "OVER : calculer sans perdre les détails", "summary": "Distinguer agrégation et fenêtre globale ou partitionnée.", "objectives": ["Distinguer agrégation et fenêtre globale ou partitionnée.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106]}], "skillIds": ["B3.04", "B3.05"], "order": 14}
+
+## OVER : calculer sans perdre les détails
+
+Une fenêtre applique un calcul à des lignes liées à la ligne courante tout en conservant son identité. GROUP BY réduit les lignes à une par groupe ; OVER conserve les lignes détaillées.
+
+```sql
+SELECT id,salaire,idDep,
+ SUM(salaire) OVER() AS total,
+ SUM(salaire) OVER(PARTITION BY idDep) AS total_dep
+FROM salaires;
+```
+
+Sur six employés gagnant tous 1000, total vaut 6000 sur chaque ligne. Dans un département de deux employés, total_dep vaut 2000 sur chacune de ses deux lignes. Il y a toujours six lignes en sortie. La version `GROUP BY idDep` ne rendrait qu'une ligne par département.
+
+PARTITION BY définit les ensembles indépendants. Sans cette clause, toute la relation issue des étapes précédentes forme une partition. COUNT, SUM, AVG, MIN et MAX peuvent être utilisés : on peut afficher simultanément les données individuelles et des caractéristiques de leur groupe.
+
+La fenêtre se calcule sur la population conservée par FROM, WHERE, GROUP BY et HAVING. Un filtre appliqué dans WHERE avant la fenêtre modifie donc sa population ; pour filtrer les résultats de la fenêtre, utiliser une requête externe.
+
+**À retenir :** annoncer pour chaque colonne « par ligne », « par partition » ou « global » et prédire le nombre de lignes avant les valeurs.

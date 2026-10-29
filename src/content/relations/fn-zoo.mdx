@@ -1,0 +1,64 @@
+export const meta = {
+  "id": "fn-zoo",
+  "moduleId": "normalisation",
+  "title": "Atelier zoo : contrôler, corriger, normaliser",
+  "summary": "Un parcours complet du mauvais schéma aux contraintes et aux requêtes du schéma normalisé.",
+  "objectives": [
+    "Contrôler chaque DF avec SQL",
+    "Corriger avant de transférer",
+    "Créer les clés et FK puis réécrire les requêtes"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "TP-N",
+      "pages": [
+        1,
+        2,
+        3
+      ]
+    }
+  ],
+  "skillIds": [
+    "B6.13",
+    "B6.14",
+    "B5.08",
+    "B5.09"
+  ],
+  "order": 10
+}
+
+## Le laboratoire utilise des données reconstituées
+
+Le script de données original du TP n'est pas disponible dans les supports. Les tables exécutables du site constituent un **jeu pédagogique synthétique** conforme au schéma. On n'attribue donc aucun nombre de lignes ou résultat de ce jeu au zoo de l'enseignante. Le schéma plat et les tables normalisées coexistent pour comparer les requêtes.
+
+## 1. Traduire et simplifier les règles
+
+Animal détermine nom, année, espèce, emplacement ; nom et espèce identifient aussi un animal. Espèce détermine origine et classe ; gardien détermine prénom et salaire ; emplacement détermine surface, type et gardien ; type détermine son libellé. La dernière règle `Animal,Emplacement → Surface` est redondante : Emplacement → Surface suffit déjà. Les clés universelles sont Animal et Nom,Espèce.
+
+La table est 1FN selon le modèle du TP mais pas 2FN : Espèce, partie stricte de la clé Nom,Espèce, détermine Origine et Classe, non premiers. Le fait que la PK choisie soit Animal, simple, ne supprime pas cette violation.
+
+## 2. Contrôler puis corriger
+
+```sql
+SELECT espece
+FROM zoo
+GROUP BY espece
+HAVING COUNT(DISTINCT origine) > 1
+    OR COUNT(DISTINCT classe) > 1;
+```
+
+Cette méthode est valable ici car l'énoncé initial exclut les NULL. `COUNT(DISTINCT ...)` ignore les NULL : si on étend le problème, il faut contrôler séparément leur présence ou utiliser une comparaison explicite qui distingue absence et valeur. Pour corriger, l'énoncé désigne la ligne au plus petit numéro d'animal comme référence. Il ne faut pas choisir MIN(origine), qui choisit un mot par ordre alphabétique.
+
+## 3. Créer les relations et transférer
+
+Les cinq tables sont Animal, Espece, Gardien, Emplacement et Type_empl. Animal a une PK Animal et une clé alternative `UNIQUE(nom,espece)` avec `NOT NULL`. Crée et peuple les parents avant les enfants : Espece, Gardien, Type_empl ; puis Emplacement ; enfin Animal. Chaque copie utilise SELECT DISTINCT **après** correction des incohérences.
+
+## 4. Relire les requêtes
+
+```sql
+SELECT SUM(salaire) AS masse_salariale FROM gardien;
+```
+
+Sur Zoo, il faut d'abord un couple distinct gardien,salaire. `SUM(DISTINCT salaire)` serait faux si deux gardiens ont le même salaire. Les requêtes animales requièrent parfois davantage de jointures, mais le téléphone ou le salaire ne se répète plus.
+
+Une vue peut reconstruire les anciennes colonnes. Des écritures à travers une vue à jointures demandent des mécanismes spécifiques, tels que des triggers INSTEAD OF selon le SGBD ; créer une vue ne rend pas automatiquement toute écriture compatible.

@@ -1,0 +1,31 @@
+export const meta = {"id": "vecteurs-mysql", "moduleId": "vecteurs", "title": "VECTOR dans le contexte MySQL du cours", "summary": "Stocker, convertir et rechercher des vecteurs sans confondre type et moteur ANN.", "objectives": ["Stocker, convertir et rechercher des vecteurs sans confondre type et moteur ANN.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-VEC", "pages": [12, 13, 14, 15, 16, 17, 18, 19]}], "skillIds": ["B10.15", "B10.16", "B10.17", "B10.18"], "order": 26};
+
+Les diapositives s’appuient sur MySQL 9 et un lien de documentation 9.3. Elles présentent VECTOR(N) comme une suite de flottants simple précision, quatre octets chacun, avec 16 383 dimensions au maximum et 2 048 par défaut. VECTOR(512) représente donc 2 048 octets de composantes, avant tout surcoût de ligne.
+
+Le support indique des restrictions de PK, UNIQUE, FK et opérateurs, ainsi qu’un support limité de recherche. Ces indications sont à apprendre **dans le contexte des slides** : elles ne prouvent pas les capacités de toutes les éditions, services ou versions MySQL. Certaines fonctions de distance peuvent dépendre de l’offre cible. Les exercices restent guidés et ne sont pas exécutés en DuckDB comme du SQL MySQL.
+
+### Exemple complet en dimension trois
+
+```sql
+-- Syntaxe présentée dans le support : environnement compatible à vérifier.
+CREATE TABLE Mydocs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  text_body TEXT,
+  embedding VECTOR(3)
+);
+INSERT INTO Mydocs(text_body,embedding) VALUES
+  ('texte A', STRING_TO_VECTOR('[1,0,0]')),
+  ('texte B', STRING_TO_VECTOR('[0,1,0]'));
+
+SELECT id, text_body,
+       DISTANCE(embedding, STRING_TO_VECTOR('[1,0,0]'), 'COSINE') AS distance
+FROM Mydocs
+ORDER BY distance ASC, id
+LIMIT 10;
+```
+
+Les crochets doivent contenir de vrais nombres : les points de suspension de la diapo sont du pseudocode. STRING_TO_VECTOR, aussi présenté comme TO_VECTOR, convertit une chaîne en représentation interne ; VECTOR_TO_STRING ou FROM_VECTOR effectue l’inverse. VECTOR_DIM lit la dimension. Ces noms doivent être vérifiés sur la version choisie.
+
+Stocker un vecteur ne génère pas son embedding. Le support prévoit une génération externe et ne montre pas d’index ANN intégré. Sans tel index, une recherche de voisins peut examiner tous les vecteurs : c’est du KNN exact, avec un coût approximatif proportionnel au nombre de lignes fois la dimension.
+
+Choisir une égalité/B-arbre pour un identifiant exact, LIKE pour un motif de caractères, Full Text pour des termes et un classement lexical, embeddings pour la proximité sémantique. OpenSearch, FAISS et ChromaDB sont cités comme pistes, pas comme logiciels nécessaires pour réussir les exercices du cours.

@@ -1,0 +1,21 @@
+export const meta = {"id": "sql-grouping-sets", "moduleId": "sql", "title": "GROUPING SETS : plusieurs niveaux d’agrégation", "summary": "Calculer les sous-totaux désirés dans une seule requête.", "objectives": ["Calculer les sous-totaux désirés dans une seule requête.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [74, 75, 76, 77, 78, 79]}], "skillIds": ["B3.01", "B3.02", "B3.03"], "order": 12}
+
+## GROUPING SETS : plusieurs niveaux d’agrégation
+
+Un GROUP BY ordinaire produit un seul niveau de regroupement. GROUPING SETS demande plusieurs niveaux simultanément. Chaque tuple entre parenthèses est une liste de colonnes de regroupement, pas un filtre sur des valeurs.
+
+```sql
+SELECT annee,mois,SUM(prix) AS total
+FROM vente
+GROUP BY GROUPING SETS((annee,mois),(annee),());
+```
+
+Pour les ventes `(2020,1,10),(2020,2,20)`, on obtient les deux totaux mensuels, un total annuel de 30 et un total général de 30. Les colonnes absentes d'un niveau valent NULL dans ses lignes de total.
+
+Cette requête peut être comprise comme trois requêtes réunies par UNION ALL : groupement par année/mois, par année, puis sans colonne. Le total général peut avoir la même valeur qu'un sous-total ; il ne faut pas supprimer la ligne par DISTINCT, car son rôle est différent.
+
+Un NULL de total n'est pas nécessairement un NULL des données. `GROUPING` ou `GROUPING_ID`, si le moteur les fournit, permettent de les distinguer. Les comportements sur table vide et groupe vide doivent être vérifiés dans le moteur étudié : ne pas transposer silencieusement un résultat Oracle au navigateur.
+
+HAVING filtre les groupes calculés. WHERE agit avant, sur les lignes sources : ils n'ont pas le même effet sur les totaux.
+
+**À retenir :** énumérer d'abord tous les groupes souhaités, puis vérifier quelles colonnes sont absentes à chaque niveau.

@@ -1,0 +1,19 @@
+export const meta = {"id": "physique-memoires", "moduleId": "physique", "title": "Du tuple logique au stockage physique", "summary": "Comprendre ce que le SGBD doit charger avant de calculer.", "objectives": ["Distinguer schéma logique et organisation physique", "Relier persistance et hiérarchie des mémoires"], "sourceRefs": [{"sourceId": "C-PHY", "pages": [1, 2, 3, 4, 5, 6, 7, 8, 9]}], "skillIds": ["B7.01"], "order": 1}
+
+## Pourquoi le SQL ne suffit pas à prévoir le coût
+Une table est une relation au niveau logique. Physiquement, ses lignes, index, journaux et métadonnées occupent des fichiers. Le système de gestion de fichiers sait lire des octets ; le SGBD ajoute schémas, contraintes, concurrence, autorisations et statistiques.
+
+Le processeur travaille sur les données présentes en mémoire principale. La RAM est rapide, directement adressable et volatile. Le stockage secondaire conserve les données après extinction ; le stockage tertiaire sert notamment à l'archivage et aux sauvegardes.
+
+| Niveau | Rôle pour le SGBD | Limite principale |
+|---|---|---|
+| RAM / buffer pool | traiter et garder les blocs utiles | capacité et volatilité |
+| SSD / disque | persistance des tables et index | coût des accès et écritures |
+| archive / bande | sauvegarde, reprise, historique | accès souvent séquentiel |
+
+### Exemple déroulé
+Une requête compte les lignes d'une table de 1 000 blocs. Si les 1 000 blocs sont déjà en RAM, elle peut consommer du CPU et faire des lectures logiques sans relire le disque. Après un démarrage à froid, la même requête peut nécessiter le chargement de ces blocs.
+
+Les ordres de grandeur du support illustrent des rapports, pas un benchmark de votre ordinateur. Un SSD ne possède pas de bras mécanique : réutiliser un coût de déplacement de tête pour lui serait une erreur.
+
+**À vérifier :** expliquer pourquoi la même requête et les mêmes données peuvent avoir deux temps différents, sans que la réponse change.

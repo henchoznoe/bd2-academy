@@ -1,0 +1,35 @@
+export const meta = {"id": "sql-pagination", "moduleId": "sql", "title": "Pagination, top N et hasard", "summary": "Choisir les lignes, définir leur ordre et traiter les ex æquo.", "objectives": ["Choisir les lignes, définir leur ordre et traiter les ex æquo.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [68, 69, 70, 71, 72]}], "skillIds": ["B2.08", "B2.09"], "order": 11}
+
+## Pagination, top N et hasard
+
+OFFSET ignore un nombre de lignes du résultat ordonné. FETCH choisit ensuite un nombre de lignes. Dans l'exemple du cours, sauter cinq lignes puis en prendre dix correspond aux positions 6 à 15.
+
+```sql
+-- Oracle 12c+ / syntaxe standard présentée dans le cours
+SELECT * FROM emp ORDER BY e_id
+OFFSET 5 ROWS FETCH FIRST 10 ROWS ONLY;
+
+-- Variante DuckDB du même besoin
+SELECT * FROM emp ORDER BY e_id LIMIT 10 OFFSET 5;
+```
+
+Sans ORDER BY, « les premières lignes » ne définit pas un ordre stable. Un tri par salaire seul reste ambigu en cas d'égalité. Ajouter une clé permet un top N déterministe, mais cela modifie aussi la notion d'ex æquo si WITH TIES est demandé sur tout le tri.
+
+ONLY garde le nombre demandé ; WITH TIES peut ajouter les lignes à égalité avec la dernière retenue. Ne pas remplacer automatiquement cette demande par ROW_NUMBER, qui numérote toutes les lignes distinctement.
+
+Pour choisir au hasard, le support Oracle trie sur `DBMS_RANDOM.VALUE`, puis limite le résultat. L'ancienne forme encapsule le tri avant de tester ROWNUM. Dans DuckDB, `ORDER BY random() LIMIT 2` constitue une adaptation de moteur, pas la syntaxe Oracle. Une requête aléatoire ne possède pas une grille de résultat unique pour un correcteur déterministe.
+
+**À retenir :** préciser ordre, limite et règle d'ex æquo avant d'écrire la clause.
+
+## Deux formes Oracle de sélection aléatoire
+
+```sql
+-- Forme avec limitation moderne
+SELECT * FROM emp ORDER BY DBMS_RANDOM.VALUE
+FETCH FIRST 2 ROWS ONLY;
+-- Forme classique : trier avant de limiter avec ROWNUM
+SELECT * FROM (SELECT * FROM emp ORDER BY DBMS_RANDOM.VALUE)
+WHERE ROWNUM <= 2;
+```
+
+Le résultat change d’une exécution à l’autre. Un correcteur doit vérifier des propriétés comme la taille et l’appartenance aux données, pas exiger deux noms fixes.

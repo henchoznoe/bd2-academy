@@ -1,0 +1,34 @@
+export const meta = {"id": "texte-modes", "moduleId": "fulltext", "title": "Modes naturel, booléen et expansion", "summary": "Exprimer présence, exclusion, phrase, préfixe, pondération et proximité.", "objectives": ["Exprimer présence, exclusion, phrase, préfixe, pondération et proximité.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-FT", "pages": [56, 57, 58, 59, 60, 61, 62, 63, 64, 68, 71]}], "skillIds": ["B10.09", "B10.10", "B10.11"], "order": 22};
+
+Le mode naturel recherche les termes retenus et calcule un score. Il ne signifie pas « tous les mots obligatoires ». Les stopwords et mots trop courts peuvent disparaître. Toujours écrire `ORDER BY score DESC, id` si le classement doit être garanti, plutôt que de dépendre d’un ordre implicite.
+
+### Le langage booléen du support
+
+| Expression | Interprétation |
+| --- | --- |
+| mysql tutorial | Au moins un des termes retenus |
+| +mysql +tutorial | Les deux obligatoires |
+| +mysql -tutorial | mysql obligatoire, tutorial exclu |
+| +mysql tutorial | mysql obligatoire, tutorial optionnel contribue |
+| +mysql ~tutorial | mysql obligatoire, tutorial pénalise |
+| `+mysql +(>tutorial <training)` | mysql et l’un des deux ; pondérations différentes |
+| my* | Préfixe de mot my, pas sous-chaîne arbitraire |
+| "mysql tutorial" | Phrase selon les règles de tokens |
+| "dbms mysql" @4 | Proximité de mots, pas distance en caractères |
+
+L’opérateur d’exclusion est le signe moins. La diapo p.61 contient un caractère mal rendu : ne pas utiliser un point d’interrogation. Un signe supérieur augmente le poids, un signe inférieur le diminue. Ces opérateurs n’impliquent pas qu’un score n’existe plus : l’affirmation générale « aucun score avec opérateurs » du support est trompeuse. Le booléen n’assure pas un tri automatique par pertinence.
+
+```sql
+-- MySQL : nécessite FULLTEXT(title)
+SELECT id, title,
+       MATCH(title) AGAINST('+dream -nightmare' IN BOOLEAN MODE) AS score
+FROM movieFT
+WHERE MATCH(title) AGAINST('+dream -nightmare' IN BOOLEAN MODE)
+ORDER BY score DESC, id;
+```
+
+### Expansion en deux passes
+
+Une première recherche naturelle utilise les mots initiaux. Le moteur extrait ensuite des termes des documents les plus pertinents, puis recommence avec cette requête étendue. Des documents n’ayant aucun mot initial peuvent apparaître grâce aux nouveaux termes. Cela augmente le rappel mais peut provoquer une dérive de sens : ce n’est pas un dictionnaire fiable de synonymes.
+
+Un AND entre deux MATCH sur des colonnes distinctes et un OR n’ont pas le même plan. Une réécriture en UNION doit dédoublonner les identifiants si une ligne correspond aux deux recherches. Les conseils du support sur ces plans sont des pistes à mesurer dans MySQL, pas des performances promises.

@@ -1,0 +1,20 @@
+export const meta = {"id": "physique-fichiers", "moduleId": "physique", "title": "Tas, fichier trié et chemins d’accès", "summary": "Choisir selon la charge de lectures et d’écritures.", "objectives": ["Comparer les organisations de fichiers", "Justifier un coût moyen et ses hypothèses"], "sourceRefs": [{"sourceId": "C-PHY", "pages": [32, 33, 34, 35, 36, 37, 38, 39]}], "skillIds": ["B7.07", "B7.08"], "order": 5}
+
+## Organisation et méthode d'accès
+L'organisation décrit la répartition des lignes dans les pages. La méthode d'accès décrit comment on les trouve. Le tas (heap), le fichier trié et le fichier haché n'ont pas les mêmes avantages.
+
+| Organisation | Recherche favorable | Modification |
+|---|---|---|
+| Tas sans index | parcours complet, traitement massif | insertion simple si page libre connue |
+| Fichier trié sur une clé | égalité ou intervalle sur cette clé | insertion pouvant déplacer/réorganiser les lignes |
+| Hachage | égalité sur la clé de hachage | collisions, débordements, réorganisation |
+
+### Coûts du modèle de tas du cours
+Pour n pages, une recherche d'une valeur unique **présente**, avec position uniforme et arrêt à la première réponse, lit environ n/2 pages. Une valeur absente ou la recherche de toutes les correspondances peut exiger n pages.
+
+L'insertion sans contrôle d'unicité vaut environ une écriture si la page cible est connue et disponible. Avec contrôle par balayage, le support compte n + 1 accès. Une suppression ou modification recherchée coûte environ n/2 + 1. Ce sont des simplifications : lectures et écritures réelles, cache, liste de pages libres et index doivent être annoncés.
+
+### Exemple déroulé
+Une table de 1 000 pages reçoit une recherche ponctuelle : environ 500 lectures dans le modèle du tas avec valeur présente. Un fichier trié autorise une recherche dichotomique en environ 10 comparaisons de blocs, puis les blocs des résultats. Pour une insertion au milieu, l'avantage de lecture peut coûter une réorganisation.
+
+Un index ajoute une structure, du stockage et de la maintenance. Le choix dépend du temps de recherche, des modifications, de l'espace, de la réorganisation et de la reprise après panne. Un petit fichier ou une sélection de presque toutes les lignes peut favoriser le scan.

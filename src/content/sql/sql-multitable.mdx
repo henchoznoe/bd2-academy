@@ -1,0 +1,22 @@
+export const meta = {"id": "sql-multitable", "moduleId": "sql", "title": "INSERT ALL, INSERT FIRST et choix des lignes", "summary": "Comprendre les annexes Oracle d’insertion dans plusieurs tables.", "objectives": ["Comprendre les annexes Oracle d’insertion dans plusieurs tables.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [65, 66, 67]}], "skillIds": ["B4.A1"], "order": 10}
+
+## INSERT ALL, INSERT FIRST et choix des lignes
+
+Les insertions multiples Oracle distribuent les lignes d'une requête source vers plusieurs tables. Avec INSERT ALL, toutes les conditions applicables sont examinées ; INSERT FIRST retient la première condition vraie.
+
+```sql
+-- Oracle : un salaire de 5000 satisfait les trois conditions
+INSERT ALL
+ WHEN sal >= 5000 THEN INTO rich(id) VALUES(empno)
+ WHEN sal >= 200 THEN INTO medium(id) VALUES(empno)
+ WHEN sal > 0 THEN INTO poor(id) VALUES(empno)
+SELECT empno,sal FROM employe_source;
+```
+
+Pour `sal=5000`, cette version fait trois insertions : rich, medium et poor. La même liste avec INSERT FIRST en fait une : rich. Pour `sal=100`, seule poor est alimentée dans les deux versions. Si aucune condition n'est vraie et sans ELSE, aucune de ces insertions n'a lieu.
+
+Cette différence rappelle CASE mais les effets sont des écritures dans les tables, pas seulement une valeur calculée dans un SELECT. Une même condition peut aussi viser plusieurs tables. Les listes de colonnes des tables et les expressions de la source doivent être compatibles.
+
+Ces pages sont des annexes du support. Le navigateur ne doit pas prétendre avoir exécuté cette syntaxe Oracle si le moteur embarqué ne la reconnaît pas. La validation est ici une prédiction guidée des tables touchées.
+
+**À retenir :** compter séparément les conditions vraies, les branches retenues et les destinations de chaque branche.

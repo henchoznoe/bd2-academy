@@ -1,0 +1,25 @@
+export const meta = {"id": "sql-window-order", "moduleId": "sql", "title": "Agrégation puis fenêtrage", "summary": "Combiner total mensuel, cumul annuel et filtrage au bon niveau.", "objectives": ["Combiner total mensuel, cumul annuel et filtrage au bon niveau.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [116, 117, 118, 119, 120, 121, 122]}], "skillIds": ["B3.09", "B3.12"], "order": 16}
+
+## Agrégation puis fenêtrage
+
+Une fenêtre peut travailler sur les lignes déjà regroupées. Le premier SUM agrège les ventes du mois ; le SUM extérieur, avec OVER, cumule ces totaux mensuels par année.
+
+```sql
+SELECT annee,mois,SUM(prix) AS total_mois,
+ SUM(SUM(prix)) OVER(PARTITION BY annee ORDER BY mois
+ ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumul
+FROM vente
+WHERE annee BETWEEN 2010 AND 2015
+GROUP BY annee,mois
+ORDER BY annee,mois;
+```
+
+Si janvier totalise 10 et février 20, les lignes de sortie portent `(janvier,10,10)` puis `(février,20,30)`. Le détail des ventes a disparu avant la fenêtre ; celle-ci conserve le détail mensuel, pas les lignes sources individuelles.
+
+L'ordre logique utile est : FROM et jointures, WHERE, GROUP BY, HAVING, fenêtres, projection/élimination des doublons selon la requête, puis tri final. Les optimiseurs peuvent exécuter autrement physiquement tout en conservant le résultat.
+
+On ne filtre pas un rang nouvellement calculé dans le WHERE du même niveau. Une CTE ou table dérivée expose le résultat calculé à une requête extérieure qui peut le filtrer.
+
+La factorisation avec WINDOW existe dans certains moteurs ; le contexte Oracle du cours répète les fenêtres. Les fonctions LEAD/LAG et autres fonctions analytiques de la figure récapitulative sont marquées non vues : elles ne constituent pas des objectifs supplémentaires ici.
+
+**À retenir :** pour chaque étape, écrire la population et le niveau de détail disponibles.

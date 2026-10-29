@@ -1,0 +1,23 @@
+export const meta = {"id": "physique-blocs", "moduleId": "physique", "title": "Enregistrements, blocs et dimensionnement", "summary": "Arrondir au bon endroit et préciser les frais de stockage.", "objectives": ["Calculer lignes par bloc, blocs et taille allouée", "Distinguer fixe, variable, NULL et octets utiles"], "sourceRefs": [{"sourceId": "C-PHY", "pages": [27, 28, 29, 30, 31, 32]}], "skillIds": ["B7.02", "B7.06", "B7.09"], "order": 4}
+
+## Du champ au bloc
+Un enregistrement contient les champs d'une ligne. Son adresse combine une adresse de bloc et une position dans ce bloc. Les formats fixes réservent des tailles ; les formats variables nécessitent des informations de longueur et peuvent représenter NULL avec des métadonnées. Les détails exacts dépendent du moteur et du format : NULL ne signifie pas systématiquement zéro octet au total.
+
+### Exemple déroulé : lignes non fragmentées
+Hypothèses : 1 000 lignes de 100 octets, blocs de 4 096 octets, sans en-tête ni slot, remplissage maximal.
+
+```text
+Capacité d'un bloc = floor(4096 / 100) = 40 lignes
+Blocs nécessaires = ceil(1000 / 40) = 25 blocs
+Taille allouée     = 25 × 4096 = 102400 octets = 100 Kio
+Octets des lignes = 1000 × 100 = 100000 octets
+```
+
+Calculer directement le plafond des octets totaux divisés par le bloc oublierait les espaces inutilisables en fin de page. Si les lignes peuvent chevaucher des blocs, c'est un autre modèle à annoncer.
+
+Avec un en-tête H, remplacer la capacité par le plancher de (B − H) / R. Ajouter séparément les slots ou autres coûts s'ils sont fournis. Pour une occupation de 70 %, préciser si le taux porte sur les octets ou sur les emplacements : les arrondis peuvent différer.
+
+### Taille du bloc
+Un grand bloc peut améliorer certains parcours séquentiels mais charger des données inutiles pour une recherche ponctuelle et gaspiller de l'espace dans de petits fichiers. Les valeurs Oracle des diapositives sont des exemples du support.
+
+**Unités :** 1 Kio = 1 024 octets ; 1 Ko = 1 000 octets si l'on emploie les préfixes décimaux. 16 384 octets = 16 Kio.

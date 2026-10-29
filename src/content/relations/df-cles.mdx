@@ -1,0 +1,49 @@
+export const meta = {
+  "id": "df-cles",
+  "moduleId": "df",
+  "title": "Trouver toutes les clés candidates",
+  "summary": "Prouver la couverture et la minimalité de chaque clé, puis l’exhaustivité de la liste.",
+  "objectives": [
+    "Distinguer superclé, clé candidate et PK",
+    "Identifier les attributs premiers",
+    "Énumérer toutes les clés même avec des cycles"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "C-DF",
+      "pages": [
+        34,
+        35,
+        36,
+        39
+      ]
+    }
+  ],
+  "skillIds": [
+    "B5.09",
+    "B5.10"
+  ],
+  "order": 6
+}
+
+## Une clé est une superclé minimale
+
+X est une superclé si `X⁺` contient tous les attributs du schéma, y compris ceux absents des DF. C'est une clé candidate si aucun sous-ensemble strict ne reste superclé. Une PK est une clé candidate choisie pour l'implémentation ; elle ne fait pas disparaître les autres clés. Un attribut est **premier** s'il appartient à au moins une clé candidate.
+
+## Méthode exhaustive
+
+Les attributs jamais produits à droite d'une DF non triviale doivent être dans toute clé : ils ne peuvent pas apparaître autrement dans une fermeture. Commence avec eux, complète par ensembles de taille croissante et élimine les ensembles contenant déjà une clé trouvée. Pour chaque succès, retire chaque attribut un à un et vérifie que la fermeture n'est plus complète. Tous les sous-ensembles restants doivent avoir été testés ou exclus par un argument de minimalité.
+
+## Exemple déroulé
+
+`ACHAT(Client,Produit,Prix)` avec `Produit → Prix`. Client et Produit ne sont jamais produits : ils sont obligatoires. `(Client,Produit)⁺` contient les trois attributs. Aucun des deux seuls ne suffit. C'est l'unique clé. `Produit` n'est pas une clé de toute la relation même s'il identifie le prix.
+
+Pour `MATIERE(Prof,Matiere,Heure,Annee,Local)` et les règles du cours, Heure est obligatoire. Ses compléments minimaux sont Prof, Annee et Local : les clés sont `Heure,Prof`, `Heure,Annee`, `Heure,Local`.
+
+## Le piège du corrigé partiel
+
+Dans DF-C09, les deux fermetures illustrées ne sont pas une preuve d'exhaustivité. Une énumération des sous-ensembles révèle quatre clés : `B1 B2`, `D1 D2`, `B1 C2 D1`, `B2 C1 D2`. Pour la troisième, D1 donne A, puis AB1C2 donne D2 ; D1D2 produit B1B2, puis C1C2. Chaque retrait bloque cette chaîne.
+
+## Validation
+
+Explique pourquoi ajouter un attribut à une clé crée une superclé mais pas une nouvelle clé candidate. Une réponse « la clé » est incomplète dès qu'un autre ensemble minimal détermine tout.

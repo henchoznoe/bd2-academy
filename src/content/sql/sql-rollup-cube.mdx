@@ -1,0 +1,24 @@
+export const meta = {"id": "sql-rollup-cube", "moduleId": "sql", "title": "ROLLUP et CUBE", "summary": "Reconnaître une hiérarchie et toutes les combinaisons de groupements.", "objectives": ["Reconnaître une hiérarchie et toutes les combinaisons de groupements.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92]}], "skillIds": ["B3.01", "B3.02", "B3.03"], "order": 13}
+
+## ROLLUP et CUBE
+
+ROLLUP et CUBE sont des raccourcis pour des listes de GROUPING SETS.
+
+| Expression | Groupements |
+|---|---|
+| ROLLUP(a,b,c) | (a,b,c), (a,b), (a), () |
+| CUBE(a,b) | (a,b), (a), (b), () |
+| GROUP BY x, ROLLUP(a,b) | (x,a,b), (x,a), (x) |
+
+ROLLUP retire les colonnes par la droite : l'ordre exprime une hiérarchie. Il produit n+1 niveaux pour n colonnes. CUBE produit toutes les combinaisons, soit 2 puissance n niveaux ; permuter les colonnes ne change pas l'ensemble des groupements.
+
+```sql
+SELECT animal,lieu,SUM(qte) AS quantite
+FROM venteAnim GROUP BY ROLLUP(animal,lieu);
+```
+
+Avec Chat/Paris/18 et Chat/Naples/9, le résultat comporte les deux détails et le sous-total Chat/NULL/27. Une ligne NULL/NULL représente le total général. CUBE ajoute notamment les totaux par lieu, toutes espèces confondues.
+
+`GROUP BY x, ROLLUP(a,b)` garde toujours x : il n'ajoute pas un total général qui effacerait x. En revanche, `ROLLUP(x,a,b)` comprend ce total. Ces deux demandes ne sont donc pas équivalentes.
+
+**À retenir :** développer les groupements sur papier avant de calculer les montants. Compter les niveaux ne donne pas directement le nombre de lignes : celui-ci dépend des valeurs présentes.

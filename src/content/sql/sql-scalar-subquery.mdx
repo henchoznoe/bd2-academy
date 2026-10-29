@@ -1,0 +1,22 @@
+export const meta = {"id": "sql-scalar-subquery", "moduleId": "sql", "title": "Sous-requêtes scalaires", "summary": "Utiliser une valeur calculée par une autre requête sans confondre scalaire et table.", "objectives": ["Utiliser une valeur calculée par une autre requête sans confondre scalaire et table.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [43, 44, 45, 46, 47]}], "skillIds": ["B2.01", "B2.02"], "order": 6}
+
+## Sous-requêtes scalaires
+
+Une sous-requête scalaire fournit une seule colonne et au plus une ligne. Elle peut représenter une valeur dans SELECT, WHERE ou ORDER BY. Zéro ligne donne NULL ; plusieurs lignes provoquent normalement une erreur de cardinalité.
+
+```sql
+SELECT nom,prix,
+ (SELECT AVG(prix) FROM produit) AS prix_moyen
+FROM produit;
+
+SELECT nom,prix FROM produit
+WHERE prix = (SELECT MAX(prix) FROM produit);
+```
+
+La deuxième requête conserve tous les produits ex æquo au prix maximal. `WHERE prix >= (SELECT prix FROM produit)` n'est pas valide si la sous-requête rend plusieurs produits. Selon le sens recherché, on peut utiliser MAX ou un opérateur quantifié comme ALL.
+
+Dans `SELECT nom,(SELECT MAX(prix), MIN(prix) FROM produit)`, une seule ligne ne suffit pas : deux colonnes ne forment pas une expression scalaire.
+
+Le cours ordonne aussi des employés selon un nom de département obtenu dans une sous-requête corrélée. Il n'est pas nécessaire d'afficher la colonne de tri pour l'utiliser. Une clé ou une agrégation doit toutefois garantir la cardinalité attendue.
+
+**À retenir :** préciser le nombre de lignes et de colonnes attendu avant d'intégrer une sous-requête. Le support interdit la sous-requête scalaire dans GROUP BY dans le contexte Oracle étudié ; ne pas généraliser cette limite à tous les dialectes.

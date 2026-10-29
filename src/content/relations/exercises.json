@@ -1,0 +1,1610 @@
+[
+  {
+    "id": "DF-C01",
+    "lessonId": "df-semantique",
+    "title": "COMPAGNIE : contraintes et insertions",
+    "type": "guided",
+    "prompt": "COMPAGNIE(VOL,AVION,PILOTE) contient (102,FOK,HARDY),(210,FOK,HARDY),(300,BOE,ROUSSEL),(400,CAR,ROUSSEL). Un vol utilise un avion ; chaque avion conserve le même pilote. Donne les DF, puis juge (401,BOE,ROUSSEL), (403,AIR,TOTO), (407,FOK,TOTO), (400,BOE,ROUSSEL), (400,CAR,TOTO).",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "Une couverture est VOL→AVION et AVION→PILOTE ; VOL→PILOTE est déduite. Les deux premières insertions sont valides. (407,FOK,TOTO) viole AVION→PILOTE : FOK a déjà HARDY. (400,BOE,ROUSSEL) viole VOL→AVION : 400 a déjà CAR. (400,CAR,TOTO) viole AVION→PILOTE et la conséquence VOL→PILOTE : CAR/400 ont déjà ROUSSEL. PILOTE→AVION ne découle pas du métier.",
+    "explanation": "Une violation exige même source et cible différente. L’existence de deux vols du même avion est autorisée.",
+    "skillIds": ["B5.01", "B5.02"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [9]
+      },
+      {
+        "sourceId": "SOL-DF",
+        "pages": [2, 3, 4, 5]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "DF-C02",
+    "lessonId": "df-armstrong",
+    "title": "Armstrong : AD détermine-t-il F ?",
+    "type": "guided",
+    "prompt": "R(A,B,C,D,E,F) avec A→BC, B→E, CD→EF. Prouve AD→F en nommant les règles.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "A→C par décomposition ; AD→CD par augmentation de D ; CD→F par décomposition ; AD→F par transitivité. On peut aussi conclure directement par pseudo-transitivité à partir de A→C et CD→F.",
+    "explanation": "Il faut conserver D pour déclencher CD→F. A→F ne serait pas justifiée.",
+    "skillIds": ["B5.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [18]
+      },
+      {
+        "sourceId": "SOL-DF",
+        "pages": [6, 7]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "DF-C03",
+    "lessonId": "df-fermetures",
+    "title": "Fermetures AD⁺ et AB⁺",
+    "type": "guided",
+    "prompt": "R(A,B,C,D,E,F), F={A→BC,B→E,CD→EF}. Calcule AD⁺ et AB⁺, juge AD→F et AB→F, puis donne un contre-exemple pour la DF non impliquée.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "AD⁺ : AD, puis ABCD via A→BC, puis ABCDE via B→E, enfin ABCDEF via CD→EF. AD→F est impliquée. AB⁺=ABCE, donc AB→F ne l’est pas. Deux tuples (a1,b1,c1,d1,e1,f1) et (a1,b1,c1,d2,e1,f2) satisfont A→BC et B→E ; leurs CD diffèrent, donc CD→EF n’est pas violée. Le même AB donne f1 et f2 : AB→F est réfutée.",
+    "explanation": "Une fermeture bloquée est un test complet ; le contre-exemple explique sémantiquement le blocage.",
+    "skillIds": ["B5.05", "B5.02"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [19]
+      },
+      {
+        "sourceId": "SOL-DF",
+        "pages": [8, 9, 10]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "DF-C04",
+    "lessonId": "df-fermetures",
+    "title": "Déduction et remplacement ne sont pas équivalents",
+    "type": "guided",
+    "prompt": "Avec A→B et BC→D, prouve AC→D. Peut-on remplacer BC→D par AC→D en gardant exactement les contraintes ?",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "A→B donne AC→BC par augmentation ; BC→D donne AC→D. Le remplacement est faux : sous G={A→B,AC→D}, BC⁺=BC, donc BC→D n’est pas retrouvée. Les tuples (a1,b1,c1,d1),(a2,b1,c1,d2) satisfont G mais violent BC→D. F implique G, mais G n’implique pas F.",
+    "explanation": "Une implication permet d’ajouter une conséquence. Pour supprimer une règle originale, il faut vérifier qu’elle reste déduite.",
+    "skillIds": ["B5.04", "B5.06"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [23]
+      },
+      {
+        "sourceId": "SOL-DF",
+        "pages": [11, 12, 13, 14]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "DF-C05",
+    "lessonId": "df-couverture",
+    "title": "Couverture sur A,B,C,D",
+    "type": "guided",
+    "prompt": "Trouve une couverture minimale de A→B, A→C, B→C, AB→C, AC→D. Justifie chaque simplification.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "Supprime A→C car A→B→C. Supprime AB→C car B→C suffit. Dans AC→D, C est superflu : A donne B puis C ; on remplace par A→D. Couverture G={A→B,B→C,A→D}. G retrouve toutes les règles initiales ; F implique A→D via A→C puis AC→D. Sans A→B, A ne donne plus B ; sans B→C, B ne donne plus C ; sans A→D, D n’est jamais produit. Les sources simples n’ont aucun attribut superflu.",
+    "explanation": "La bonne simplification est A→D, pas C→D. L’équivalence se vérifie dans les deux sens.",
+    "skillIds": ["B5.08", "B5.06"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [30]
+      },
+      {
+        "sourceId": "SOL-DF",
+        "pages": [15, 16, 17, 18, 19, 20, 21]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "DF-C06",
+    "lessonId": "df-couverture",
+    "title": "Deux couvertures avec un cycle",
+    "type": "guided",
+    "prompt": "F={A→B,C→B,B→C}. Trouve une autre couverture minimale équivalente et un exemple métier sous hypothèses explicites.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "G={A→C,C→B,B→C} convient. F implique A→C par A→B→C ; G implique A→B par A→C→B. Les deux autres règles sont communes. Aucune règle de G n’est redondante : A perd C, C perd B ou B perd C si on retire la règle correspondante. Exemple conventionnel : A identifiant étudiant, B code de localité, C identifiant de localité, avec B et C deux identifiants bijectifs dans le référentiel choisi. Un étudiant détermine son code et donc sa localité. La bijection code/localité est une hypothèse de ce modèle, pas une règle géographique générale.",
+    "explanation": "Une couverture minimale n’est pas unique ; les réponses sont évaluées par équivalence et irréductibilité.",
+    "skillIds": ["B5.01", "B5.06", "B5.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [31]
+      },
+      {
+        "sourceId": "SOL-DF",
+        "pages": [22, 23]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "DF-C07",
+    "lessonId": "df-couverture",
+    "title": "Couverture à sources composées",
+    "type": "guided",
+    "prompt": "F={A→B,ABCD→E,EF→GH,ACDF→EG}. Donne une couverture minimale avec les tests de simplification.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "Sépare EF→GH en EF→G et EF→H, puis ACDF→EG en ACDF→E et ACDF→G. B est superflu dans ABCD→E puisque A→B ; on garde ACD→E. ACDF→E est alors une augmentation de ACD→E. ACDF→G suit ACD→E et EF→G, donc elle est redondante. G={A→B,ACD→E,EF→G,EF→H}. Chaque attribut A,C,D de ACD est nécessaire : enlever l’un ne produit pas E. E et F sont nécessaires dans les deux dernières sources. Retirer une des quatre DF fait perdre sa cible à sa source. Toutes les DF initiales sont retrouvées et chaque DF finale découle de F.",
+    "explanation": "Correction construite et vérifiée par calcul de fermetures ; aucun corrigé dédié n’est fourni pour cette diapositive.",
+    "skillIds": ["B5.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [32]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "DF-C08",
+    "lessonId": "df-cles",
+    "title": "Quatre schémas, toutes leurs clés",
+    "type": "guided",
+    "prompt": "Trouve les clés : (1) EMPLOYE(Num,Nom,Adr), Num→Nom,Adr. (2) ACHAT(Client,Produit,Prix), Produit→Prix. (3) PIECE(Nopiece,Libelle,Prix,TVA,Categorie), Nopiece→Prix,Libelle,TVA ; Categorie→TVA. (4) MATIERE(Prof,Matiere,Heure,Annee,Local), Prof→Matiere ; Prof,Heure→Annee ; Heure,Annee→Local ; Heure,Local→Prof.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "(1) Num, seule source permettant Nom et Adr. (2) Client,Produit : les deux ne sont jamais produits et ensemble donnent Prix. (3) Nopiece,Categorie : ces deux attributs ne sont jamais produits ; leur fermeture couvre tout. (4) Heure est obligatoire, jamais produite. Heure+Prof donne Matiere,Annee puis Local ; Heure+Annee donne Local, puis Prof,Matiere ; Heure+Local donne Prof,Matiere puis Annee. Clés : {Heure,Prof}, {Heure,Annee}, {Heure,Local}. Heure seule ne suffit pas ; sans l’un de Prof/Annee/Local aucune autre règle ne démarre, donc liste exhaustive. Les attributs premiers sont Num ; Client,Produit ; Nopiece,Categorie ; Heure,Prof,Annee,Local respectivement.",
+    "explanation": "Les attributs absents des cibles doivent rester dans toute clé ; une clé dépend du schéma complet.",
+    "skillIds": ["B5.09", "B5.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [35]
+      },
+      {
+        "sourceId": "SOL-DF",
+        "pages": [24, 25]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "DF-C09",
+    "lessonId": "df-cles",
+    "title": "Couverture et clés : aller au-delà des deux exemples",
+    "type": "guided",
+    "prompt": "R(A,B1,B2,C1,C2,D1,D2), avec B1B2→A ; D1D2→B1B2 ; B1→C1 ; B2→C2 ; D1→A ; D2→A ; AB1C2→D2 ; AB2C1→D1. Donne une couverture minimale et toutes les clés candidates.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "Après séparation de D1D2→B1B2 en deux cibles simples, les neuf règles sont minimales : aucune cible n’est atteinte à partir de sa source quand sa règle est retirée et chaque source composée échoue si on lui retire un attribut. Les clés sont B1B2, D1D2, B1C2D1, B2C1D2. B1B2 donne A,C1,C2 puis D1,D2 ; D1D2 donne B1B2 puis tout. B1C2D1 donne A via D1, puis D2 via AB1C2, ensuite B2 via D1D2 ; le quatrième cas est symétrique. Pour la troisième clé : sans B1, C2D1 donne seulement A en plus ; sans C2, B1D1 donne A,C1 ; sans D1, B1C2 donne C1. La quatrième est symétrique. Une énumération de tous les sous-ensembles en taille croissante, en écartant les sur-ensembles des clés trouvées, ne trouve aucun autre ensemble minimal. Le corrigé illustre deux fermetures ; cela ne démontre pas qu’il n’existe que deux clés.",
+    "explanation": "Correction complétée par recherche exhaustive de fermetures : les deux clés à trois attributs sont légitimes et ne doivent pas être omises.",
+    "skillIds": ["B5.08", "B5.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [36]
+      },
+      {
+        "sourceId": "SOL-DF",
+        "pages": [26, 27, 28]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "DF-C10",
+    "lessonId": "df-fermetures",
+    "title": "Comparer E1 et E2",
+    "type": "guided",
+    "prompt": "E1={A→B,AB→C,D→AC,D→E} ; E2={A→BC,D→AE}. Sont-ils équivalents ? Donne une couverture minimale commune.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "Sous E1, A→B permet A→AB, puis AB→C donne A→C. D→A et D→E se regroupent en D→AE. Donc E1 implique E2. Sous E2, A→BC donne A→B et AB→C par augmentation ; D→A puis A→C donnent D→AC, et D→E est immédiate. E2 implique E1. G={A→B,A→C,D→A,D→E} est une couverture minimale commune ; retirer chaque règle empêche sa source d’atteindre sa cible et aucune source simple ne se simplifie.",
+    "explanation": "Les deux sens doivent être établis : une forme plus courte n’est pas automatiquement équivalente.",
+    "skillIds": ["B5.06", "B5.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [37]
+      },
+      {
+        "sourceId": "SOL-DF",
+        "pages": [29, 30, 31]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "DF-C11",
+    "lessonId": "df-projection",
+    "title": "Projection S(A,C,D)",
+    "type": "guided",
+    "prompt": "R(A,B,C,D), F={A→B,B→C,C→D}. Trouve les DF projetées sur S(A,C,D), sous forme de couverture minimale.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "A⁺ sous F vaut ABCD ; en intersectant avec S on obtient ACD, donc A→C et A→D. C⁺=CD donne C→D. D⁺=D. Une couverture minimale est {A→C,C→D}, A→D étant transitive. Toutes les autres DF de la projection sont des conséquences de cette couverture. La seule clé de S est A. L’attribut B peut disparaître du schéma sans que disparaisse la conséquence A→C.",
+    "explanation": "Filtrer uniquement les règles qui mentionnent B donnerait une projection incorrecte.",
+    "skillIds": ["B5.11"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [38]
+      },
+      {
+        "sourceId": "SOL-DF",
+        "pages": [32, 33, 34]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "DF-C12",
+    "lessonId": "df-cles",
+    "title": "Quinze DF : recherche exhaustive des clés",
+    "type": "guided",
+    "prompt": "R(A,B,C,D,E,G,H,I,J,K,L). F={AB→C,B→D,B→E,BDL→K,BHJL→C,C→A,C→B,CEL→K,CIL→G,CIL→K,D→B,D→E,EIK→C,EIK→G,EIK→L}. Trouve toutes les clés et justifie l’exhaustivité.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "H,I,J ne sont jamais cibles : ils sont obligatoires. Toutes les clés sont HIJBK, HIJBL, HIJCK, HIJCL, HIJDK, HIJDL et HIJEK. Avec B et K, B fournit D,E puis EIK fournit C,G,L et C fournit A. Avec B et L, BDL fournit K puis la chaîne précédente fonctionne. C fournit A,B,D,E ; avec K, EIK produit G,L ; avec L, CEL produit K et CIL produit G. D fournit B,E, donc les cas DK et DL suivent les cas BK et BL. E et K donnent C,G,L grâce à I, puis C donne A,B et B donne D. Pour l’exhaustivité, une clé doit amorcer une règle en contenant B,C,D ou E : avec seulement A,G,K,L et HIJ, rien ne démarre. Si elle contient B,C ou D, il faut K ou L pour quitter l’ensemble ABCDE ; ajouter A,E,G ne les produit pas. Si elle ne contient que E de ces quatre attributs, K est nécessaire (E,L seuls ne déclenchent aucune règle). Cela couvre les sept possibilités minimales. Chacune perd la fermeture totale si on enlève H,I,J ou l’un des deux attributs complémentaires.",
+    "explanation": "Résultat obtenu par calcul exhaustif puis justifié par les attributs obligatoires et les règles d’amorçage. Une liste sans argument d’exhaustivité est insuffisante.",
+    "skillIds": ["B5.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [39]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "DF-C13",
+    "lessonId": "df-fermetures",
+    "title": "E1 et E2 avec B1,B2,D1,D2",
+    "type": "guided",
+    "prompt": "E2 contient B1B2→A ; D1D2→B1B2 ; B1→C1 ; B2→C2 ; D1→A ; D2→A ; AB1C2→D2 ; AB2C1→D1. E1 remplace seulement B1B2→A par B1B2→D1D2. Compare leurs fermetures et explique la différence entre cibles groupées et couverture canonique.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "E1 implique B1B2→A par B1B2→D1 puis D1→A. E2 implique B1B2→D1D2 : B1B2 donne A,C1,C2 ; AB1C2 donne D2 et AB2C1 donne D1. Les autres règles sont identiques, donc E1⁺=E2⁺. Attention : après séparation des cibles, les deux règles B1B2→D1 et B1B2→D2 ne sont pas toutes deux indispensables. Si on conserve la première, elle donne A ; avec B2,C1 elle permet la seconde. Une couverture atomique possible pour E1 garde B1B2→D1 et toutes les autres règles communes, en séparant D1D2→B1 et D1D2→B2. Leurs clés restent les quatre clés de DF-C09.",
+    "explanation": "Un ensemble irréductible si on retire seulement des flèches à cibles groupées peut encore être simplifié quand on sépare les cibles.",
+    "skillIds": ["B5.06", "B5.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [40]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "DF-C14",
+    "lessonId": "df-semantique",
+    "title": "Construire un schéma et son contre-exemple",
+    "type": "guided",
+    "prompt": "Invente un petit schéma, une phrase qui définit une DF et une phrase qui n’en définit pas une. Donne une couverture minimale, toutes les clés, puis une extension invalide.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "Exemple : Inscription(Etudiant,Cours,Prof,Note). Règles métier : un cours est confié à un seul professeur, donc Cours→Prof ; un étudiant reçoit une seule note par cours, donc Etudiant,Cours→Note. « Un professeur enseigne plusieurs cours » n’impose pas Prof→Cours et n’est pas une DF de ce sens. Couverture minimale : ces deux règles, à cibles simples, sans attribut superflu ni règle redondante. Etudiant et Cours ne sont jamais produits : toute clé les contient ; leur fermeture donne Prof et Note, donc c’est l’unique clé. Les tuples (E1,BD,P1,5) et (E2,BD,P2,4) violent Cours→Prof ; les tuples (E1,BD,P1,5) et (E1,BD,P1,4) violent Etudiant,Cours→Note. D’autres schémas sont acceptables si les règles, clés et contre-exemples sont cohérents.",
+    "explanation": "Le but est d’expliquer le sens des contraintes, pas de reproduire les lettres d’un modèle unique.",
+    "skillIds": ["B5.01", "B5.02", "B5.08", "B5.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [41]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "FN-C01",
+    "lessonId": "fn-anomalies",
+    "title": "Deux schémas fournisseurs",
+    "type": "guided",
+    "prompt": "MesInfos(Nop,Designation,Couleur,Poids,Nof,NomF,Adr,TelF,Date,Quantite), avec Nop→Designation,Couleur,Poids ; Nof→NomF,Adr,TelF ; Nop,Nof,Date→Quantite. Compare le schéma qui met TelF dans Fournisseur au schéma qui le met dans Livraison. Nomme les anomalies.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "Le meilleur des deux schémas met TelF dans Fournisseur(Nof,NomF,Adr,TelF), séparé de Piece(Nop,Designation,Couleur,Poids) et Livraison(Nop,Nof,Date,Quantite). Nof→TelF y est représentée une seule fois par fournisseur. Si TelF reste dans Livraison, sa modification doit toucher toutes les livraisons ; on ne peut pas enregistrer le téléphone d’un nouveau fournisseur sans livraison ; supprimer sa dernière livraison fait perdre son téléphone. Ce sont respectivement les anomalies de modification, insertion et suppression. Le numéro fournisseur répété comme FK dans Livraison représente l’association nécessaire et non un défaut à supprimer.",
+    "explanation": "La place d’une donnée doit suivre le fait qu’elle décrit : le téléphone décrit le fournisseur.",
+    "skillIds": ["B6.01"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [6, 7, 8, 9]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "FN-C02",
+    "lessonId": "fn-sans-perte",
+    "title": "EMPLOYE et les tuples parasites",
+    "type": "guided",
+    "prompt": "EMPLOYE contient (1100,DUPONT,31,Compta),(19,DURAND,46,Prod),(110,HARDY,31,Info),(102,BRUNEAU,40,Info). Seule règle : NUM→NOM,AGE,SERVICE. On projette E1(NUM,NOM,AGE) et E2(AGE,SERVICE). Recompose et teste formellement la préservation du contenu.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "La jointure donne les quatre lignes initiales plus (1100,DUPONT,31,Info) et (110,HARDY,31,Compta), soit six lignes. L’intersection est AGE. AGE⁺={AGE}, donc ne contient ni E1 ni E2. La décomposition n’est pas sans perte d’information. Les deux lignes parasites viennent des deux services pour AGE=31. Une décomposition par NUM, par exemple E1(NUM,NOM,AGE) et E2(NUM,SERVICE), serait sans perte car NUM détermine tout chaque morceau.",
+    "explanation": "« Perte » désigne ici la perte des associations exactes, visible sous forme de lignes ajoutées à la jointure.",
+    "skillIds": ["B6.02", "B6.03"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [12, 13, 14, 15, 16, 17]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "FN-C03",
+    "lessonId": "fn-preservation",
+    "title": "COMPAGNIE : le contenu ne suffit pas",
+    "type": "guided",
+    "prompt": "COMPAGNIE(VOL,AVION,PILOTE), VOL→AVION et AVION→PILOTE. On choisit R1(VOL,AVION),R2(VOL,PILOTE). Quelle garantie conserve-t-on ? Quelle DF perd-on ? Donne une mise à jour qui le montre.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "VOL, intersection, détermine R1 : le contenu est préservé. Les DF locales VOL→AVION et VOL→PILOTE ne permettent pas AVION→PILOTE ; sous leur union AVION⁺={AVION}. Partant de vols 102/FOK/HARDY et 400/CAR/ROUSSEL, change seulement l’avion de 400 en FOK dans R1. Les clés VOL restent respectées. La jointure donne alors FOK/HARDY et FOK/ROUSSEL, ce qui viole la règle initiale. Préférer R1(VOL,AVION) et R2(AVION,PILOTE) préserve aussi les DF.",
+    "explanation": "Toute décomposition doit être soumise à deux contrôles indépendants : contenu, puis contraintes.",
+    "skillIds": ["B6.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [18, 19, 20, 21, 22]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "FN-C04",
+    "lessonId": "fn-synthese",
+    "title": "Fournisseurs et pièces : les six étapes",
+    "type": "guided",
+    "prompt": "U(A,B,C,Q,E,F), A→B, B→A, A→F, AC→Q, C→E. A=numero fournisseur, B=nom fournisseur, C=numero pièce, Q=quantité, E=désignation, F=adresse. Applique toute la synthèse 3FN.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "1. Les règles à cibles simples sont minimales. Clés AC et BC : C est obligatoire et A ou B permet tout le reste ; les deux sont nécessaires. 2. Groupes A→BF ; B→A ; AC→Q ; C→E. 3. A et B se déterminent mutuellement, on fusionne leurs groupes. 4. Relations R1(A,B,F), R2(A,C,Q), R3(C,E). 5. Aucune inclusion stricte. 6. R2 contient la clé AC, inutile d’ajouter une relation. R1 a les clés A et B, R2 a AC et R3 a C : les règles locales ont des sources clés. La couverture est répartie, donc les DF sont préservées ; la présence d’une clé universelle assure la garantie de contenu de la synthèse.",
+    "explanation": "Il faut écrire l’étape 6 même quand elle conclut qu’aucun ajout n’est nécessaire.",
+    "skillIds": ["B6.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [35, 36, 37, 38, 39, 40]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "FN-C05",
+    "lessonId": "fn-synthese",
+    "title": "PRÊTS : le morceau oublié",
+    "type": "guided",
+    "prompt": "Prets(nomSuccurs,ville,actifs,nomClient,numPret,montant), nomSuccurs→actifs,ville ; numPret→montant,nomSuccurs. Synthétise sans perdre les DF ni l’association client/prêt.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "La couverture à cibles simples est minimale. La clé universelle est nomClient,numPret : ni l’un ni l’autre n’est produit, ensemble ils donnent montant,nomSuccurs puis actifs,ville. Les groupes donnent Succursale(nomSuccurs,actifs,ville) et PretInfo(numPret,montant,nomSuccurs), sans fusion ni inclusion. Aucun ne contient nomClient,numPret. Ajoute donc Emprunteur(nomClient,numPret), avec PK composée et FK numPret vers PretInfo. PretInfo référence Succursale. Les deux DF sont locales et le morceau-clé conserve l’association à chaque client.",
+    "explanation": "Conserver toutes les DF ne garantit pas à lui seul la conservation des attributs et associations non produits.",
+    "skillIds": ["B6.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [41]
+      },
+      {
+        "sourceId": "SOL-FN",
+        "pages": [2, 3]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "FN-C06",
+    "lessonId": "fn-1fn-2fn",
+    "title": "R(A,B,C) : extension et normalisation",
+    "type": "guided",
+    "prompt": "A→B et B→C. Trouve les clés et la forme normale. L’extension (A1,B1,C1),(A2,B1,C2),(A3,B2,C1),(A4,B3,C3) est-elle valide ? Corrige-la puis synthétise en 3FN.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "A⁺=ABC, A n’est jamais produit, donc A est la seule clé. La relation est 2FN si les domaines sont atomiques, mais pas 3FN : B n’est pas superclé et C n’est pas premier. L’extension est invalide car B1 détermine C1 et C2. Une correction possible remplace C2 par C1 dans la deuxième ligne (l’autre choix serait valide si le métier le confirmait). La couverture reste A→B et B→C. Groupes séparés, relations AB et BC, aucune inclusion ; AB contient la clé A. L’intersection B détermine BC, donc pas de perte ; les règles sont locales.",
+    "explanation": "Le choix de la bonne valeur lors d’une correction provient du métier ou d’une règle d’autorité, pas de la normalisation seule.",
+    "skillIds": ["B6.05", "B6.06", "B6.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [42]
+      },
+      {
+        "sourceId": "SOL-FN",
+        "pages": [4, 5]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "FN-C07",
+    "lessonId": "fn-synthese",
+    "title": "Deux couvertures : comparer des synthèses correctes",
+    "type": "guided",
+    "prompt": "E2={B1B2→A ; D1D2→B1B2 ; B1→C1 ; B2→C2 ; D1→A ; D2→A ; AB1C2→D2 ; AB2C1→D1}. E1 remplace B1B2→A par B1B2→D1D2. Effectue une synthèse 3FN sur chacun et compare. Attention : sépare les cibles avant de conclure à la minimalité, puis contrôle les fusions.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "Les ensembles sont équivalents (DF-C13) et ont les quatre clés B1B2,D1D2,B1C2D1,B2C1D2. Pour E1 à cibles simples, on peut supprimer B1B2→D2, conséquence de B1B2→D1→A et AB1C2→D2. La synthèse canonique et l’élimination des inclusions donnent : R(B1,B2,D1,D2), S(B1,C1), T(B2,C2), V(A,B1,C2,D2), W(A,B2,C1,D1). Pour E2, elle donne ces cinq morceaux plus U(A,B1,B2). Les groupes D1→A et D2→A sont inclus dans W et V. Le morceau R contient une clé universelle, donc aucun ajout de clé. Les règles projetées sur R incluent les deux directions entre B1B2 et D1D2 ; chaque règle initiale est locale dans un morceau ou en découle. Dans V, les clés sont AB1C2 et B1C2D2 : la règle D2→A vise un attribut premier ; W est symétrique. Les morceaux sont 3FN. Ne fusionne pas U avec R sans contrôle : R∪U=(A,B1,B2,D1,D2) aurait les clés B1B2,D1D2 et violerait la 3FN via D1→A, car A y est non premier. Les sources équivalentes ne rendent donc pas sûre n’importe quelle fusion du raccourci du cours. D’autres synthèses sont admises si contenu, DF et 3FN sont démontrés.",
+    "explanation": "Complément vérifié par fermetures et test des attributs premiers des projections. Les formulations à cibles groupées et la fusion automatique sont des pièges de cet exercice.",
+    "skillIds": ["B6.07", "B5.06"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [43]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "FN-C08",
+    "lessonId": "fn-3fn",
+    "title": "AB→CDE, D→B : 3FN, anomalies et BCNF",
+    "type": "guided",
+    "prompt": "R(A,B,C,D,E), AB→CDE, D→B. Donne toutes les clés, la forme normale, une anomalie et une décomposition BCNF.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "A est obligatoire ; AB et AD déterminent tout et sont les seules clés minimales. A,B,D sont premiers ; C,E ne le sont pas. La règle D→B vise un attribut premier, donc R est 3FN ; elle n’est pas BCNF car D⁺=DB. L’association D/B se répète, d’où une anomalie de modification. Décomposer en DB et ADCE est sans perte, intersection D et D→B. DB a clé D et ADCE a clé AD (AD→CE est projetée). Les deux sont BCNF. Mais AB→D (et donc la règle groupée initiale) n’est plus garantie localement : les règles projetées D→B et AD→CE ne produisent pas D à partir de AB.",
+    "explanation": "La 3FN peut garder certaines anomalies ; BCNF peut perdre le contrôle local d’une DF.",
+    "skillIds": ["B6.06", "B6.08", "B6.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [44, 45, 46, 49, 50]
+      },
+      {
+        "sourceId": "SOL-FN",
+        "pages": [6, 7]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "FN-C09",
+    "lessonId": "fn-bcnf",
+    "title": "AVION, ENSEIGNEMENT et les DF projetées",
+    "type": "guided",
+    "prompt": "Traite les trois exemples : (a) Avion(noavion,type,proprietaire,constructeur,capacite), noavion→type,proprietaire et type→constructeur,capacite. (b) Enseignement(Etudiant,Matiere,Prof), Prof→Matiere et Etudiant,Matiere→Prof. (c) R(A,B,C,D), A→B et B→C, après une séparation AB/ACD.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "(a) noavion est la clé, type n’est pas superclé : sépare Type(type,constructeur,capacite) et Avion(noavion,type,proprietaire). Les deux sont BCNF, sans perte et avec DF préservées. (b) Clés Etudiant,Matiere et Etudiant,Prof ; table 3FN mais non BCNF. Décomposition Enseignant(Prof,Matiere) et Cours(Etudiant,Prof), sans perte par Prof→Matiere. Etudiant,Matiere→Prof n’est plus locale : on peut inscrire Etud1 chez M1 et M2, tous deux professeurs de Math, sans violer les PK des morceaux. (c) AD est la clé universelle. ACD reçoit A→C par projection, bien que B ait disparu. A n’y est pas superclé car D manque : il faut séparer AC et AD. Résultat AB,AC,AD en BCNF ; B→C est perdue localement. Une autre séquence partant de BC donne BC,AB,AD et préserve les règles. L’ordre de décomposition peut changer les DF préservées.",
+    "explanation": "Le test BCNF doit utiliser les dépendances de chaque projection, pas seulement les flèches originales entièrement visibles.",
+    "skillIds": ["B6.09", "B6.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [54, 56, 57, 58, 59]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "FN-C10",
+    "lessonId": "fn-dm",
+    "title": "Cours, professeurs et livres indépendants",
+    "type": "guided",
+    "prompt": "Pour C1 : professeurs A,B,C et livres L1,L2. Pour C2 : professeur D et livres L3,L4. On suppose l’indépendance professeurs/livres. Donne l’extension complète, sa forme normale, une anomalie et une décomposition.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "Extension : (C1,A,L1),(C1,A,L2),(C1,B,L1),(C1,B,L2),(C1,C,L1),(C1,C,L2),(C2,D,L3),(C2,D,L4). Sans DF non triviale, la clé sémantique est Cours,Prof,Livre et la relation est BCNF. L’échantillon où C2 a un seul professeur ne justifie pas une nouvelle DF métier. Les DM Cours↠Prof et Cours↠Livre sont non triviales et Cours n’est pas superclé : pas 4FN. Ajouter un professeur à C2 nécessite une ligne par livre. On sépare CoursProf(Cours,Prof) : C1/A,C1/B,C1/C,C2/D ; et CoursLivre(Cours,Livre) : C1/L1,C1/L2,C2/L3,C2/L4. La jointure reconstitue les huit lignes par indépendance.",
+    "explanation": "Une DM exige les produits croisés ; avoir plusieurs valeurs sans indépendance ne suffit pas.",
+    "skillIds": ["B6.11", "B6.12"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [69]
+      },
+      {
+        "sourceId": "SOL-FN",
+        "pages": [8, 9, 10, 11]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "FN-C11",
+    "lessonId": "fn-preservation",
+    "title": "LOCALISATION : une décomposition perd des contraintes",
+    "type": "guided",
+    "prompt": "LOCALISATION(Cru,Pays,Region,Qualite), Cru,Pays→Region,Qualite et Region→Pays. Donne les clés, la forme normale, puis analyse LOC1(Cru,Region,Qualite),LOC2(Region,Pays).",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "Cru est obligatoire. Les clés sont Cru,Pays et Cru,Region ; Cru,Pays produit Region et Qualite ; Cru,Region donne Pays puis Qualite. Attributs premiers : Cru,Pays,Region. Region→Pays vise un premier mais Region n’est pas superclé : 3FN, pas BCNF. La séparation LOC1/LOC2 est sans perte car leur intersection Region détermine LOC2. LOC1 a la DF projetée Cru,Region→Qualite ; LOC2 a Region→Pays. Les deux tables sont BCNF. Elles ne préservent cependant pas Cru,Pays→Region ni Cru,Pays→Qualite. Exemple localement valide : LOC1 contient (C1,R1,Q1),(C1,R3,Q2) ; LOC2 contient (R1,P1),(R3,P1). La jointure donne le même couple C1,P1 avec régions et qualités différentes. La page de correction présente une coquille de région dans sa dernière ligne ; le raisonnement est ce contre-exemple.",
+    "explanation": "Les trois vérifications sont distinctes : forme normale des morceaux, absence de perte de contenu, préservation des DF.",
+    "skillIds": ["B6.04", "B6.08", "B6.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [81, 82]
+      },
+      {
+        "sourceId": "SOL-FN",
+        "pages": [12, 13, 14, 15]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "FN-C12",
+    "lessonId": "fn-4fn",
+    "title": "Personnes, enfants et voitures",
+    "type": "guided",
+    "prompt": "P(numPersonne,nom,prenomEnfant,ageEnfant,plaque). On suppose numPersonne↠(prenomEnfant,ageEnfant), numPersonne↠plaque et numPersonne→nom. Propose une décomposition 4FN et explicite les clés et hypothèses.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "Sépare Personne(numPersonne,nom), Enfant(numPersonne,prenomEnfant,ageEnfant), Voiture(plaque,numPersonne). Les DM assurent une recomposition sans perte des ensembles indépendants ; la DF numPersonne→nom justifie l’extraction du nom. Garde prénom et âge dans le même morceau : ils décrivent le même enfant et ne sont pas indépendants. Comme dans le corrigé, si une plaque appartient à une seule personne, la clé de Voiture est plaque. Si on suppose qu’une personne n’a pas deux enfants de même prénom, la clé d’Enfant est numPersonne,prenomEnfant et celle de Personne est numPersonne. Sans cette hypothèse, le prénom seul avec le parent n’est pas une clé garantie : le schéma doit prévoir un identifiant d’enfant ou conserver le triplet comme clé au niveau du modèle donné. Aucune hypothèse d’unicité des prénoms au monde n’est nécessaire.",
+    "explanation": "La DM doit conserver ensemble les attributs qui forment un fait. Les clés supplémentaires proviennent de règles métier explicites.",
+    "skillIds": ["B6.11", "B6.12"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [83]
+      },
+      {
+        "sourceId": "SOL-FN",
+        "pages": [16, 17]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "TP-N-0",
+    "lessonId": "fn-zoo",
+    "title": "Zoo : traduire les sept lignes de DF",
+    "type": "guided",
+    "prompt": "Relis zoo(animal,nom,annee_naissance,espece,gardien,prenom,salaire,classe,origine,emplacement,surface,type_empl,libelle_empl). Traduis les sept lignes de DF : Animal→Nom,Annee_naissance,Espece,Emplacement ; Nom,Espece→Animal ; Espece→Origine,Classe ; Gardien→Prenom,Salaire ; Emplacement→Surface,Type_empl,Gardien ; Type_empl→Libelle_empl ; Animal,Emplacement→Surface. Que manque-t-il pour rejouer le TP original ?",
+    "hints": [
+      "Les données exécutables sont synthétiques ; relis le schéma et les DF de l’énoncé.",
+      "Contrôle séparément le contenu, les contraintes et les doublons."
+    ],
+    "solution": "Un numéro animal fixe son nom, son année, son espèce et son emplacement. Une paire nom/espèce identifie un seul numéro animal. Une espèce a une origine et une classe uniques. Un gardien a un prénom et un salaire uniques. Un emplacement a une surface, un type et un gardien uniques. Un type a un libellé unique. Une paire animal/emplacement fixe une surface ; cette dernière contrainte est déjà impliquée par Emplacement→Surface. Le script de peuplement original manque : il est impossible de déterminer les incohérences et nombres exacts d’animaux du zoo initial. Les données du site sont des données choisies pour l’entraînement, signalées comme synthétiques.",
+    "explanation": "Comprendre le schéma ne nécessite pas les lignes originales ; reproduire leurs résultats exacts, si.",
+    "skillIds": ["B5.01", "B6.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-N",
+        "pages": [1, 2]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "zoo",
+    "tpQuestion": "0"
+  },
+  {
+    "id": "TP-N-1a",
+    "lessonId": "fn-zoo",
+    "title": "Zoo : redondances et anomalies",
+    "type": "guided",
+    "prompt": "Donne une redondance et un exemple de chaque type d’anomalie du schéma plat.",
+    "hints": [
+      "Les données exécutables sont synthétiques ; relis le schéma et les DF de l’énoncé.",
+      "Contrôle séparément le contenu, les contraintes et les doublons."
+    ],
+    "solution": "L’origine et la classe se répètent pour chaque animal d’une espèce ; prénom et salaire se répètent pour chaque animal du même gardien ; la surface et le libellé se répètent pour les animaux d’un emplacement/type. Modification : changer le salaire d’un gardien dans une seule ligne laisse deux salaires. Insertion : enregistrer un gardien avant de lui affecter un animal nécessite une fausse ligne ou des NULL. Suppression : retirer le dernier animal d’une espèce fait perdre son origine/classe et retirer le dernier animal d’un gardien fait perdre son salaire. La normalisation donne une table propre à chaque fait métier.",
+    "explanation": "Une réponse correcte relie chaque anomalie à une information métier répétée ou absente indépendamment des animaux.",
+    "skillIds": ["B6.01"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-N",
+        "pages": [2]
+      },
+      {
+        "sourceId": "SOL-N",
+        "pages": [4]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "zoo",
+    "tpQuestion": "1a"
+  },
+  {
+    "id": "TP-N-1b",
+    "lessonId": "fn-zoo",
+    "title": "Zoo : la dernière DF est-elle nécessaire ?",
+    "type": "guided",
+    "prompt": "Construis une couverture minimale. La ligne Animal,Emplacement→Surface doit-elle rester ? Le corrigé la conserve-t-il réellement ?",
+    "hints": [
+      "Les données exécutables sont synthétiques ; relis le schéma et les DF de l’énoncé.",
+      "Contrôle séparément le contenu, les contraintes et les doublons."
+    ],
+    "solution": "Décompose toutes les cibles : Animal→Nom ; Animal→Annee_naissance ; Animal→Espece ; Animal→Emplacement ; Nom,Espece→Animal ; Espece→Origine ; Espece→Classe ; Gardien→Prenom ; Gardien→Salaire ; Emplacement→Surface ; Emplacement→Type_empl ; Emplacement→Gardien ; Type_empl→Libelle_empl. Aucune de ces 13 DF n’est redondante et la source Nom,Espece est minimale. Animal,Emplacement→Surface n’ajoute rien, car Emplacement→Surface suffit ; Animal est superflu. Elle est aussi déduite d’Animal→Emplacement→Surface. La liste finale du corrigé p.3 omet cette dernière ligne malgré son raccourci « ensemble initial ». Il faut donc la retirer, pas reproduire cette formulation à la lettre.",
+    "explanation": "Une couverture peut se présenter avec cibles regroupées, mais sa vérification de minimalité doit considérer les cibles simples.",
+    "skillIds": ["B5.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-N",
+        "pages": [2]
+      },
+      {
+        "sourceId": "SOL-N",
+        "pages": [3]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "zoo",
+    "tpQuestion": "1b"
+  },
+  {
+    "id": "TP-N-1c",
+    "lessonId": "fn-zoo",
+    "title": "Zoo : la forme normale dépend-elle du remplissage ?",
+    "type": "guided",
+    "prompt": "Détermine la forme normale du schéma sous les DF et explique le rôle de ses deux clés candidates.",
+    "hints": [
+      "Les données exécutables sont synthétiques ; relis le schéma et les DF de l’énoncé.",
+      "Contrôle séparément le contenu, les contraintes et les doublons."
+    ],
+    "solution": "Les clés sont Animal et Nom,Espece : Animal donne l’emplacement puis le gardien et le type, donc toutes les colonnes ; Nom,Espece donne Animal. Les attributs premiers sont Animal,Nom,Espece. La table est 1FN sous les domaines atomiques du TP. Elle n’est pas 2FN : Espece est une partie stricte de la clé Nom,Espece et détermine Origine,Classe, attributs non premiers. Elle n’est donc pas 3FN. La PK simple Animal ne suffit pas pour conclure 2FN : on examine toutes les clés candidates. Une extension actuellement sans répétition ne change pas la forme normale, qui dépend des contraintes sémantiques ; une extension incohérente signifie en plus que les règles du schéma ne sont pas respectées.",
+    "explanation": "Ce cas illustre pourquoi il faut considérer la clé alternative même si on choisit Animal comme PK.",
+    "skillIds": ["B6.05", "B6.06", "B5.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-N",
+        "pages": [2]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "zoo",
+    "tpQuestion": "1c"
+  },
+  {
+    "id": "TP-N-2a",
+    "lessonId": "fn-zoo",
+    "title": "Zoo : contrôler chaque DF",
+    "type": "guided",
+    "prompt": "Écris une requête par ligne de DF. Que signifient une ligne retournée et un résultat vide ? Quel serait le piège avec NULL ?",
+    "hints": [
+      "Les données exécutables sont synthétiques ; relis le schéma et les DF de l’énoncé.",
+      "Contrôle séparément le contenu, les contraintes et les doublons."
+    ],
+    "solution": "-- Données initiales sans NULL, comme dans l’énoncé.\nSELECT animal FROM zoo GROUP BY animal\nHAVING COUNT(DISTINCT nom)>1 OR COUNT(DISTINCT annee_naissance)>1\n OR COUNT(DISTINCT espece)>1 OR COUNT(DISTINCT emplacement)>1;\nSELECT nom,espece FROM zoo GROUP BY nom,espece\nHAVING COUNT(DISTINCT animal)>1;\nSELECT espece FROM zoo GROUP BY espece\nHAVING COUNT(DISTINCT origine)>1 OR COUNT(DISTINCT classe)>1;\nSELECT gardien FROM zoo GROUP BY gardien\nHAVING COUNT(DISTINCT prenom)>1 OR COUNT(DISTINCT salaire)>1;\nSELECT emplacement FROM zoo GROUP BY emplacement\nHAVING COUNT(DISTINCT surface)>1 OR COUNT(DISTINCT type_empl)>1\n OR COUNT(DISTINCT gardien)>1;\nSELECT type_empl FROM zoo GROUP BY type_empl\nHAVING COUNT(DISTINCT libelle_empl)>1;\nSELECT animal,emplacement FROM zoo GROUP BY animal,emplacement\nHAVING COUNT(DISTINCT surface)>1;",
+    "explanation": "Chaque résultat retourne les déterminants qui possèdent plusieurs valeurs incompatibles dans au moins une cible. Un résultat vide signifie que l’extension examinée ne contredit pas cette DF, et non qu’on a prouvé une règle métier. Le septième contrôle est redondant logiquement mais demandé pour couvrir les sept lignes. COUNT(DISTINCT) ignore NULL : le test ne repère pas une valeur NULL à côté d’une valeur connue. L’énoncé exclut ce cas au départ ; pour une extension du TP, ajouter COUNT(*)<>COUNT(colonne) ou utiliser des comparaisons null-safe, selon la politique de validité choisie.",
+    "skillIds": ["B6.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-N",
+        "pages": [2]
+      },
+      {
+        "sourceId": "SOL-N",
+        "pages": [2, 5]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "zoo",
+    "tpQuestion": "2a"
+  },
+  {
+    "id": "TP-N-2a-ext",
+    "lessonId": "fn-zoo",
+    "title": "Zoo : afficher les lignes incohérentes par CTE",
+    "type": "sql",
+    "prompt": "Données synthétiques : affiche toutes les lignes des espèces qui ont plus d’une origine ou plus d’une classe. Trie par espece puis animal. Une espèce incohérente doit faire apparaître aussi sa ligne de référence, pas seulement une valeur différente.",
+    "hints": [
+      "Les données exécutables sont synthétiques ; relis le schéma et les DF de l’énoncé.",
+      "Contrôle séparément le contenu, les contraintes et les doublons."
+    ],
+    "solution": "WITH incoherentes AS (\n  SELECT espece FROM zoo GROUP BY espece\n  HAVING COUNT(DISTINCT origine)>1 OR COUNT(DISTINCT classe)>1\n)\nSELECT z.* FROM zoo z\nJOIN incoherentes i ON i.espece=z.espece\nORDER BY z.espece,z.animal;",
+    "explanation": "La CTE repère les groupes problématiques, puis la jointure retrouve leurs lignes complètes. Le contrôle suppose les colonnes non NULL, comme dans l’énoncé.",
+    "skillIds": ["B2.05", "B6.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-N",
+        "pages": [2]
+      },
+      {
+        "sourceId": "SOL-N",
+        "pages": [5]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "zoo",
+    "tpQuestion": "2a-ext",
+    "datasetId": "zoo",
+    "ordered": true,
+    "alternativeDatasetIds": ["zoo-dirty"]
+  },
+  {
+    "id": "TP-N-2b",
+    "lessonId": "fn-zoo",
+    "title": "Zoo : corriger selon la bonne ligne",
+    "type": "guided",
+    "prompt": "Explique et écris la correction par UPDATE selon le plus petit numéro animal, puis donne la procédure pour toutes les DF. Pourquoi MIN(origine) est-il incorrect ?",
+    "hints": [
+      "Les données exécutables sont synthétiques ; relis le schéma et les DF de l’énoncé.",
+      "Contrôle séparément le contenu, les contraintes et les doublons."
+    ],
+    "solution": "Exemple exécutable DuckDB pour la règle Espece→Origine,Classe :\nWITH reference AS (\n SELECT espece,origine,classe,\n ROW_NUMBER() OVER (PARTITION BY espece ORDER BY animal) AS rn\n FROM zoo\n)\nUPDATE zoo AS z SET origine=r.origine,classe=r.classe\nFROM reference r WHERE r.rn=1 AND z.espece=r.espece;\n\nMême méthode complète à appliquer aux autres déterminants :\n- PARTITION BY animal : cibles nom,annee_naissance,espece,emplacement ;\n- PARTITION BY nom,espece : cible animal ;\n- PARTITION BY gardien : cibles prenom,salaire ;\n- PARTITION BY emplacement : cibles surface,type_empl,gardien ;\n- PARTITION BY type_empl : cible libelle_empl.\nLa règle Animal,Emplacement→Surface n’a pas de correction autonome après Emplacement→Surface.\nPour chaque étape : calculer la ligne de référence, prévisualiser les modifications, puis affecter toutes ses cibles aux lignes de même source. Réexécuter les contrôles après les changements de sources (animal,nom,espece,emplacement,gardien,type_empl), car ils peuvent réunir des groupes auparavant distincts. Des doublons de numéro animal après correction de Nom,Espece→Animal exigent de fusionner leurs données sous cette même règle et de dédupliquer avant une PK. Si plusieurs lignes du plus petit animal sont incompatibles, la consigne ne les départage pas : il faut une décision métier explicite. Sans les données originales, on ne peut pas fournir les valeurs constantes de leurs UPDATE.\n\nAutres UPDATE explicites (à prévisualiser et exécuter sur les données incohérentes avant les contrôles finaux) :\n\nWITH reference AS (\n SELECT animal,nom,annee_naissance,espece,emplacement,\n ROW_NUMBER() OVER (PARTITION BY animal ORDER BY animal) AS rn\n FROM zoo\n)\nUPDATE zoo AS z SET nom=r.nom,annee_naissance=r.annee_naissance,espece=r.espece,emplacement=r.emplacement\nFROM reference r WHERE r.rn=1 AND z.animal=r.animal;\n\nWITH reference AS (\n SELECT nom,espece,animal,\n ROW_NUMBER() OVER (PARTITION BY nom,espece ORDER BY animal) AS rn\n FROM zoo\n)\nUPDATE zoo AS z SET animal=r.animal\nFROM reference r WHERE r.rn=1 AND z.nom=r.nom AND z.espece=r.espece;\n\nWITH reference AS (\n SELECT gardien,prenom,salaire,\n ROW_NUMBER() OVER (PARTITION BY gardien ORDER BY animal) AS rn\n FROM zoo\n)\nUPDATE zoo AS z SET prenom=r.prenom,salaire=r.salaire\nFROM reference r WHERE r.rn=1 AND z.gardien=r.gardien;\n\nWITH reference AS (\n SELECT emplacement,surface,type_empl,gardien,\n ROW_NUMBER() OVER (PARTITION BY emplacement ORDER BY animal) AS rn\n FROM zoo\n)\nUPDATE zoo AS z SET surface=r.surface,type_empl=r.type_empl,gardien=r.gardien\nFROM reference r WHERE r.rn=1 AND z.emplacement=r.emplacement;\n\nWITH reference AS (\n SELECT type_empl,libelle_empl,\n ROW_NUMBER() OVER (PARTITION BY type_empl ORDER BY animal) AS rn\n FROM zoo\n)\nUPDATE zoo AS z SET libelle_empl=r.libelle_empl\nFROM reference r WHERE r.rn=1 AND z.type_empl=r.type_empl;",
+    "explanation": "ROW_NUMBER sélectionne la ligne de référence entière ; MIN(origine) choisirait une valeur alphabétique indépendante du numéro animal. L’énoncé ne donne pas un droit de deviner les valeurs du fichier original manquant.",
+    "skillIds": ["B0.07", "B6.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-N",
+        "pages": [2]
+      },
+      {
+        "sourceId": "SOL-N",
+        "pages": [2]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "zoo",
+    "tpQuestion": "2b"
+  },
+  {
+    "id": "TP-N-2b-ext",
+    "lessonId": "fn-zoo",
+    "title": "Zoo : correction automatique et NULL",
+    "type": "guided",
+    "prompt": "Adapte le MERGE Oracle du corrigé pour Espece→Origine. Compare la règle stricte du plus petit animal à la variante qui prend le premier animal dont l’origine est non NULL. Précise ce qui se passe si tout le groupe est NULL.",
+    "hints": [
+      "Les données exécutables sont synthétiques ; relis le schéma et les DF de l’énoncé.",
+      "Contrôle séparément le contenu, les contraintes et les doublons."
+    ],
+    "solution": "Version Oracle guidée (non évaluée par l’exécuteur DuckDB) :\nMERGE INTO zoo z\nUSING (\n SELECT espece,origine FROM (\n  SELECT espece,origine,\n   ROW_NUMBER() OVER (PARTITION BY espece ORDER BY animal) rn\n  FROM zoo\n ) WHERE rn=1\n) r ON (r.espece=z.espece)\nWHEN MATCHED THEN UPDATE SET z.origine=r.origine;\n\nCette version suit exactement la première ligne, même si sa cible est NULL. La variante du corrigé qui veut renseigner les NULL filtre WHERE origine IS NOT NULL dans la sous-requête avant ROW_NUMBER : elle choisit alors la première origine connue, ce qui est une autre règle d’autorité et doit être annoncé. Si toutes les origines sont NULL, cette variante ne produit aucune source pour l’espèce et ne la modifie pas ; on ne peut pas inventer son origine. COUNT(DISTINCT COALESCE(origine,'1')) n’est sûr que si '1' est hors du domaine des vraies origines. Un test séparant COUNT(origine) et COUNT(*) évite de faire passer une sentinelle réelle pour NULL. La source de MERGE doit avoir au plus une ligne par espèce.",
+    "explanation": "Un remplissage de NULL et la résolution de valeurs contradictoires sont deux décisions à distinguer. Le SQL Oracle est étudié comme construction guidée.",
+    "skillIds": ["B1.04", "B2.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-N",
+        "pages": [2]
+      },
+      {
+        "sourceId": "SOL-N",
+        "pages": [6]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "zoo",
+    "tpQuestion": "2b-ext"
+  },
+  {
+    "id": "TP-N-2c",
+    "lessonId": "fn-zoo",
+    "title": "Zoo : synthèse et SQL de création",
+    "type": "guided",
+    "prompt": "Retrouve les deux clés universelles, fais la synthèse en 3FN et écris les cinq tables avec PK, FK, NOT NULL et la clé alternative. Le schéma normalisé existe déjà dans le laboratoire : cette question est une conception guidée, pas une instruction de le recréer dans la session.",
+    "hints": [
+      "Les données exécutables sont synthétiques ; relis le schéma et les DF de l’énoncé.",
+      "Contrôle séparément le contenu, les contraintes et les doublons."
+    ],
+    "solution": "Animal et Nom,Espece sont les deux clés universelles. Après retrait de la DF redondante, on groupe par source, fusionne ici les groupes Animal et Nom,Espece, puis crée Animal, Espece, Gardien, Emplacement, Type_empl. Pas d’inclusion à supprimer ; Animal contient déjà une clé universelle. Chaque source de DF devient une clé d’une table, les tables sont même BCNF. Le choix NOT NULL ci-dessous conserve la politique de données complètes de l’énoncé ; la clé alternative demande NOT NULL sur nom et espece.\n\nCREATE TABLE espece (\n espece VARCHAR(30) PRIMARY KEY,\n origine VARCHAR(30) NOT NULL,\n classe VARCHAR(30) NOT NULL\n);\nCREATE TABLE gardien (\n gardien VARCHAR(40) PRIMARY KEY,\n prenom VARCHAR(40) NOT NULL,\n salaire DECIMAL(10,2) NOT NULL\n);\nCREATE TABLE type_empl (\n type_empl INTEGER PRIMARY KEY,\n libelle_empl VARCHAR(40) NOT NULL\n);\nCREATE TABLE emplacement (\n emplacement INTEGER PRIMARY KEY,\n surface INTEGER NOT NULL,\n type_empl INTEGER NOT NULL REFERENCES type_empl(type_empl),\n gardien VARCHAR(40) NOT NULL REFERENCES gardien(gardien)\n);\nCREATE TABLE animal (\n animal INTEGER PRIMARY KEY,\n nom VARCHAR(40) NOT NULL,\n annee_naissance INTEGER NOT NULL,\n espece VARCHAR(30) NOT NULL REFERENCES espece(espece),\n emplacement INTEGER NOT NULL REFERENCES emplacement(emplacement),\n UNIQUE(nom,espece)\n);",
+    "explanation": "UNIQUE(nom,espece) seul peut autoriser des NULL selon le SGBD. Une FK vérifie l’existence du parent ; elle ne remplace pas une contrainte d’unicité du déterminant.",
+    "skillIds": ["B5.09", "B6.07", "B6.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-N",
+        "pages": [2]
+      },
+      {
+        "sourceId": "SOL-N",
+        "pages": [3, 4]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "zoo",
+    "tpQuestion": "2c"
+  },
+  {
+    "id": "TP-N-2d",
+    "lessonId": "fn-zoo",
+    "title": "Zoo : copier dans le bon ordre",
+    "type": "guided",
+    "prompt": "Donne les INSERT SELECT pour transférer les données corrigées. Pourquoi DISTINCT ne résout-il pas les incohérences ? Quel ordre respecte les FK ?",
+    "hints": [
+      "Les données exécutables sont synthétiques ; relis le schéma et les DF de l’énoncé.",
+      "Contrôle séparément le contenu, les contraintes et les doublons."
+    ],
+    "solution": "INSERT INTO espece(espece,origine,classe)\nSELECT DISTINCT espece,origine,classe FROM zoo;\nINSERT INTO gardien(gardien,prenom,salaire)\nSELECT DISTINCT gardien,prenom,salaire FROM zoo;\nINSERT INTO type_empl(type_empl,libelle_empl)\nSELECT DISTINCT type_empl,libelle_empl FROM zoo;\nINSERT INTO emplacement(emplacement,surface,type_empl,gardien)\nSELECT DISTINCT emplacement,surface,type_empl,gardien FROM zoo;\nINSERT INTO animal(animal,nom,annee_naissance,espece,emplacement)\nSELECT DISTINCT animal,nom,annee_naissance,espece,emplacement FROM zoo;\n\nLes trois premières tables sont indépendantes. Emplacement exige gardien et type_empl ; Animal exige espece et emplacement. DISTINCT retire des lignes identiques, mais deux origines différentes pour la même espèce restent deux lignes différentes et feront échouer la PK. Il faut donc contrôler et corriger avant transfert. Dans une vraie migration, utiliser une transaction et comparer la reconstruction au schéma source corrigé avant de supprimer quoi que ce soit.",
+    "explanation": "Le laboratoire contient déjà les deux schémas ; cette étape présente la migration complète sans détruire les tables de comparaison.",
+    "skillIds": ["B6.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-N",
+        "pages": [2]
+      },
+      {
+        "sourceId": "SOL-N",
+        "pages": [2]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "zoo",
+    "tpQuestion": "2d"
+  },
+  {
+    "id": "TP-N-2e-i",
+    "lessonId": "fn-zoo",
+    "title": "Zoo : les ours sur les deux schémas",
+    "type": "sql",
+    "prompt": "Affiche les ours dans le schéma plat et le schéma normalisé. Retourne schema,animal,nom ; schema vaut 'plat' ou 'normalise'. Trie par schema,animal. Utilise 'Ours' comme dans le TP.",
+    "hints": [
+      "Les données exécutables sont synthétiques ; relis le schéma et les DF de l’énoncé.",
+      "Contrôle séparément le contenu, les contraintes et les doublons."
+    ],
+    "solution": "SELECT 'plat' AS schema,animal,nom FROM zoo WHERE espece='Ours'\nUNION ALL\nSELECT 'normalise' AS schema,animal,nom FROM animal WHERE espece='Ours'\nORDER BY schema,animal;",
+    "explanation": "Le schéma normalisé garde espece dans Animal : aucune jointure n’est nécessaire pour ce filtre. Les données exactes sont synthétiques.",
+    "skillIds": ["B6.14"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-N",
+        "pages": [2]
+      },
+      {
+        "sourceId": "SOL-N",
+        "pages": [7]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "zoo",
+    "tpQuestion": "2e-i",
+    "datasetId": "zoo",
+    "ordered": true,
+    "alternativeDatasetIds": ["zoo-alt"]
+  },
+  {
+    "id": "TP-N-2e-ii",
+    "lessonId": "fn-zoo",
+    "title": "Zoo : animaux en forêt",
+    "type": "sql",
+    "prompt": "Affiche les animaux dans les emplacements de type 'foret' sur les deux schémas. Retourne schema,animal ; trie par schema,animal. Respecte le libellé ASCII 'foret' utilisé dans le TP.",
+    "hints": [
+      "Les données exécutables sont synthétiques ; relis le schéma et les DF de l’énoncé.",
+      "Contrôle séparément le contenu, les contraintes et les doublons."
+    ],
+    "solution": "SELECT 'plat' AS schema,animal FROM zoo WHERE libelle_empl='foret'\nUNION ALL\nSELECT 'normalise' AS schema,a.animal\nFROM animal a JOIN emplacement e ON e.emplacement=a.emplacement\nJOIN type_empl t ON t.type_empl=e.type_empl\nWHERE t.libelle_empl='foret'\nORDER BY schema,animal;",
+    "explanation": "Le libellé dépend du type, auquel on accède par l’emplacement. Les JOIN explicites évitent les rapprochements accidentels dus à des noms de colonnes communs.",
+    "skillIds": ["B6.14"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-N",
+        "pages": [2]
+      },
+      {
+        "sourceId": "SOL-N",
+        "pages": [7]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "zoo",
+    "tpQuestion": "2e-ii",
+    "datasetId": "zoo",
+    "ordered": true,
+    "alternativeDatasetIds": ["zoo-alt"]
+  },
+  {
+    "id": "TP-N-2e-iii",
+    "lessonId": "fn-zoo",
+    "title": "Zoo : animaux du gardien Dupont",
+    "type": "sql",
+    "prompt": "Affiche schema,animal pour les animaux du gardien 'Dupont' dans les deux schémas. Trie par schema,animal.",
+    "hints": [
+      "Les données exécutables sont synthétiques ; relis le schéma et les DF de l’énoncé.",
+      "Contrôle séparément le contenu, les contraintes et les doublons."
+    ],
+    "solution": "SELECT 'plat' AS schema,animal FROM zoo WHERE gardien='Dupont'\nUNION ALL\nSELECT 'normalise' AS schema,a.animal\nFROM animal a JOIN emplacement e ON e.emplacement=a.emplacement\nWHERE e.gardien='Dupont'\nORDER BY schema,animal;",
+    "explanation": "Il n’est pas nécessaire de joindre Gardien : son identifiant est déjà dans Emplacement. Le titre du corrigé varie entre Dupond/Dupont ; le littéral demandé et utilisé ici est Dupont.",
+    "skillIds": ["B6.14"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-N",
+        "pages": [2]
+      },
+      {
+        "sourceId": "SOL-N",
+        "pages": [8]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "zoo",
+    "tpQuestion": "2e-iii",
+    "datasetId": "zoo",
+    "ordered": true,
+    "alternativeDatasetIds": ["zoo-alt"]
+  },
+  {
+    "id": "TP-N-2e-iv",
+    "lessonId": "fn-zoo",
+    "title": "Zoo : masse salariale sans double comptage",
+    "type": "sql",
+    "prompt": "Calcule la somme des salaires des gardiens dans chaque schéma. Retourne schema,masse_salariale ; trie par schema. Deux gardiens différents peuvent avoir le même salaire.",
+    "hints": [
+      "Les données exécutables sont synthétiques ; relis le schéma et les DF de l’énoncé.",
+      "Contrôle séparément le contenu, les contraintes et les doublons."
+    ],
+    "solution": "WITH uniques AS (SELECT DISTINCT gardien,salaire FROM zoo)\nSELECT 'plat' AS schema,SUM(salaire) AS masse_salariale FROM uniques\nUNION ALL\nSELECT 'normalise' AS schema,SUM(salaire) AS masse_salariale FROM gardien\nORDER BY schema;",
+    "explanation": "Il faut une ligne par gardien et non par animal. SUM(DISTINCT salaire) serait faux car deux gardiens de même salaire doivent être comptés tous les deux. On suppose les DF déjà corrigées.",
+    "skillIds": ["B6.01", "B6.14"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-N",
+        "pages": [2]
+      },
+      {
+        "sourceId": "SOL-N",
+        "pages": [8]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "zoo",
+    "tpQuestion": "2e-iv",
+    "datasetId": "zoo",
+    "ordered": true,
+    "alternativeDatasetIds": ["zoo-alt"]
+  },
+  {
+    "id": "TP-N-2e-v",
+    "lessonId": "fn-zoo",
+    "title": "Zoo : emplacements de classes différentes",
+    "type": "sql",
+    "prompt": "Sur les deux schémas, retourne schema,emplacement,surface,libelle_empl pour les emplacements accueillant au moins deux classes distinctes. Trie par schema,emplacement. Toutes les colonnes de l’énoncé sont demandées, pas seulement le numéro.",
+    "hints": [
+      "Les données exécutables sont synthétiques ; relis le schéma et les DF de l’énoncé.",
+      "Contrôle séparément le contenu, les contraintes et les doublons."
+    ],
+    "solution": "SELECT 'plat' AS schema,emplacement,surface,libelle_empl\nFROM zoo GROUP BY emplacement,surface,libelle_empl\nHAVING COUNT(DISTINCT classe)>1\nUNION ALL\nSELECT 'normalise' AS schema,e.emplacement,e.surface,t.libelle_empl\nFROM animal a JOIN espece s ON s.espece=a.espece\nJOIN emplacement e ON e.emplacement=a.emplacement\nJOIN type_empl t ON t.type_empl=e.type_empl\nGROUP BY e.emplacement,e.surface,t.libelle_empl\nHAVING COUNT(DISTINCT s.classe)>1\nORDER BY schema,emplacement;",
+    "explanation": "La classe vient d’Espece, la surface d’Emplacement et le libellé de Type_empl. Le corrigé fourni ne projette que le numéro : cette solution complète bien les trois colonnes exigées par l’énoncé.",
+    "skillIds": ["B6.14"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-N",
+        "pages": [2]
+      },
+      {
+        "sourceId": "SOL-N",
+        "pages": [9]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "zoo",
+    "tpQuestion": "2e-v",
+    "datasetId": "zoo",
+    "ordered": true,
+    "alternativeDatasetIds": ["zoo-alt"]
+  },
+  {
+    "id": "TP-N-3",
+    "lessonId": "fn-zoo",
+    "title": "Zoo : bilan de la normalisation",
+    "type": "guided",
+    "prompt": "Les anomalies initiales sont-elles encore possibles ? A-t-on perdu de l’information ou des possibilités de requête ? Qu’a-t-on gagné et payé ? Comment garder les anciennes lectures et écritures ?",
+    "hints": [
+      "Les données exécutables sont synthétiques ; relis le schéma et les DF de l’énoncé.",
+      "Contrôle séparément le contenu, les contraintes et les doublons."
+    ],
+    "solution": "Une espèce, un gardien ou un type peut exister sans animal. Leur fait descriptif n’est plus répété : une seule ligne fixe origine/classe, prénom/salaire ou libellé. Les DF sont représentées par PK ou par la clé alternative UNIQUE(nom,espece)+NOT NULL ; les FK conservent les références. La synthèse préserve les DF et contient la clé universelle Animal : la reconstruction du zoo corrigé par jointure ne perd pas d’information. Toute ancienne lecture peut être réécrite sur cette jointure, ou sur une vue de même colonnes. Le schéma normalisé peut en plus représenter des parents sans animal, que la table plate ne savait pas porter. Les gains sont cohérence, sémantique claire et moindre redondance ; le coût est davantage de tables, de jointures et un ordre d’insertion adapté aux FK. Une vue à jointures n’accepte pas automatiquement toutes les anciennes écritures : selon le SGBD il faut des triggers INSTEAD OF ou une logique de service qui répartit les changements. La normalisation n’empêche pas toute donnée fausse métier ; elle garantit les contraintes effectivement déclarées.",
+    "explanation": "La conservation de contenu est relative aux données corrigées. Elle ne prétend pas conserver comme vraies les valeurs contradictoires éliminées.",
+    "skillIds": ["B6.01", "B6.02", "B6.03", "B6.04", "B6.14"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-N",
+        "pages": [3]
+      },
+      {
+        "sourceId": "SOL-N",
+        "pages": [4]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "zoo",
+    "tpQuestion": "3"
+  },
+  {
+    "id": "ZOO-SQL-RECONSTRUCTION",
+    "lessonId": "fn-zoo",
+    "title": "Reconstruire la vue du zoo",
+    "type": "sql",
+    "prompt": "Dans les tables normalisées synthétiques, reconstruis les colonnes du zoo dans cet ordre : animal,nom,annee_naissance,espece,gardien,prenom,salaire,classe,origine,emplacement,surface,type_empl,libelle_empl. Trie par animal.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "SELECT a.animal,a.nom,a.annee_naissance,a.espece,e.gardien,\n g.prenom,g.salaire,s.classe,s.origine,a.emplacement,e.surface,\n e.type_empl,t.libelle_empl\nFROM animal a JOIN espece s ON s.espece=a.espece\nJOIN emplacement e ON e.emplacement=a.emplacement\nJOIN gardien g ON g.gardien=e.gardien\nJOIN type_empl t ON t.type_empl=e.type_empl\nORDER BY a.animal;",
+    "explanation": "Les JOIN suivent les FK ; les colonnes du résultat retrouvent les faits d’origine corrigés. Des parents sans animal ne produisent pas de ligne du zoo reconstruit.",
+    "skillIds": ["B6.14"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-N",
+        "pages": [2, 3]
+      }
+    ],
+    "origin": "created",
+    "datasetId": "zoo",
+    "ordered": true,
+    "alternativeDatasetIds": ["zoo-alt"]
+  },
+  {
+    "id": "ZOO-SQL-CONTROLE-GARDIEN",
+    "lessonId": "fn-zoo",
+    "title": "Détecter un salaire ou prénom contradictoire",
+    "type": "sql",
+    "prompt": "Données synthétiques : affiche gardien pour les gardiens ayant plusieurs prénoms ou plusieurs salaires dans zoo. Trie par gardien. Les colonnes sont non NULL.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "SELECT gardien FROM zoo GROUP BY gardien\nHAVING COUNT(DISTINCT prenom)>1 OR COUNT(DISTINCT salaire)>1\nORDER BY gardien;",
+    "explanation": "Le contrôle est sur l’identifiant du gardien, pas sur son salaire. Un résultat vide signifie seulement que le jeu actuel respecte cette règle.",
+    "skillIds": ["B6.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "SOL-N",
+        "pages": [2]
+      }
+    ],
+    "origin": "created",
+    "datasetId": "zoo",
+    "ordered": true,
+    "alternativeDatasetIds": ["zoo-dirty"]
+  },
+  {
+    "id": "DF-Q01",
+    "lessonId": "df-semantique",
+    "title": "Une seule extension suffit-elle ?",
+    "type": "quiz",
+    "prompt": "Une table actuelle contient trois noms tous distincts. Peut-on en conclure la règle métier Nom→Matricule ?",
+    "hints": [
+      "Relis la définition exacte, puis élimine les affirmations trop fortes.",
+      "Point de contrôle : L’échantillon satisfait peut-être la DF aujourd’hui, mais une autre extension métier pourrait contenir deux personnes homonymes."
+    ],
+    "solution": "Non : une extension ne prouve pas une contrainte sur toutes les extensions admissibles.",
+    "explanation": "L’échantillon satisfait peut-être la DF aujourd’hui, mais une autre extension métier pourrait contenir deux personnes homonymes.",
+    "skillIds": ["B5.01", "B5.02"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [4]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Oui, car aucun doublon n’est visible.",
+      "Non : une extension ne prouve pas une contrainte sur toutes les extensions admissibles.",
+      "Oui, si on choisit Nom comme alias."
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "DF-Q02",
+    "lessonId": "df-types-graphes",
+    "title": "Ne pas découper une source",
+    "type": "quiz",
+    "prompt": "Que peut-on déduire uniquement de AB→CD ?",
+    "hints": [
+      "Relis la définition exacte, puis élimine les affirmations trop fortes.",
+      "Point de contrôle : La décomposition concerne la cible."
+    ],
+    "solution": "AB→C et AB→D.",
+    "explanation": "La décomposition concerne la cible. Une source composée représente une connaissance conjointe des attributs.",
+    "skillIds": ["B5.03"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [5, 6, 7, 8]
+      }
+    ],
+    "origin": "created",
+    "options": ["A→C et B→D.", "AB→C et AB→D.", "C→AB."],
+    "correctIndex": 1
+  },
+  {
+    "id": "DF-Q03",
+    "lessonId": "df-types-graphes",
+    "title": "Repérer la trivialité",
+    "type": "quiz",
+    "prompt": "Quelle DF est nécessairement vraie dans toute relation sur A,B,C ?",
+    "hints": [
+      "Relis la définition exacte, puis élimine les affirmations trop fortes.",
+      "Point de contrôle : La cible A est incluse dans la source AB : c’est la réflexivité, indépendante du métier et des lignes."
+    ],
+    "solution": "AB→A.",
+    "explanation": "La cible A est incluse dans la source AB : c’est la réflexivité, indépendante du métier et des lignes.",
+    "skillIds": ["B5.03", "B5.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [11]
+      }
+    ],
+    "origin": "created",
+    "options": ["AB→A.", "A→B.", "C→AB."],
+    "correctIndex": 0
+  },
+  {
+    "id": "DF-Q04",
+    "lessonId": "df-couverture",
+    "title": "Quel test de redondance ?",
+    "type": "quiz",
+    "prompt": "Pour tester si X→a est redondante dans F, quel calcul est correct ?",
+    "hints": [
+      "Relis la définition exacte, puis élimine les affirmations trop fortes.",
+      "Point de contrôle : Inclure la règle à tester donnerait a immédiatement et rendrait le test circulaire."
+    ],
+    "solution": "Calculer X⁺ après retrait de la règle X→a.",
+    "explanation": "Inclure la règle à tester donnerait a immédiatement et rendrait le test circulaire.",
+    "skillIds": ["B5.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [26, 27, 28, 29]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Calculer X⁺ avec toutes les règles de F, y compris X→a.",
+      "Calculer X⁺ après retrait de la règle X→a.",
+      "Calculer a⁺ et chercher X."
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "DF-Q05",
+    "lessonId": "df-cles",
+    "title": "Un attribut absent des DF",
+    "type": "quiz",
+    "prompt": "R(A,B,C,D), A→B et B→C. Quel rôle joue D dans les clés ?",
+    "hints": [
+      "Relis la définition exacte, puis élimine les affirmations trop fortes.",
+      "Point de contrôle : AD est la seule clé : A donne BC, mais D doit être fourni au départ."
+    ],
+    "solution": "D est obligatoire dans toute clé car aucune DF ne le produit.",
+    "explanation": "AD est la seule clé : A donne BC, mais D doit être fourni au départ.",
+    "skillIds": ["B5.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [34]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "D est inutile car aucune DF ne le mentionne.",
+      "D est obligatoire dans toute clé car aucune DF ne le produit.",
+      "D est une clé à lui seul."
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "DF-Q06",
+    "lessonId": "df-couverture",
+    "title": "Couverture non unique",
+    "type": "quiz",
+    "prompt": "Deux listes minimales de DF utilisent des flèches différentes. Quel test décide si elles expriment les mêmes contraintes ?",
+    "hints": [
+      "Relis la définition exacte, puis élimine les affirmations trop fortes.",
+      "Point de contrôle : La fermeture logique, pas la présentation, caractérise les contraintes."
+    ],
+    "solution": "Vérifier les implications de chaque ensemble dans l’autre.",
+    "explanation": "La fermeture logique, pas la présentation, caractérise les contraintes. Des cycles autorisent plusieurs couvertures minimales équivalentes.",
+    "skillIds": ["B5.06", "B5.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [31]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Comparer leur nombre de règles.",
+      "Vérifier les implications de chaque ensemble dans l’autre.",
+      "Exiger les mêmes attributs à droite dans le même ordre."
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "FN-Q01",
+    "lessonId": "fn-sans-perte",
+    "title": "Le bon critère sans perte",
+    "type": "quiz",
+    "prompt": "R est décomposée en R1 et R2 sous des DF. Quel test garantit une jointure sans perte ?",
+    "hints": [
+      "Relis la définition exacte, puis élimine les affirmations trop fortes.",
+      "Point de contrôle : Une intersection quelconque ne suffit pas ; sa fermeture doit couvrir l’un des morceaux."
+    ],
+    "solution": "L’intersection détermine tous les attributs d’au moins un des deux morceaux.",
+    "explanation": "Une intersection quelconque ne suffit pas ; sa fermeture doit couvrir l’un des morceaux.",
+    "skillIds": ["B6.03"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [14, 15, 16]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "R1 et R2 partagent au moins un attribut.",
+      "L’intersection détermine tous les attributs d’au moins un des deux morceaux.",
+      "Chaque morceau a moins de colonnes que R."
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "FN-Q02",
+    "lessonId": "fn-preservation",
+    "title": "Sans perte ne signifie pas toutes les garanties",
+    "type": "quiz",
+    "prompt": "Une décomposition est sans perte de contenu. Peut-elle perdre une DF comme contrainte locale ?",
+    "hints": [
+      "Relis la définition exacte, puis élimine les affirmations trop fortes.",
+      "Point de contrôle : Heath garantit le contenu, pas la préservation des dépendances."
+    ],
+    "solution": "Oui, par exemple VOL/AVION et VOL/PILOTE peuvent perdre AVION→PILOTE.",
+    "explanation": "Heath garantit le contenu, pas la préservation des dépendances. On doit tester l’union des DF projetées.",
+    "skillIds": ["B6.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [18, 19, 20, 21, 22]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Non, les deux propriétés sont synonymes.",
+      "Oui, par exemple VOL/AVION et VOL/PILOTE peuvent perdre AVION→PILOTE.",
+      "Seulement si les tables sont vides."
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "FN-Q03",
+    "lessonId": "fn-1fn-2fn",
+    "title": "Une PK simple prouve-t-elle la 2FN ?",
+    "type": "quiz",
+    "prompt": "Zoo a les clés candidates Animal et Nom,Espece ; Espece→Origine. Animal est choisie comme PK. Quelle conclusion est correcte ?",
+    "hints": [
+      "Relis la définition exacte, puis élimine les affirmations trop fortes.",
+      "Point de contrôle : Toutes les clés candidates comptent, et Origine n’est pas première dans ce schéma."
+    ],
+    "solution": "Origine dépend d’une partie de la clé alternative Nom,Espece : il faut examiner cette violation de 2FN.",
+    "explanation": "Toutes les clés candidates comptent, et Origine n’est pas première dans ce schéma.",
+    "skillIds": ["B6.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [25, 26]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "La PK simple garantit automatiquement la 2FN.",
+      "Origine dépend d’une partie de la clé alternative Nom,Espece : il faut examiner cette violation de 2FN.",
+      "La 2FN interdit toute clé simple."
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "FN-Q04",
+    "lessonId": "fn-3fn",
+    "title": "L’exception exacte de la 3FN",
+    "type": "quiz",
+    "prompt": "Une DF non triviale X→a a une source qui n’est pas superclé. Quand peut-elle être compatible avec la 3FN ?",
+    "hints": [
+      "Relis la définition exacte, puis élimine les affirmations trop fortes.",
+      "Point de contrôle : La 3FN autorise une cible première."
+    ],
+    "solution": "Quand a appartient à au moins une clé candidate.",
+    "explanation": "La 3FN autorise une cible première. BCNF retire cette exception.",
+    "skillIds": ["B6.06"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [29]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Quand a appartient à au moins une clé candidate.",
+      "Quand X possède exactement deux attributs.",
+      "Jamais."
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "FN-Q05",
+    "lessonId": "fn-synthese",
+    "title": "Le dernier morceau de synthèse",
+    "type": "quiz",
+    "prompt": "À quoi sert l’ajout d’une relation contenant une clé universelle, si aucun morceau ne la contient ?",
+    "hints": [
+      "Relis la définition exacte, puis élimine les affirmations trop fortes.",
+      "Point de contrôle : PRÊTS l’illustre : sans Emprunteur(nomClient,numPret), l’association client/prêt disparaît."
+    ],
+    "solution": "À compléter la garantie de conservation du contenu et de l’association universelle.",
+    "explanation": "PRÊTS l’illustre : sans Emprunteur(nomClient,numPret), l’association client/prêt disparaît.",
+    "skillIds": ["B6.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [33, 34, 41]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Uniquement à afficher le nom de la PK.",
+      "À compléter la garantie de conservation du contenu et de l’association universelle.",
+      "À supprimer toutes les FK."
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "FN-Q06",
+    "lessonId": "fn-bcnf",
+    "title": "Plusieurs clés ne sont pas une violation",
+    "type": "quiz",
+    "prompt": "PLACE(Etudiant,Matiere,Rang) a Etudiant,Matiere→Rang et Matiere,Rang→Etudiant, et aucune autre contrainte non déduite. Quelle conclusion ?",
+    "hints": [
+      "Relis la définition exacte, puis élimine les affirmations trop fortes.",
+      "Point de contrôle : Le chevauchement de clés n’est pas une violation en soi."
+    ],
+    "solution": "BCNF : les déterminants des deux règles sont des clés.",
+    "explanation": "Le chevauchement de clés n’est pas une violation en soi. On cherche un déterminant non superclé d’une DF non triviale.",
+    "skillIds": ["B6.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [47]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Pas BCNF car il existe deux clés.",
+      "BCNF : les déterminants des deux règles sont des clés.",
+      "Pas 2FN car les clés se chevauchent."
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "FN-Q07",
+    "lessonId": "fn-dm",
+    "title": "Une DM exige les tuples croisés",
+    "type": "quiz",
+    "prompt": "R(X,Y,Z) contient (x,y1,z1) et (x,y2,z2). X↠Y est une règle. Quelles lignes doivent aussi exister ?",
+    "hints": [
+      "Relis la définition exacte, puis élimine les affirmations trop fortes.",
+      "Point de contrôle : L’indépendance des ensembles Y et Z pour un X fixé impose toutes les recombinaisons."
+    ],
+    "solution": "(x,y1,z2) et (x,y2,z1).",
+    "explanation": "L’indépendance des ensembles Y et Z pour un X fixé impose toutes les recombinaisons.",
+    "skillIds": ["B6.11"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [67]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "(x,y1,z2) et (x,y2,z1).",
+      "Aucune : ↠ signifie seulement plusieurs valeurs possibles.",
+      "(y1,x,z1) et (y2,x,z2)."
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "FN-Q08",
+    "lessonId": "fn-4fn",
+    "title": "Ne pas séparer les attributs d’un enfant",
+    "type": "quiz",
+    "prompt": "Pourquoi garder prenomEnfant et ageEnfant dans la même table lors de la décomposition personne/enfants/voitures ?",
+    "hints": [
+      "Relis la définition exacte, puis élimine les affirmations trop fortes.",
+      "Point de contrôle : La 4FN sépare des ensembles de faits indépendants."
+    ],
+    "solution": "Parce qu’ils décrivent le même fait enfant ; les séparer comme indépendants fabriquerait des couples prénom/âge.",
+    "explanation": "La 4FN sépare des ensembles de faits indépendants. Les attributs solidaires d’un fait doivent rester liés.",
+    "skillIds": ["B6.12"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [83]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Parce qu’ils décrivent le même fait enfant ; les séparer comme indépendants fabriquerait des couples prénom/âge.",
+      "Parce que deux colonnes ne peuvent jamais être séparées.",
+      "Parce que le prénom identifie chaque personne au monde."
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "ZOO-Q01",
+    "lessonId": "fn-zoo",
+    "title": "SUM(DISTINCT salaire) ?",
+    "type": "quiz",
+    "prompt": "Avec deux gardiens différents de salaire 4000 et trois animaux chacun, quelle formule donne 8000 dans le schéma plat cohérent ?",
+    "hints": [
+      "Relis la définition exacte, puis élimine les affirmations trop fortes.",
+      "Point de contrôle : La première compte les animaux ; la deuxième confond des gardiens ayant le même salaire."
+    ],
+    "solution": "SUM(salaire) sur SELECT DISTINCT gardien,salaire FROM zoo.",
+    "explanation": "La première compte les animaux ; la deuxième confond des gardiens ayant le même salaire. L’identifiant du gardien doit déterminer l’unité de comptage.",
+    "skillIds": ["B6.14"],
+    "sourceRefs": [
+      {
+        "sourceId": "SOL-N",
+        "pages": [8]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "SUM(salaire) directement dans zoo.",
+      "SUM(DISTINCT salaire).",
+      "SUM(salaire) sur SELECT DISTINCT gardien,salaire FROM zoo."
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "ZOO-Q02",
+    "lessonId": "fn-zoo",
+    "title": "COUNT(DISTINCT) et les NULL",
+    "type": "quiz",
+    "prompt": "Un groupe contient origine = NULL et origine = Afrique. COUNT(DISTINCT origine) vaut combien ?",
+    "hints": [
+      "Relis la définition exacte, puis élimine les affirmations trop fortes.",
+      "Point de contrôle : COUNT(DISTINCT) ignore NULL."
+    ],
+    "solution": "1.",
+    "explanation": "COUNT(DISTINCT) ignore NULL. Le contrôle >1 seul ne détecte donc pas ce mélange ; le TP de départ suppose les données non NULL.",
+    "skillIds": ["B6.13"],
+    "sourceRefs": [
+      {
+        "sourceId": "SOL-N",
+        "pages": [5]
+      }
+    ],
+    "origin": "created",
+    "options": ["0.", "1.", "2."],
+    "correctIndex": 1
+  },
+  {
+    "id": "DF-R01",
+    "lessonId": "df-fermetures",
+    "title": "Nombre d’attributs de la fermeture",
+    "type": "result",
+    "prompt": "Avec A→BC, B→E et F→E dans R(A,B,C,D,E,F), combien d’attributs contient A⁺ ? Réponds par un entier.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "4",
+    "explanation": "A⁺={A,B,C,E}. Ni D ni F ne sont produits à partir de ces attributs.",
+    "skillIds": ["B5.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [17]
+      }
+    ],
+    "origin": "created",
+    "acceptedAnswers": ["4", "quatre"]
+  },
+  {
+    "id": "DF-R02",
+    "lessonId": "df-cles",
+    "title": "Compter les clés alternatives",
+    "type": "result",
+    "prompt": "R(A,B,C), A→B et B→A. Combien de clés candidates ? Réponds par un entier.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "2",
+    "explanation": "C est obligatoire car jamais produit. AC et BC couvrent R et sont minimales ; A et B seuls ne donnent pas C.",
+    "skillIds": ["B5.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-DF",
+        "pages": [34]
+      }
+    ],
+    "origin": "created",
+    "acceptedAnswers": ["2", "deux"]
+  },
+  {
+    "id": "FN-R01",
+    "lessonId": "fn-dm",
+    "title": "Combien de tuples croisés ?",
+    "type": "result",
+    "prompt": "Pour un cours, 4 professeurs et 3 livres sont indépendants. Combien de lignes dans Cours,Prof,Livre ? Réponds par un entier.",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "12",
+    "explanation": "L’indépendance impose le produit cartésien 4 × 3 pour ce cours, donc 12 lignes.",
+    "skillIds": ["B6.11"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [67, 69]
+      }
+    ],
+    "origin": "created",
+    "acceptedAnswers": ["12", "douze"]
+  },
+  {
+    "id": "FN-R02",
+    "lessonId": "fn-sans-perte",
+    "title": "Compter les lignes parasites",
+    "type": "result",
+    "prompt": "Deux employés de même âge ont deux services distincts. Après projection sur (Num,Age) et (Age,Service), la jointure donne 4 lignes. Combien sont parasites si la relation originale avait 2 lignes ?",
+    "hints": [
+      "Écris les règles applicables avant de chercher la réponse.",
+      "Vérifie ta proposition par fermetures ou par une extension de deux lignes."
+    ],
+    "solution": "2",
+    "explanation": "Chaque employé est associé aux deux services. Il y a deux associations originales et deux associations inventées.",
+    "skillIds": ["B6.02"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-FN",
+        "pages": [12, 13]
+      }
+    ],
+    "origin": "created",
+    "acceptedAnswers": ["2", "deux"]
+  }
+]

@@ -1,0 +1,52 @@
+export const meta = {"id": "exam-sql", "moduleId": "examen", "title": "Ancien examen : SQL, sémantique et DDL", "summary": "Prédire des fenêtres et déduire uniquement les DF garanties par un DDL.", "objectives": ["Prédire des fenêtres et déduire uniquement les DF garanties par un DDL.", "Justifier les résultats sans confondre données choisies et annexe originale."], "sourceRefs": [{"sourceId": "EX", "pages": [2]}], "skillIds": ["B3.04", "B3.05", "B3.07", "B3.10", "B2.03", "B5.01", "B5.08"], "order": 1}
+
+## Ancien examen : SQL, sémantique et DDL
+
+## Provenance et limites
+
+La copie contient des questions visibles mais l'annexe SQL manque. Les requêtes et contraintes ci-dessous sont une **donnée choisie pour l’entraînement**, pas une restitution de l'original. Nous ne déduisons aucune requête D certaine du commentaire manuscrit. La page imprimée 3 manque aussi ; elle ne doit pas être confondue avec la page PDF 3, qui contient une autre page imprimée. Les consignes de l'ancienne évaluation restent historiques.
+
+## Prédire avant d'exécuter
+
+Une fenêtre conserve les lignes détaillées. Le jeu course du site est pédagogique : consulter les tables réellement affichées avant de remplir un résultat. Exemple de demande : conserver les employés, afficher le total global, celui de leur département et leur rang salarial.
+
+```sql
+SELECT e_id,ename,salaire,
+ SUM(salaire) OVER() AS total_global,
+ SUM(salaire) OVER(PARTITION BY deptno) AS total_dep,
+ RANK() OVER(ORDER BY salaire DESC NULLS LAST) AS rang
+FROM emp;
+```
+
+Dans le jeu course de base choisi, Ana et Ben gagnent 2500 et 3500 : leur total départemental est 6000. Dina et Eli gagnent chacun 5500 : ils partagent le rang 1 ; le salaire suivant a le rang 3. Les six salaires connus totalisent 22500 ; le salaire NULL ne contribue pas à SUM. Chloé conserve sa ligne mais le total de sa partition sans salaire connu vaut NULL. Ces nombres illustrent le jeu de base, pas les jeux alternatifs de vérification.
+
+## Expliquer une corrélation
+
+```sql
+SELECT e.e_id,e.ename,e.salaire
+FROM emp e
+WHERE e.salaire > (
+ SELECT AVG(q.salaire) FROM emp q WHERE q.deptno=e.deptno
+);
+```
+
+Pour chaque employé, la sous-requête calcule la moyenne des salaires connus du même département. La comparaison stricte exclut les salaires égaux à cette moyenne. Un salaire NULL ou une moyenne NULL ne produit pas de comparaison vraie. Avec l'égalité ordinaire, deux numéros de département NULL ne se rejoignent pas.
+
+## DDL et dépendances : un autre cas choisi
+
+```sql
+CREATE TABLE dept_ex (
+ deptno INTEGER PRIMARY KEY,
+ dname VARCHAR(40) UNIQUE NOT NULL
+);
+CREATE TABLE emp_ex (
+ e_id INTEGER PRIMARY KEY,
+ ename VARCHAR(40) UNIQUE NOT NULL,
+ deptno INTEGER REFERENCES dept_ex(deptno),
+ taux INTEGER, salaire DECIMAL(12,2), commission DECIMAL(12,2)
+);
+```
+
+Ces contraintes sont choisies pour cet exercice ; le schéma physique de l'atelier course n'est pas annoncé identique. Les clés de emp_ex sont e_id et ename ; chacune détermine toutes ses colonnes. Dans dept_ex, deptno et dname sont deux clés. Une FK garantit une référence valide pour une valeur non NULL ; elle ne dit pas qu'un département possède un seul employé. Il serait faux d'en tirer deptno déterminant e_id.
+
+**Vérification :** expliquer la population d'une moyenne, le sort des NULL et l'origine de chaque DF avant de cocher l'acquis.

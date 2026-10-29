@@ -1,0 +1,29 @@
+export const meta = {"id": "sql-pivot", "moduleId": "sql", "title": "PIVOT : faire passer les valeurs en colonnes", "summary": "Lire le regroupement implicite et écrire un pivot Oracle.", "objectives": ["Lire le regroupement implicite et écrire un pivot Oracle.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [25, 26, 27, 28, 29, 30, 31, 32, 33, 34]}], "skillIds": ["B1.06", "B1.07"], "order": 4}
+
+## PIVOT : faire passer les valeurs en colonnes
+
+PIVOT transforme certaines valeurs d'une colonne en nouvelles colonnes. Il faut choisir un agrégat, la colonne pivotée et les valeurs à afficher. Les autres colonnes de la source forment le regroupement implicite.
+
+```sql
+-- Forme Oracle enseignée : une ligne par status
+SELECT * FROM (
+ SELECT status,category_name,order_id FROM commande
+) PIVOT (
+ COUNT(order_id)
+ FOR category_name IN ('CPU' AS cpu,'Video Card' AS video)
+);
+```
+
+`COUNT(order_id)` consomme l'identifiant, `FOR category_name` consomme la catégorie, et il reste status : une ligne par statut. Si l'on conservait namecli dans la source sans l'utiliser, chaque couple statut/client deviendrait un groupe. Si COUNT(*) est utilisé, il faut retirer l'identifiant de la source pour éviter un groupe par commande.
+
+Pour inverser le tableau, mettre status après FOR, lister les statuts dans IN et laisser category_name comme regroupement.
+
+```sql
+SELECT * FROM (SELECT category_name,status FROM commande)
+PIVOT(COUNT(*) FOR status IN
+ ('Canceled' AS canceled,'Pending' AS pending,'Shipped' AS shipped));
+```
+
+Avec plusieurs agrégats nommés `COUNT(order_id) AS nb_cmd, SUM(order_value) AS val` et une valeur `'CPU' AS cpu`, Oracle produit les colonnes `CPU_NB_CMD` et `CPU_VAL`. Un FOR portant sur `(category_name,namecli)` pivote sur des couples explicitement listés.
+
+**À retenir :** compter les colonnes d'entrée non consommées avant de prédire les lignes de sortie. La prise en charge exacte de PIVOT dans DuckDB doit être vérifiée ; le texte Oracle reste un exercice de dialecte guidé.

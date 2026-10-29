@@ -1,0 +1,52 @@
+export const meta = {
+  "id": "fn-preservation",
+  "moduleId": "normalisation",
+  "title": "Préserver les dépendances",
+  "summary": "Sans perte de contenu et sans perte de contraintes sont deux garanties différentes.",
+  "objectives": [
+    "Projeter les DF dans les morceaux",
+    "Tester leur union dans les deux sens",
+    "Montrer une contrainte perdue avec un exemple"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "C-FN",
+      "pages": [
+        18,
+        19,
+        20,
+        21,
+        22,
+        62,
+        63
+      ]
+    }
+  ],
+  "skillIds": [
+    "B6.04",
+    "B6.14"
+  ],
+  "order": 3
+}
+
+## Peut-on contrôler les contraintes dans chaque table ?
+
+Une décomposition préserve les DF si l'union des dépendances projetées sur les morceaux implique toutes les règles initiales. Autrement dit, leur fermeture est la même. On peut alors imposer les contraintes localement au lieu de vérifier une jointure après chaque écriture.
+
+## Exemple déroulé : COMPAGNIE
+
+Les règles sont VOL → AVION et AVION → PILOTE. On propose `R1(VOL,AVION)` et `R2(VOL,PILOTE)`.
+
+La décomposition est **sans perte de contenu** : leur intersection VOL détermine R1. Mais elle perd AVION → PILOTE. Les contraintes locales VOL → AVION et VOL → PILOTE ne la déduisent pas : AVION⁺ reste AVION.
+
+On peut affecter FOK au vol 400 dans R1, pendant que R2 garde le pilote ROUSSEL pour 400 et HARDY pour 102. La jointure donne deux pilotes pour le même avion. Chaque table respecte pourtant sa clé VOL.
+
+La décomposition `Vol(VOL,AVION)` et `Avion(AVION,PILOTE)` préserve les deux DF et le contenu. Une FK lie l'avion d'un vol à un avion existant.
+
+## Si une DF est perdue
+
+« Perdue » signifie qu'elle n'est plus garantie par les contrôles locaux, pas qu'il devient impossible de la faire respecter. Il faut alors une vérification sur jointure, un mécanisme transactionnel approprié ou, selon le SGBD, une vue matérialisée avec unicité et rafraîchissement compatible. Le cours présente ce principe ; ce n'est pas une fonctionnalité universelle à exécuter telle quelle dans DuckDB.
+
+## À toi de justifier
+
+Fais deux colonnes pour une décomposition : contenu, puis DF. Dans chacune, écris le test et sa conclusion. Une jointure qui reproduit aujourd'hui les données ne démontre pas que toutes les mises à jour futures respecteront les contraintes métier.

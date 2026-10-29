@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.vercel/
+*.local
+.DS_Store
+*.pdf
+*.png
+coverage/
+public/duckdb/
+public/datasets/search-index.json

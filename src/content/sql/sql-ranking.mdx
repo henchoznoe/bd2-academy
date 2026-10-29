@@ -1,0 +1,25 @@
+export const meta = {"id": "sql-ranking", "moduleId": "sql", "title": "Classements : RANK, DENSE_RANK, ROW_NUMBER, NTILE", "summary": "Choisir le traitement des ex æquo et la population du classement.", "objectives": ["Choisir le traitement des ex æquo et la population du classement.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [124, 125, 127, 128]}], "skillIds": ["B3.10"], "order": 17}
+
+## Classements : RANK, DENSE_RANK, ROW_NUMBER, NTILE
+
+Les fonctions de classement utilisent ORDER BY dans OVER. PARTITION BY permet un classement distinct par groupe.
+
+| Valeurs décroissantes | 100 | 90 | 90 | 80 |
+|---|---|---|---|---|
+| RANK | 1 | 2 | 2 | 4 |
+| DENSE_RANK | 1 | 2 | 2 | 3 |
+| ROW_NUMBER | 1 | 2 | 3 | 4 |
+
+RANK laisse des trous correspondant aux lignes à égalité. DENSE_RANK compte les niveaux de valeurs distinctes. ROW_NUMBER attribue un numéro différent à chaque ligne ; un critère supplémentaire est nécessaire pour choisir de façon déterministe l'ordre des ex æquo.
+
+```sql
+SELECT ename,deptno,salaire,
+ RANK() OVER(PARTITION BY deptno ORDER BY salaire DESC) AS rang
+FROM emp WHERE deptno IS NOT NULL;
+```
+
+NTILE(n) répartit les lignes ordonnées en n paquets aussi équilibrés que possible. Dix lignes avec NTILE(3) donnent quatre lignes au premier paquet et trois aux deux suivants. Ce n'est pas une répartition de valeurs distinctes : des ex æquo peuvent être séparés.
+
+Filtrer les films de 1960 ou après avant le classement ne donne pas le même rang que classer tous les films puis ne montrer que ceux de 1960 ou après. Pour le second besoin, calculer d'abord dans une CTE et filtrer ensuite.
+
+**À retenir :** préciser le sens du tri, les partitions, les ex æquo et la population. « Les cinq premiers rangs » peut désigner plus de cinq lignes.

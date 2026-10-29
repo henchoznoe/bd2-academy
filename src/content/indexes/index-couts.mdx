@@ -1,0 +1,23 @@
+export const meta = {"id": "index-couts", "moduleId": "btree", "title": "Estimer les entrées/sorties et le clustering factor", "summary": "Comparer scan, plage clustered, lookup et index recouvrant.", "objectives": ["Comparer scan, plage clustered, lookup et index recouvrant.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-IDX", "pages": [81, 82, 83, 84, 85]}], "skillIds": ["B8.07", "B8.08", "B8.10", "B8.12", "B8.13"], "order": 9};
+
+Dans l’exercice TITRES, la table compte 1 000 000 lignes sur 135 000 pages et 190 000 lignes vérifient le prix entre 20 et 30. Un index recouvrant possède 35 700 pages feuilles. On annonce le modèle : cache froid, distribution supposée uniforme dans la plage et coût de descente h compté séparément.
+
+```text
+1. Sans index : 135 000 pages de table.
+2. Clustered sur prix : environ 190 000/(10*0,75)=25 334 pages + descente.
+   Variante fondée sur taille observée : 0,19*135 000=25 650 pages.
+3. Secondaire sur prix : descente + feuilles de plage + lookups de données.
+   Hypothèse pessimiste du cours : jusqu’à 190 000 accès de donnée.
+4. Couvrant (prix,titre) : environ 0,19*35 700=6 783 feuilles + descente.
+5. Couvrant (titre,prix) : environ 35 700 feuilles, car prix n’est pas premier.
+```
+
+Les deux estimations clustered diffèrent parce que dix lignes à 75 pour cent donneraient environ 133 334 pages, alors que l’énoncé annonce 135 000 pages mesurées. Signaler cette approximation rend le raisonnement vérifiable.
+
+L’index prix,titre est le meilleur candidat du modèle pour projeter seulement titre : filtre et projection sont dans l’index. Pour `SELECT *`, si d’autres colonnes sont absentes, les cas 4 et 5 nécessitent aussi les pages de données. L’organisation clustered sur prix peut alors devenir préférable, voire le scan si le coût des lookups est élevé.
+
+### Clustering factor Oracle
+
+Cette statistique estime les changements de blocs de table lorsqu’on suit les entrées d’un index. Proche du nombre de blocs : les lignes voisines de l’index sont bien regroupées. Proche du nombre de lignes : elles sont dispersées. Elle aide surtout pour les plages nécessitant les données.
+
+Reconstruire seulement l’index remet ses pages en ordre mais ne réordonne pas le heap : cela ne répare pas automatiquement son clustering factor. Des accès physiques répétés vers une même page peuvent être évités par le cache ; un nombre de lignes n’est donc pas un nombre certain de lectures disque.

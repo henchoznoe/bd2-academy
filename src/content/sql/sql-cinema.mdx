@@ -1,0 +1,21 @@
+export const meta = {"id": "sql-cinema", "moduleId": "sql", "title": "TP cinéma : méthode et jeux de données", "summary": "Résoudre toutes les questions du TP en séparant données originales et reconstitution.", "objectives": ["Résoudre toutes les questions du TP en séparant données originales et reconstitution.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "TP-L", "pages": [1, 2, 3, 4, 5, 6, 7]}, {"sourceId": "SOL-L", "pages": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}], "skillIds": ["B1.01", "B1.02", "B1.04", "B2.04", "B2.05", "B3.01", "B3.08", "B3.10", "B3.12"], "order": 21}
+
+## TP cinéma : méthode et jeux de données
+
+Le TP relie deux relations : un film possède plusieurs séances, chaque séance référence exactement un film. Le tarif et le nombre de billets appartiennent à la séance. Son chiffre d'affaires est donc `SNC_BILLET * SNC_TARIF`, puis on additionne si la demande porte sur un jour.
+
+```sql
+SELECT f.FLM_TITRE,s.SNC_DATE,s.SNC_BILLET,
+ s.SNC_BILLET*s.SNC_TARIF AS ca_seance
+FROM T_FILM_FLM f JOIN T_SEANCE_SNC s ON s.FLM_ID=f.FLM_ID;
+```
+
+Les données interactives du site sont une **reconstitution pédagogique** : elles permettent d'exécuter les mêmes idées mais ne reproduisent pas les 40 films et 1398 séances du jeu original. Les nombres du PDF ne sont donc pas les résultats attendus de ce jeu. Chaque correction doit être comprise sur le schéma et les données effectivement affichés.
+
+Pour chaque question, procéder en quatre étapes : écrire la granularité voulue (film, réalisateur, séance ou jour), identifier la population, calculer l'agrégat ou le rang, puis appliquer le filtre au bon niveau. Ajouter un tri final uniquement pour l'affichage demandé.
+
+Les meilleurs jours sont calculés après agrégation du chiffre d'affaires. Les classements avant/après 1960 imposent de décider si le filtre précède ou suit le classement. Pour un cumul de journée, la partition est la date et l'ordre l'heure ; des séances simultanées nécessitent une décision explicite entre ROWS et RANGE.
+
+Les mesures du corrigé Oracle ne sont pas des mesures de DuckDB. Observer ici le moteur du navigateur reste utile mais ne démontre pas un gain identique sur Oracle.
+
+**À retenir :** les solutions du TP sont réparties question par question dans l'atelier Cinéma ; les exercices guidés conservent les nuances Oracle, les exercices exécutables affichent leur adaptation.

@@ -1,0 +1,1780 @@
+[
+  {
+    "id": "LMD-C01",
+    "lessonId": "sql-case",
+    "title": "Départements et piège NULL",
+    "type": "sql",
+    "prompt": "Afficher ename et dept_name : Recherche si deptno=20, Enseignement si deptno=10, Autre sinon. Expliquer pourquoi WHEN NULL dans un CASE simple ne traite pas un département inconnu. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "CASE simple compare une seule expression à plusieurs valeurs.",
+      "Partir de CASE deptno ; placer les deux numéros de département dans des WHEN et prévoir ELSE."
+    ],
+    "solution": "SELECT ename, CASE deptno WHEN 20 THEN 'Recherche' WHEN 10 THEN 'Enseignement' ELSE 'Autre' END AS dept_name FROM emp;",
+    "explanation": "Le CASE simple compare par égalité. Une comparaison à NULL est inconnue ; IS NULL nécessite une condition complète dans un CASE recherché.",
+    "skillIds": ["B1.01", "B1.02"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [7, 8, 9, 10]
+      }
+    ],
+    "origin": "course",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "id": "LMD-C02",
+    "lessonId": "sql-case",
+    "title": "Taux d’occupation",
+    "type": "sql",
+    "prompt": "Afficher ename et occupation : Temps partiel pour un taux strictement entre 0 et 100, Plein temps pour 100, Taux inconnu pour NULL et Taux à contrôler sinon. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Séparer le taux inconnu des valeurs numériques ; lire les bornes strictes.",
+      "Un CASE recherché peut tester taux > 0 AND taux < 100, puis traiter 100 et IS NULL."
+    ],
+    "solution": "SELECT ename, CASE WHEN taux > 0 AND taux < 100 THEN 'Temps partiel' WHEN taux=100 THEN 'Plein temps' WHEN taux IS NULL THEN 'Taux inconnu' ELSE 'Taux à contrôler' END AS occupation FROM emp;",
+    "explanation": "Les bornes 0 et 100 ne sont pas dans l’intervalle strict ; 100 possède sa propre branche. Zéro, taux négatif et supérieur à 100 vont au contrôle.",
+    "skillIds": ["B1.01", "B1.02"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [14, 15, 16]
+      }
+    ],
+    "origin": "course",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "id": "LMD-C03",
+    "lessonId": "sql-pivot",
+    "title": "Pivoter les statuts",
+    "type": "guided",
+    "prompt": "Avec commande(order_id,category_name,status,order_value,namecli), expliquer les colonnes de SELECT * FROM commande PIVOT(COUNT(order_id) FOR status IN ('Canceled','Pending','Shipped')).",
+    "hints": [
+      "Faire l’inventaire de toutes les colonnes de commande, pas seulement celles affichées dans l’exemple.",
+      "Rayer order_id consommé par COUNT et status consommé par FOR ; les colonnes restantes définissent les groupes."
+    ],
+    "solution": "Les colonnes non consommées sont category_name, order_value et namecli : elles forment ensemble le regroupement implicite. Trois colonnes de comptes sont ajoutées, une par statut. Si une ligne par catégorie est souhaitée, réduire d’abord la source à category_name,status,order_id.",
+    "explanation": "Un PIVOT ne regroupe pas uniquement selon la colonne que l’on imagine : toute colonne source non consommée participe au groupe.",
+    "skillIds": ["B1.06"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [27, 28]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "LMD-C04",
+    "lessonId": "sql-pivot",
+    "title": "Deux agrégats et noms de colonnes",
+    "type": "guided",
+    "prompt": "Analyser le PIVOT Oracle COUNT(order_id) nb_cmd, SUM(order_value) val FOR category_name IN ('CPU' cpu,'Video Card' videocard). Quelle population par ligne et quelles colonnes ?",
+    "hints": [
+      "Avec plusieurs agrégats, chaque valeur pivotée crée plusieurs colonnes.",
+      "Combiner l’alias CPU avec NB_CMD puis VAL, et chercher les colonnes sources qui restent après consommation."
+    ],
+    "solution": "Sur la source complète commande, les groupes sont (status,namecli). Les colonnes créées sont CPU_NB_CMD, CPU_VAL, VIDEOCARD_NB_CMD, VIDEOCARD_VAL. Une ligne donne les nombres et valeurs de commandes par catégorie pour chaque couple statut/client.",
+    "explanation": "order_id et order_value sont consommés par les agrégats, category_name par FOR. Il reste status et namecli. Un compte de catégorie absente vaut zéro ; sa somme peut valoir NULL.",
+    "skillIds": ["B1.06", "B1.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [29, 30, 31, 32]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "LMD-C05",
+    "lessonId": "sql-pivot",
+    "title": "Pivoter un couple catégorie/client",
+    "type": "guided",
+    "prompt": "Analyser COUNT(order_id) nb_cmd, SUM(order_value) val FOR (category_name,namecli) IN (('CPU','c1') cpu_c1,('CPU','c2') cpu_c2).",
+    "hints": [
+      "Le FOR porte ici sur un couple de valeurs.",
+      "Rayer category_name et namecli ensemble, puis combiner les alias de couple avec les alias d’agrégats."
+    ],
+    "solution": "Une ligne par status ; colonnes CPU_C1_NB_CMD, CPU_C1_VAL, CPU_C2_NB_CMD, CPU_C2_VAL. Les couples CPU/c1 et CPU/c2 sont comptés et additionnés séparément.",
+    "explanation": "Les deux colonnes du FOR sont consommées par le pivot, les deux colonnes de mesures par les agrégats. status reste le seul groupe.",
+    "skillIds": ["B1.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [33, 34]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "LMD-C06",
+    "lessonId": "sql-null-functions",
+    "title": "Budgets constants",
+    "type": "sql",
+    "prompt": "Afficher dept_id et budget courant converti en texte ; remplacer par Budget constant s’il égale le précédent. Exclure les budgets courants inconnus. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "NULLIF et COALESCE n’ont pas le même rôle ; commencer par l’égalité des budgets.",
+      "Transformer le budget identique en NULL, convertir le résultat numérique en texte, puis ajouter la valeur de remplacement."
+    ],
+    "solution": "SELECT dept_id, COALESCE(CAST(NULLIF(budgetCourant,budgetPrec) AS VARCHAR),'Budget constant') AS budget FROM budgets WHERE budgetCourant IS NOT NULL;",
+    "explanation": "NULLIF neutralise l’égalité ; COALESCE remplace le NULL obtenu. Le filtre empêche de confondre budget inconnu et budget constant. CAST adapte TO_CHAR de la version Oracle.",
+    "skillIds": ["B1.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [41]
+      }
+    ],
+    "origin": "course",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "id": "LMD-C07",
+    "lessonId": "sql-scalar-subquery",
+    "title": "Corriger la cardinalité scalaire",
+    "type": "sql",
+    "prompt": "Une table produit possède plusieurs lignes. Pourquoi WHERE prix >= (SELECT prix FROM produit) est-il erroné ? Écrire une requête affichant tous les produits au prix maximal. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "La sous-requête doit devenir une seule valeur tout en conservant les ex æquo dans la requête externe.",
+      "Calculer le prix maximal dans la sous-requête puis comparer chaque prix à cette valeur."
+    ],
+    "solution": "SELECT nom,prix FROM produit WHERE prix=(SELECT MAX(prix) FROM produit);",
+    "explanation": "La sous-requête initiale rend plusieurs lignes. MAX produit une seule valeur ; l’égalité conserve tous les ex æquo maximaux.",
+    "skillIds": ["B2.01", "B2.02"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [45, 46, 47]
+      }
+    ],
+    "origin": "course",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "id": "LMD-C08",
+    "lessonId": "sql-derived-lateral",
+    "title": "Top deux animaux par propriétaire",
+    "type": "sql",
+    "prompt": "Pour chaque personne possédant des animaux, afficher personne et animal pour ses deux animaux les plus âgés. Départager les égalités d’âge par id croissant. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Le top deux doit recommencer pour chaque personne ; un LIMIT global serait faux.",
+      "Dans LATERAL, filtrer proprioId sur l’id externe avant de trier âge décroissant et de limiter."
+    ],
+    "solution": "SELECT p.id AS personne,a.id AS animal FROM personne p,LATERAL (SELECT id FROM animal WHERE proprioId=p.id ORDER BY age DESC,id LIMIT 2) a;",
+    "explanation": "LATERAL peut référencer p.id. LIMIT 2 est l’adaptation DuckDB ; Oracle utilise FETCH FIRST 2 ROWS ONLY. Une personne sans animal est absente de cette jointure interne.",
+    "skillIds": ["B2.03", "B2.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [52, 53]
+      }
+    ],
+    "origin": "course",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "id": "LMD-C09",
+    "lessonId": "sql-cte",
+    "title": "Moyenne des charges",
+    "type": "sql",
+    "prompt": "Avec des CTE, afficher dname et total des départements représentés dans emp dont la somme des salaires dépasse la moyenne des sommes par département. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "La moyenne demandée porte sur des charges de départements, pas sur des salaires individuels.",
+      "Première CTE : une somme par deptno. Deuxième étape : moyenne de la colonne de sommes."
+    ],
+    "solution": "WITH charges AS (SELECT deptno,SUM(salaire) AS total FROM emp GROUP BY deptno), moy AS (SELECT AVG(total) AS valeur FROM charges) SELECT d.dname,c.total FROM charges c JOIN dept d USING(deptno) WHERE c.total>(SELECT valeur FROM moy);",
+    "explanation": "On compare une charge de département à la moyenne de ces charges. La moyenne de tous les salaires est une autre statistique.",
+    "skillIds": ["B2.05", "B2.06"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [56, 57, 58, 59, 60]
+      }
+    ],
+    "origin": "course",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "id": "LMD-C10",
+    "lessonId": "sql-merge",
+    "title": "Prédire un MERGE",
+    "type": "guided",
+    "prompt": "Destination (1,one),(3,three),(5,five), source (2,TWO),(3,THREE). MERGE sur id, mise à jour du texte si trouvé, insertion sinon : donner la destination finale et le sort des lignes 1 et 5.",
+    "hints": [
+      "Parcourir les lignes de la source et tester ON pour chacune.",
+      "La source 2 ne trouve pas de destination ; la source 3 en trouve une. Demander ensuite si une suppression a été prévue."
+    ],
+    "solution": "(1,'one'), (2,'TWO'), (3,'THREE'), (5,'five'). Les lignes 1 et 5 restent présentes ; la branche NOT MATCHED se rapporte à une ligne de source sans destination, pas à une ligne de destination absente de la source.",
+    "explanation": "La correspondance se teste avec ON. Aucun DELETE des lignes de destination non présentes dans la source n’a été demandé.",
+    "skillIds": ["B2.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [63, 64]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "LMD-C11",
+    "lessonId": "sql-pagination",
+    "title": "Positions et ex æquo",
+    "type": "guided",
+    "prompt": "ORDER BY e_id OFFSET 5 ROWS FETCH FIRST 10 ROWS ONLY : quelles positions sont choisies ? Que change WITH TIES ?",
+    "hints": [
+      "OFFSET compte les lignes ignorées avant FETCH.",
+      "Dessiner les positions 1 à 16, barrer les cinq premières puis en entourer dix."
+    ],
+    "solution": "Les positions 6 à 15 si elles existent. WITH TIES ajoute les lignes à égalité avec la dernière retenue sur toutes les expressions de tri ; avec un e_id unique, il n’ajoute aucun ex æquo.",
+    "explanation": "OFFSET compte les lignes ignorées, pas le premier numéro à afficher. Les positions n’ont un sens reproductible qu’avec un tri.",
+    "skillIds": ["B2.08", "B2.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [69, 70, 71, 72]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "LMD-C12",
+    "lessonId": "sql-rollup-cube",
+    "title": "Totaux par animal, lieu et global",
+    "type": "sql",
+    "prompt": "Sur venteAnim, produire animal,lieu,quantite avec les détails animal/lieu, sous-totaux par animal et total général. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Les niveaux demandés suivent une hiérarchie animal puis lieu.",
+      "Développer ROLLUP(animal,lieu) en trois ensembles et vérifier la présence du groupe vide."
+    ],
+    "solution": "SELECT animal,lieu,SUM(qte) AS quantite FROM venteAnim GROUP BY ROLLUP(animal,lieu);",
+    "explanation": "ROLLUP crée (animal,lieu),(animal),(). CUBE ajouterait le niveau (lieu). NULL dans une colonne de total ne signifie pas nécessairement donnée inconnue.",
+    "skillIds": ["B3.01", "B3.02", "B3.03"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [76, 80, 81, 82, 83, 84, 85, 87, 88, 89, 90, 91, 92]
+      }
+    ],
+    "origin": "course",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "id": "LMD-C13",
+    "lessonId": "sql-windows",
+    "title": "Total global et départemental",
+    "type": "sql",
+    "prompt": "Afficher id,salaire,total,total_dep sur salaires. Conserver chaque ligne, avec le total global et celui de son département. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Il faut garder les employés détaillés, donc éviter un GROUP BY qui les fusionne.",
+      "Écrire un SUM avec OVER vide et un autre avec une partition sur idDep."
+    ],
+    "solution": "SELECT id,salaire,SUM(salaire) OVER() AS total,SUM(salaire) OVER(PARTITION BY idDep) AS total_dep FROM salaires;",
+    "explanation": "Sans GROUP BY, les lignes détaillées restent présentes. PARTITION BY divise seulement la population de calcul.",
+    "skillIds": ["B3.04", "B3.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [100, 101, 102]
+      }
+    ],
+    "origin": "course",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "id": "LMD-C14",
+    "lessonId": "sql-windows",
+    "title": "GROUP BY ou OVER ?",
+    "type": "guided",
+    "prompt": "Six employés sont répartis dans trois départements. Comparer le nombre de lignes de SUM(salaire) OVER(PARTITION BY idDep) avec SUM(salaire) GROUP BY idDep.",
+    "hints": [
+      "Distinguer population de calcul et nombre de lignes produites.",
+      "Dessiner une ligne par employé ; OVER ajoute une colonne à ces lignes, GROUP BY les fusionne par département."
+    ],
+    "solution": "OVER renvoie six lignes, une par employé. GROUP BY renvoie trois lignes, une par département. Les sommes de groupe peuvent avoir les mêmes valeurs, mais leur niveau de détail diffère.",
+    "explanation": "L’agrégation réduit les lignes ; le fenêtrage conserve leur identité.",
+    "skillIds": ["B3.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [104, 105]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "LMD-C15",
+    "lessonId": "sql-window-frames",
+    "title": "Cumul par compte",
+    "type": "sql",
+    "prompt": "Sur t, afficher compte,id,val,solde cumulé par compte dans l’ordre des id. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Le cumul redémarre au changement de compte et s’arrête à la position courante.",
+      "Définir PARTITION BY compte, ORDER BY id et un cadre ROWS commençant au début de la partition."
+    ],
+    "solution": "SELECT compte,id,val,SUM(val) OVER(PARTITION BY compte ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS solde FROM t ORDER BY compte,id;",
+    "explanation": "Le cumul redémarre à chaque compte. ROWS s’arrête à la position courante ; un RANGE sur des id répétés pourrait inclure tous leurs pairs.",
+    "skillIds": ["B3.06", "B3.07", "B3.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [110, 111, 112, 113, 114, 115]
+      }
+    ],
+    "origin": "course",
+    "datasetId": "course",
+    "ordered": true,
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "id": "LMD-C16",
+    "lessonId": "sql-window-order",
+    "title": "Cumul des totaux mensuels",
+    "type": "sql",
+    "prompt": "Pour les années 2010 à 2015, afficher annee,mois,total_mois,cumul des ventes depuis le début de l’année, triés par année et mois. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "La fenêtre travaille ici sur les mois déjà agrégés.",
+      "Construire d’abord une somme par année/mois, puis sommer ces sommes dans une fenêtre par année."
+    ],
+    "solution": "SELECT annee,mois,SUM(prix) AS total_mois,SUM(SUM(prix)) OVER(PARTITION BY annee ORDER BY mois ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumul FROM vente WHERE annee BETWEEN 2010 AND 2015 GROUP BY annee,mois ORDER BY annee,mois;",
+    "explanation": "Le GROUP BY produit d’abord les totaux mensuels. La fenêtre cumule ensuite ces lignes regroupées.",
+    "skillIds": ["B3.08", "B3.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [116, 117, 118, 119]
+      }
+    ],
+    "origin": "course",
+    "datasetId": "course",
+    "ordered": true,
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "id": "LMD-C17",
+    "lessonId": "sql-ranking",
+    "title": "Comparer trois classements",
+    "type": "sql",
+    "prompt": "Sur emp, afficher ename,salaire,rang,rang_dense,numero : ordre décroissant de salaire, et e_id croissant pour départager uniquement ROW_NUMBER. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "RANK et DENSE_RANK doivent partager le même salaire pour reconnaître les égalités.",
+      "Ajouter e_id seulement dans l’ordre de ROW_NUMBER pour départager les employés sans supprimer les ex æquo salariaux des deux rangs."
+    ],
+    "solution": "SELECT ename,salaire,RANK() OVER(ORDER BY salaire DESC) AS rang,DENSE_RANK() OVER(ORDER BY salaire DESC) AS rang_dense,ROW_NUMBER() OVER(ORDER BY salaire DESC,e_id) AS numero FROM emp;",
+    "explanation": "RANK et DENSE_RANK conservent les ex æquo salariaux. Ajouter e_id à leur tri supprimerait cette égalité et changerait le besoin. ROW_NUMBER nécessite ce départage pour une réponse déterministe.",
+    "skillIds": ["B3.10", "B3.11"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [124, 125, 126, 127, 128]
+      }
+    ],
+    "origin": "course",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "id": "LMD-C18",
+    "lessonId": "sql-recursion",
+    "title": "Villes atteignables et cycles",
+    "type": "sql",
+    "prompt": "Dans le moteur du navigateur, donner chaque ville_arr atteignable depuis Genève, sans doublon, directement ou avec escales. Le graphe peut contenir des cycles. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "L’ancre contient les liaisons directes ; le pas récursif prolonge une liaison atteinte par un vol.",
+      "Joindre l’arrivée du chemin au départ du vol ; pour les seuls couples atteignables, UNION évite de réintroduire les mêmes couples."
+    ],
+    "solution": "WITH RECURSIVE chemins(ville_dep,ville_arr) AS (SELECT ville_dep,ville_arr FROM vol UNION SELECT c.ville_dep,v.ville_arr FROM chemins c JOIN vol v ON c.ville_arr=v.ville_dep) SELECT DISTINCT ville_arr FROM chemins WHERE ville_dep='Genève';",
+    "explanation": "UNION évite de réintroduire les mêmes couples de connexions. Oracle demande une autre forme : WITH sans RECURSIVE et UNION ALL, avec contrôle de cycle explicite. Une ville de départ peut être retrouvée si un cycle y ramène.",
+    "skillIds": ["B4.01", "B4.02", "B4.03", "B4.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [133, 134, 135, 136, 137, 138]
+      }
+    ],
+    "origin": "course",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "id": "LMD-C19",
+    "lessonId": "sql-multitable",
+    "title": "INSERT ALL versus FIRST",
+    "type": "guided",
+    "prompt": "Branches sal>=5000 vers rich, sal>=200 vers medium, sal>0 vers poor. Pour sal=5000, combien d’insertions avec ALL puis FIRST ?",
+    "hints": [
+      "ALL et FIRST ne décident pas du nombre de branches de la même façon.",
+      "Pour 5000, cocher séparément les trois comparaisons, puis appliquer la règle de chaque instruction."
+    ],
+    "solution": "ALL : trois insertions. FIRST : une insertion, vers rich, puisque c’est la première branche vraie. Pour une valeur NULL, aucune de ces comparaisons n’est vraie et, sans ELSE, il n’y a pas d’insertion.",
+    "explanation": "ALL n’est pas un CASE de résultat unique ; toutes les branches applicables sont exécutées.",
+    "skillIds": ["B4.A1"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [67]
+      }
+    ],
+    "origin": "course"
+  },
+  {
+    "id": "SQL-Q01",
+    "lessonId": "sql-case",
+    "title": "Premier WHEN vrai",
+    "type": "quiz",
+    "prompt": "Pour un salaire de 5500, un CASE teste d’abord salaire>=3000 → Moyen, puis salaire>=5000 → Élevé. Quel résultat ?",
+    "hints": [
+      "L’ordre des branches compte, même si plusieurs conditions pourraient être vraies.",
+      "Tester la première comparaison pour 5500 avant de regarder la seconde."
+    ],
+    "solution": "Moyen",
+    "explanation": "La première condition est vraie ; la branche suivante ne change pas le résultat.",
+    "skillIds": ["B1.01"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [17]
+      }
+    ],
+    "origin": "created",
+    "options": ["Moyen", "Élevé", "Les deux", "NULL"],
+    "correctIndex": 0
+  },
+  {
+    "id": "SQL-Q02",
+    "lessonId": "sql-case",
+    "title": "NULL dans un CASE simple",
+    "type": "quiz",
+    "prompt": "CASE taux WHEN NULL THEN 'Inconnu' ELSE 'Autre' END, avec taux NULL :",
+    "hints": [
+      "Un CASE simple utilise l’égalité, pas IS NULL.",
+      "Demander si NULL = NULL est vrai dans la logique SQL."
+    ],
+    "solution": "Autre",
+    "explanation": "WHEN NULL compare par égalité ; le test est inconnu et non vrai.",
+    "skillIds": ["B1.02"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [9, 17]
+      }
+    ],
+    "origin": "created",
+    "options": ["Inconnu", "Autre", "Erreur", "0"],
+    "correctIndex": 1
+  },
+  {
+    "id": "SQL-Q03",
+    "lessonId": "sql-case",
+    "title": "Intervalle strict",
+    "type": "quiz",
+    "prompt": "Quel prédicat représente un taux strictement entre 0 et 100 ?",
+    "hints": [
+      "Le mot strictement exclut les bornes.",
+      "Tester le prédicat candidat sur 0 puis sur 100 : les deux doivent être rejetés."
+    ],
+    "solution": "taux>0 AND taux<100",
+    "explanation": "Les deux bornes sont exclues. BETWEEN inclut normalement ses bornes.",
+    "skillIds": ["B1.01"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [14, 15]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "taux>=0 AND taux<100",
+      "taux>0 AND taux<=100",
+      "taux>0 AND taux<100",
+      "taux BETWEEN 0 AND 100"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "SQL-Q04",
+    "lessonId": "sql-case",
+    "title": "CASE sans ELSE",
+    "type": "quiz",
+    "prompt": "Que retourne CASE WHEN 1=2 THEN 9 END ?",
+    "hints": [
+      "Une expression CASE n’élimine pas les lignes du SELECT.",
+      "Si aucune branche n’est vraie, chercher la valeur par défaut quand ELSE est absent."
+    ],
+    "solution": "NULL",
+    "explanation": "La ligne existe ; seule l’expression vaut NULL faute de branche vraie et de ELSE.",
+    "skillIds": ["B1.01"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [12, 17]
+      }
+    ],
+    "origin": "created",
+    "options": ["0", "Aucune ligne", "Erreur", "NULL"],
+    "correctIndex": 3
+  },
+  {
+    "id": "SQL-Q05",
+    "lessonId": "sql-null-functions",
+    "title": "Zéro et COALESCE",
+    "type": "quiz",
+    "prompt": "Que retourne COALESCE(NULL,0,100) ?",
+    "hints": [
+      "COALESCE cherche un NULL, pas une valeur jugée fausse dans un langage de programmation.",
+      "Parcourir les trois arguments dans l’ordre et s’arrêter à la première valeur connue."
+    ],
+    "solution": "0",
+    "explanation": "Zéro est la première valeur non NULL ; il est conservé.",
+    "skillIds": ["B1.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [40]
+      }
+    ],
+    "origin": "created",
+    "options": ["0", "100", "NULL", "Erreur"],
+    "correctIndex": 0
+  },
+  {
+    "id": "SQL-Q06",
+    "lessonId": "sql-null-functions",
+    "title": "NULLIF",
+    "type": "quiz",
+    "prompt": "Que retourne NULLIF(8,8) ?",
+    "hints": [
+      "NULLIF teste l’égalité de ses deux arguments.",
+      "Vérifier d’abord si 8 égale 8, puis appliquer la définition de NULLIF."
+    ],
+    "solution": "NULL",
+    "explanation": "L’égalité étant vraie, NULLIF remplace le premier argument par NULL.",
+    "skillIds": ["B1.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [39]
+      }
+    ],
+    "origin": "created",
+    "options": ["8", "NULL", "0", "16"],
+    "correctIndex": 1
+  },
+  {
+    "id": "SQL-Q07",
+    "lessonId": "sql-null-functions",
+    "title": "Composition",
+    "type": "quiz",
+    "prompt": "Que retourne COALESCE(NULLIF(0,0),100) ?",
+    "hints": [
+      "La fonction intérieure s’évalue avant la fonction extérieure.",
+      "Évaluer NULLIF(0,0), puis reprendre COALESCE avec le résultat obtenu."
+    ],
+    "solution": "100",
+    "explanation": "NULLIF donne NULL ; COALESCE passe ensuite à 100.",
+    "skillIds": ["B1.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [39, 40, 41]
+      }
+    ],
+    "origin": "created",
+    "options": ["0", "NULL", "100", "Erreur"],
+    "correctIndex": 2
+  },
+  {
+    "id": "SQL-Q08",
+    "lessonId": "sql-conditional-aggregation",
+    "title": "COUNT et zéro",
+    "type": "quiz",
+    "prompt": "Sur les valeurs 1,0,1,0,NULL, que donne COUNT(expression) ?",
+    "hints": [
+      "COUNT ignore les NULL mais ne fait pas de somme.",
+      "Barrer seulement les valeurs NULL avant de compter les positions restantes."
+    ],
+    "solution": "4",
+    "explanation": "COUNT ignore seulement NULL : les deux zéros sont aussi comptés.",
+    "skillIds": ["B1.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [22, 23]
+      }
+    ],
+    "origin": "created",
+    "options": ["2", "5", "NULL", "4"],
+    "correctIndex": 3
+  },
+  {
+    "id": "SQL-Q09",
+    "lessonId": "sql-conditional-aggregation",
+    "title": "Catégorie absente",
+    "type": "quiz",
+    "prompt": "Dans un groupe sans CPU, COUNT(CASE WHEN category_name='CPU' THEN 1 END) vaut :",
+    "hints": [
+      "Sans ELSE, les branches non retenues donnent NULL.",
+      "Écrire la liste d’expressions produites dans ce groupe, puis appliquer COUNT."
+    ],
+    "solution": "0",
+    "explanation": "Le CASE produit uniquement des NULL ; COUNT de ces expressions vaut zéro.",
+    "skillIds": ["B1.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [22, 23]
+      }
+    ],
+    "origin": "created",
+    "options": ["0", "NULL", "1", "Le nombre total de lignes"],
+    "correctIndex": 0
+  },
+  {
+    "id": "SQL-Q10",
+    "lessonId": "sql-pivot",
+    "title": "Regroupement parasite",
+    "type": "quiz",
+    "prompt": "Avec COUNT(*) et FOR categorie, une source contient id,statut,categorie. Quelles colonnes restent dans le regroupement implicite ?",
+    "hints": [
+      "Le regroupement implicite contient les colonnes sources non consommées.",
+      "COUNT(*) ne cite aucune colonne ; rayer seulement categorie utilisée après FOR."
+    ],
+    "solution": "id et statut",
+    "explanation": "COUNT(*) ne consomme pas id comme un COUNT(id). Garder id crée un détail inutile.",
+    "skillIds": ["B1.06"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [25, 26]
+      }
+    ],
+    "origin": "created",
+    "options": ["statut seulement", "id et statut", "id seulement", "Aucune"],
+    "correctIndex": 1
+  },
+  {
+    "id": "SQL-Q11",
+    "lessonId": "sql-scalar-subquery",
+    "title": "Scalaire",
+    "type": "quiz",
+    "prompt": "Une sous-requête utilisée comme expression renvoie deux lignes et une colonne. Quel est le problème ?",
+    "hints": [
+      "Scalaire impose une contrainte sur les lignes et sur les colonnes.",
+      "Une seule colonne ne suffit pas : vérifier aussi le nombre de lignes retournées."
+    ],
+    "solution": "Erreur de cardinalité",
+    "explanation": "Une expression scalaire attend au plus une ligne ; choisir arbitrairement la première n’est pas une correction sémantique.",
+    "skillIds": ["B2.01"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [44, 45]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Aucun",
+      "Elle renvoie forcément la première",
+      "Erreur de cardinalité",
+      "Elle fait une jointure externe"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "SQL-Q12",
+    "lessonId": "sql-cte",
+    "title": "Population de moyenne",
+    "type": "quiz",
+    "prompt": "La moyenne des sommes salariales par département est-elle toujours la moyenne de tous les salaires ?",
+    "hints": [
+      "Une moyenne dépend de ce qu’une ligne intermédiaire représente.",
+      "Comparer un département de deux personnes et un autre de dix personnes."
+    ],
+    "solution": "Non",
+    "explanation": "Les unités agrégées sont différentes : départements versus employés, et leurs effectifs peuvent différer.",
+    "skillIds": ["B2.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [56, 57, 58]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Oui",
+      "Oui si on utilise WITH",
+      "Oui si les colonnes ont le même nom",
+      "Non"
+    ],
+    "correctIndex": 3
+  },
+  {
+    "id": "SQL-Q13",
+    "lessonId": "sql-pagination",
+    "title": "OFFSET",
+    "type": "quiz",
+    "prompt": "OFFSET 5 puis FETCH FIRST 10, sur un résultat suffisamment grand et ordonné :",
+    "hints": [
+      "OFFSET s’applique avant FETCH.",
+      "Après cinq lignes ignorées, noter le numéro de la première ligne encore disponible."
+    ],
+    "solution": "Positions 6 à 15",
+    "explanation": "Cinq lignes sont ignorées, puis dix sont retenues.",
+    "skillIds": ["B2.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [70, 71]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Positions 6 à 15",
+      "Positions 5 à 10",
+      "Positions 5 à 15",
+      "Positions 1 à 10"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "SQL-Q14",
+    "lessonId": "sql-rollup-cube",
+    "title": "ROLLUP",
+    "type": "quiz",
+    "prompt": "Quels groupes produit ROLLUP(a,b) ?",
+    "hints": [
+      "ROLLUP retire les colonnes par la droite.",
+      "Commencer par (a,b), retirer b, puis retirer la dernière colonne restante."
+    ],
+    "solution": "(a,b),(a),()",
+    "explanation": "ROLLUP retire par la droite : détail, sous-total de a, total général.",
+    "skillIds": ["B3.01"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [80, 81]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "(a,b),(b),()",
+      "(a,b),(a),()",
+      "(a),(b)",
+      "Toutes les combinaisons seulement non vides"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "SQL-Q15",
+    "lessonId": "sql-windows",
+    "title": "Nombre de lignes",
+    "type": "quiz",
+    "prompt": "Six employés, trois départements : SUM(salaire) OVER(PARTITION BY deptno) retourne combien de lignes ?",
+    "hints": [
+      "OVER ne fusionne pas les employés.",
+      "Dessiner les six lignes avant de leur ajouter le total de partition."
+    ],
+    "solution": "6",
+    "explanation": "Chaque ligne détaillée conserve son identité ; seule la population de calcul est partitionnée.",
+    "skillIds": ["B3.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [104, 105]
+      }
+    ],
+    "origin": "created",
+    "options": ["1", "3", "6", "18"],
+    "correctIndex": 2
+  },
+  {
+    "id": "SQL-Q16",
+    "lessonId": "sql-ranking",
+    "title": "RANK et ex æquo",
+    "type": "quiz",
+    "prompt": "Salaires 100,90,90,80 décroissants : quels RANK ?",
+    "hints": [
+      "RANK compte les positions occupées, pas seulement les valeurs distinctes.",
+      "Les deux 90 sont au même rang ; compter combien de lignes précèdent 80."
+    ],
+    "solution": "1,2,2,4",
+    "explanation": "Les deux lignes au rang 2 occupent deux positions ; le rang suivant vaut 4.",
+    "skillIds": ["B3.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [124]
+      }
+    ],
+    "origin": "created",
+    "options": ["1,2,2,3", "1,2,3,4", "1,1,1,1", "1,2,2,4"],
+    "correctIndex": 3
+  },
+  {
+    "id": "SQL-Q17",
+    "lessonId": "sql-window-frames",
+    "title": "RANGE et pairs",
+    "type": "quiz",
+    "prompt": "Cumul RANGE sur clés 1,1,2 et valeurs 10,20,5 : quels cumuls ?",
+    "hints": [
+      "Les lignes ayant la même clé de tri sont des pairs.",
+      "À la première clé 1, déterminer si l’autre clé 1 appartient aussi au cadre RANGE."
+    ],
+    "solution": "30,30,35",
+    "explanation": "Le cadre RANGE de la première clé inclut tous ses pairs de clé 1.",
+    "skillIds": ["B3.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [109, 115]
+      }
+    ],
+    "origin": "created",
+    "options": ["30,30,35", "10,30,35", "10,20,5", "35,35,35"],
+    "correctIndex": 0
+  },
+  {
+    "id": "SQL-Q18",
+    "lessonId": "sql-recursion",
+    "title": "Récursivité Oracle",
+    "type": "quiz",
+    "prompt": "Quelle adaptation est nécessaire pour la forme Oracle étudiée ?",
+    "hints": [
+      "Une syntaxe récursive valide dans DuckDB n’est pas automatiquement celle d’Oracle.",
+      "Relire les deux différences enseignées : présence du mot RECURSIVE et opérateur entre ancre et pas récursif."
+    ],
+    "solution": "Retirer RECURSIVE et utiliser UNION ALL avec contrôle des cycles",
+    "explanation": "Le mot-clé RECURSIVE n’est pas utilisé dans la forme Oracle du cours. Le contrôle des cycles reste indispensable selon le graphe.",
+    "skillIds": ["B4.03", "B4.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [132, 134, 136]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Garder RECURSIVE et utiliser UNION",
+      "Retirer RECURSIVE et utiliser UNION ALL avec contrôle des cycles",
+      "Remplacer WITH par GROUP BY",
+      "Retirer toute ancre"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "SQL-E01",
+    "lessonId": "sql-conditional-aggregation",
+    "title": "CPU et vidéo par statut",
+    "type": "sql",
+    "prompt": "Afficher status,cpu,video : nombre de commandes CPU et Video Card de chaque statut. Utiliser l’agrégation conditionnelle. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Les lignes du tableau sont les statuts et les colonnes sont les catégories.",
+      "Regrouper par status ; dans chaque COUNT, renvoyer 1 uniquement pour sa catégorie et NULL sinon."
+    ],
+    "solution": "SELECT status,COUNT(CASE WHEN category_name='CPU' THEN 1 END) AS cpu,COUNT(CASE WHEN category_name='Video Card' THEN 1 END) AS video FROM commande GROUP BY status;",
+    "explanation": "Les autres catégories produisent NULL. COUNT donne zéro pour une catégorie absente d’un groupe existant.",
+    "skillIds": ["B1.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [22, 23]
+      }
+    ],
+    "origin": "created",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "id": "SQL-E02",
+    "lessonId": "sql-null-functions",
+    "title": "Choisir une valeur de budget",
+    "type": "sql",
+    "prompt": "Afficher dept_id et budget_effectif : le budget courant s’il est connu, sinon le budget précédent. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Choisir la première valeur connue, sans éliminer un zéro valide.",
+      "Mettre budgetCourant avant budgetPrec dans une fonction de remplacement des NULL."
+    ],
+    "solution": "SELECT dept_id,COALESCE(budgetCourant,budgetPrec) AS budget_effectif FROM budgets;",
+    "explanation": "Les deux arguments sont numériques ; aucune conversion textuelle n’est nécessaire. Zéro doit rester zéro.",
+    "skillIds": ["B1.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [40]
+      }
+    ],
+    "origin": "created",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "id": "SQL-E03",
+    "lessonId": "sql-hypothetical-rank",
+    "title": "Vérifier un rang hypothétique",
+    "type": "sql",
+    "prompt": "Dans un tri décroissant des salaires connus, calculer le rang hypothétique de 4500 dans une colonne rang. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Le rang décroissant dépend des lignes strictement supérieures à la valeur proposée.",
+      "Compter uniquement les salaires supérieurs à 4500, puis tenir compte de la position de la valeur hypothétique."
+    ],
+    "solution": "SELECT 1+COUNT(*) FILTER(WHERE salaire>4500) AS rang FROM emp;",
+    "explanation": "Une valeur se place après toutes les lignes strictement supérieures. Les ex æquo ne précèdent pas la valeur hypothétique.",
+    "skillIds": ["B3.11"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [125, 126]
+      }
+    ],
+    "origin": "created",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "id": "SQL-E04",
+    "lessonId": "sql-grouping-sets",
+    "title": "Trois niveaux choisis",
+    "type": "sql",
+    "prompt": "Sur vente, afficher annee,mois,total pour les niveaux année/mois, année et total général. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Énumérer les trois granularités avant d’écrire GROUP BY.",
+      "GROUPING SETS attend (annee,mois), (annee), puis un ensemble vide pour le total général."
+    ],
+    "solution": "SELECT annee,mois,SUM(prix) AS total FROM vente GROUP BY GROUPING SETS((annee,mois),(annee),());",
+    "explanation": "Le groupe vide représente le total général. Les NULL de total peuvent coexister avec des NULL des données.",
+    "skillIds": ["B3.01", "B3.03"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [76, 77, 78]
+      }
+    ],
+    "origin": "created",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "id": "SQL-E05",
+    "lessonId": "sql-ranking",
+    "title": "Numéroter les animaux",
+    "type": "sql",
+    "prompt": "Afficher personne,animal,numero pour chaque animal, numéroté par âge décroissant chez son propriétaire puis id croissant. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Chaque propriétaire possède sa propre numérotation.",
+      "Utiliser ROW_NUMBER avec une partition propriétaire, puis âge décroissant et id croissant dans l’ordre."
+    ],
+    "solution": "SELECT proprioId AS personne,id AS animal,ROW_NUMBER() OVER(PARTITION BY proprioId ORDER BY age DESC,id) AS numero FROM animal;",
+    "explanation": "Le numéro redémarre par propriétaire. Le second critère id départage les ex æquo de façon déterministe.",
+    "skillIds": ["B3.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [124, 128]
+      }
+    ],
+    "origin": "created",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"]
+  },
+  {
+    "id": "TP-L-1",
+    "lessonId": "sql-cinema",
+    "title": "Comprendre la base cinéma",
+    "type": "guided",
+    "prompt": "Identifier PK/FK, le niveau film et le niveau séance. Écrire les contrôles d’effectifs et un échantillon. Expliquer les dates/heures Oracle.",
+    "hints": [
+      "Identifier ce qui peut se répéter : FLM_ID dans les séances et non dans la table des films.",
+      "Compter les lignes de chaque table séparément, puis observer l’affichage de SNC_HEURE avec un format comportant heures, minutes et secondes."
+    ],
+    "solution": "SELECT COUNT(*) AS films FROM T_FILM_FLM;\nSELECT COUNT(*) AS seances FROM T_SEANCE_SNC;\nSELECT * FROM T_FILM_FLM FETCH FIRST 5 ROWS ONLY;\nSELECT SNC_ID,SNC_DATE,TO_CHAR(SNC_HEURE,'HH24:MI:SS') AS heure FROM T_SEANCE_SNC FETCH FIRST 5 ROWS ONLY;",
+    "explanation": "Les données de l’atelier sont une reconstitution : les effectifs et montants du PDF original ne constituent pas ses résultats attendus. FLM_ID est PK des films et FK non nulle des séances ; SNC_ID est PK des séances. Une séance appartient à un film. Oracle DATE peut inclure une heure ; l’affichage dépend du format. Dans le navigateur, SNC_HEURE est un timestamp et strftime peut remplacer TO_CHAR.",
+    "skillIds": ["B0.01", "B0.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [1, 2]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [1, 2]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "1"
+  },
+  {
+    "id": "TP-L-2.1",
+    "lessonId": "sql-case",
+    "title": "Films culturels",
+    "type": "sql",
+    "prompt": "Afficher FLM_TITRE et type : Culturel pour les genres Historique, Histoire ou Biographie ; Divertissement sinon. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Le test porte sur un ensemble de trois genres.",
+      "CASE recherché peut utiliser FLM_GENRE IN (...) et une seule branche ELSE."
+    ],
+    "solution": "SELECT FLM_TITRE,CASE WHEN FLM_GENRE IN ('Historique','Histoire','Biographie') THEN 'Culturel' ELSE 'Divertissement' END AS type FROM T_FILM_FLM;",
+    "explanation": "Les données de l’atelier sont une reconstitution : les effectifs et montants du PDF original ne constituent pas ses résultats attendus. Le CASE est calculé par film ; les autres genres et NULL atteignent ELSE dans cette première version.",
+    "skillIds": ["B1.01"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [2]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [2]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "2.1",
+    "datasetId": "cinema",
+    "alternativeDatasetIds": ["cinema-alt"]
+  },
+  {
+    "id": "TP-L-2.2",
+    "lessonId": "sql-case",
+    "title": "Genre inconnu distinct",
+    "type": "sql",
+    "prompt": "Reprendre la classification précédente et afficher Inconnu si le genre est NULL. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Un genre NULL ne satisfait pas un IN ordinaire.",
+      "Ajouter un WHEN FLM_GENRE IS NULL avant ELSE ; conserver la classification des trois genres culturels."
+    ],
+    "solution": "SELECT FLM_TITRE,CASE WHEN FLM_GENRE IN ('Historique','Histoire','Biographie') THEN 'Culturel' WHEN FLM_GENRE IS NULL THEN 'Inconnu' ELSE 'Divertissement' END AS type FROM T_FILM_FLM;",
+    "explanation": "IS NULL sélectionne explicitement le genre absent ; le test d’appartenance précédent n’était pas vrai pour lui.",
+    "skillIds": ["B1.02"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [2]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [2]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "2.2",
+    "datasetId": "cinema",
+    "alternativeDatasetIds": ["cinema-alt"]
+  },
+  {
+    "id": "TP-L-2.3",
+    "lessonId": "sql-null-functions",
+    "title": "Genre avec remplacement",
+    "type": "sql",
+    "prompt": "Afficher FLM_TITRE et genre, remplacer les genres NULL par Inconnu sans utiliser CASE. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "La valeur originale doit être conservée lorsqu’elle est connue.",
+      "COALESCE attend d’abord FLM_GENRE puis le texte de remplacement."
+    ],
+    "solution": "SELECT FLM_TITRE,COALESCE(FLM_GENRE,'Inconnu') AS genre FROM T_FILM_FLM;",
+    "explanation": "COALESCE choisit le genre connu, sinon le texte. Les deux expressions sont textuelles.",
+    "skillIds": ["B1.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [2]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [2]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "2.3",
+    "datasetId": "cinema",
+    "alternativeDatasetIds": ["cinema-alt"]
+  },
+  {
+    "id": "TP-L-3.1",
+    "lessonId": "sql-derived-lateral",
+    "title": "Meilleure séance et ex æquo",
+    "type": "sql",
+    "prompt": "Afficher FLM_TITRE,nb_entree,dateentree,heure des meilleures séances de chaque film. Conserver tous les ex æquo du maximum et trier par titre puis date et heure. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Le meilleur nombre de billets se calcule par film ; tous les ex æquo doivent rester.",
+      "Calculer RANK par FLM_ID sur SNC_BILLET décroissant, puis sélectionner le premier rang dans une requête extérieure."
+    ],
+    "solution": "WITH r AS (SELECT *,RANK() OVER(PARTITION BY FLM_ID ORDER BY SNC_BILLET DESC) AS rang FROM T_SEANCE_SNC) SELECT f.FLM_TITRE,r.SNC_BILLET AS nb_entree,r.SNC_DATE AS dateentree,r.SNC_HEURE AS heure FROM T_FILM_FLM f JOIN r ON f.FLM_ID=r.FLM_ID WHERE rang=1 ORDER BY FLM_TITRE,dateentree,heure;",
+    "explanation": "Adaptation exécutable du besoin WITH TIES. Oracle peut utiliser une jointure LATERAL avec ORDER BY SNC_BILLET DESC FETCH FIRST 1 ROWS WITH TIES ; remplacer par ONLY choisit une seule meilleure séance, arbitrairement en cas d’égalité sans départage. Un film sans séance n’apparaît pas dans la jointure interne.\n\nCorrection Oracle directe :\nSELECT f.FLM_TITRE,a.nb_entree,a.dateentree,a.heure FROM T_FILM_FLM f, LATERAL (SELECT SNC_BILLET AS nb_entree,SNC_DATE AS dateentree,TO_CHAR(SNC_HEURE,'HH24:MI:SS') AS heure FROM T_SEANCE_SNC s WHERE s.FLM_ID=f.FLM_ID ORDER BY SNC_BILLET DESC FETCH FIRST 1 ROWS WITH TIES) a ORDER BY f.FLM_TITRE,a.dateentree,a.heure;\nPour ONLY et un choix stable, utiliser ORDER BY SNC_BILLET DESC,SNC_ID FETCH FIRST 1 ROWS ONLY. Ne pas ajouter SNC_ID au tri WITH TIES si l’égalité doit rester définie uniquement par les billets.",
+    "skillIds": ["B2.03", "B2.04", "B2.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [2, 3]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [3, 4]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "3.1",
+    "datasetId": "cinema",
+    "ordered": true,
+    "alternativeDatasetIds": ["cinema-alt"]
+  },
+  {
+    "id": "TP-L-3.2",
+    "lessonId": "sql-scalar-subquery",
+    "title": "Expliquer les deux moyennes",
+    "type": "guided",
+    "prompt": "La requête groupe séances par film, calcule AVG(SNC_BILLET), affiche aussi la moyenne globale et garde les films dont la moyenne dépasse la moyenne globale. Formuler sa sémantique précise.",
+    "hints": [
+      "Le GROUP BY définit une moyenne pour chaque film, tandis que la sous-requête ne dépend pas du film.",
+      "Comparer le nombre de séances servant à chaque moyenne ; un film avec davantage de séances pèse plus dans la moyenne globale."
+    ],
+    "solution": "Elle affiche titre, nombre moyen de billets vendus par séance du film et nombre moyen de billets vendus par séance sur toute la table. Elle conserve les films dont cette première moyenne est strictement supérieure à la seconde, puis les trie par moyenne du film décroissante.",
+    "explanation": "La moyenne globale pondère implicitement chaque film par son nombre de séances ; ce n’est pas forcément la moyenne des moyennes par film.",
+    "skillIds": ["B2.01", "B2.02"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [3]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [4]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "3.2"
+  },
+  {
+    "id": "TP-L-3.3",
+    "lessonId": "sql-cte",
+    "title": "Factoriser les moyennes",
+    "type": "sql",
+    "prompt": "Avec des CTE, afficher FLM_TITRE,moyenneDuFilm,moyenneGlob pour les films dont la moyenne de billets par séance dépasse la moyenne globale. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Nommer séparément la moyenne globale et les moyennes par film.",
+      "Une CTE globale renvoie une ligne ; la joindre à la CTE par film avant de comparer leurs colonnes."
+    ],
+    "solution": "WITH globale AS (SELECT AVG(SNC_BILLET) AS moyenneGlob FROM T_SEANCE_SNC), films AS (SELECT f.FLM_ID,f.FLM_TITRE,AVG(s.SNC_BILLET) AS moyenneDuFilm FROM T_FILM_FLM f JOIN T_SEANCE_SNC s ON f.FLM_ID=s.FLM_ID GROUP BY f.FLM_ID,f.FLM_TITRE) SELECT FLM_TITRE,moyenneDuFilm,moyenneGlob FROM films CROSS JOIN globale WHERE moyenneDuFilm>moyenneGlob;",
+    "explanation": "La CTE globale donne une ligne, films une par film ayant des séances. CROSS JOIN associe cette unique moyenne à chaque film avant le filtre.",
+    "skillIds": ["B2.05", "B2.06"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [3]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [4]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "3.3",
+    "datasetId": "cinema",
+    "alternativeDatasetIds": ["cinema-alt"]
+  },
+  {
+    "id": "TP-L-4.1",
+    "lessonId": "sql-rollup-cube",
+    "title": "Ventes jour, mois, année",
+    "type": "sql",
+    "prompt": "Afficher annee,mois,jour,total des billets par jour, sous-totaux par mois et année, et total général. Écrire une version ROLLUP et pouvoir développer ses GROUPING SETS. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "L’ordre hiérarchique est année, mois, jour.",
+      "Extraire les trois composantes de SNC_DATE et développer les quatre niveaux que ROLLUP doit produire."
+    ],
+    "solution": "SELECT EXTRACT(YEAR FROM SNC_DATE) AS annee,EXTRACT(MONTH FROM SNC_DATE) AS mois,EXTRACT(DAY FROM SNC_DATE) AS jour,SUM(SNC_BILLET) AS total FROM T_SEANCE_SNC GROUP BY ROLLUP(EXTRACT(YEAR FROM SNC_DATE),EXTRACT(MONTH FROM SNC_DATE),EXTRACT(DAY FROM SNC_DATE));",
+    "explanation": "Les groupements sont (année,mois,jour),(année,mois),(année),(). GROUPING SETS avec exactement ces quatre ensembles est équivalent. SUM porte sur les billets, pas le nombre de séances.",
+    "skillIds": ["B3.01", "B3.02"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [3]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [4, 5]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "4.1",
+    "datasetId": "cinema",
+    "alternativeDatasetIds": ["cinema-alt"]
+  },
+  {
+    "id": "TP-L-4.2",
+    "lessonId": "sql-grouping-sets",
+    "title": "Comparer au simple GROUP BY date",
+    "type": "guided",
+    "prompt": "Le GROUP BY SNC_DATE retourne-t-il la même chose que le ROLLUP année/mois/jour du TP ? Justifier sans exécution.",
+    "hints": [
+      "Chercher les niveaux que le GROUP BY date ne calcule jamais.",
+      "Comparer d’abord les lignes journalières, puis rechercher dans ROLLUP les lignes dont le jour ou le mois est NULL."
+    ],
+    "solution": "Non. Si SNC_DATE est une date de jour sans composante horaire variable, les lignes journalières du GROUP BY date se retrouvent dans le résultat ROLLUP ; celui-ci ajoute les sous-totaux mensuels, annuels et général. Une différence d’ensembles peut mettre en évidence ces lignes supplémentaires.",
+    "explanation": "Vérifier l’hypothèse de granularité de SNC_DATE : si elle contient des heures différentes, GROUP BY SNC_DATE regroupe plus finement et la comparaison change.",
+    "skillIds": ["B3.01", "B3.02", "B3.03"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [4]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [5, 6]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "4.2"
+  },
+  {
+    "id": "TP-L-4.3",
+    "lessonId": "sql-hypothetical-rank",
+    "title": "Rang hypothétique du tarif 14",
+    "type": "guided",
+    "prompt": "Écrire le rang hypothétique Oracle du tarif 14 en ordre décroissant. Donner une vérification par comptage et expliquer une valeur au-dessus du maximum puis en dessous du minimum.",
+    "hints": [
+      "Une valeur hypothétique n’a pas besoin d’exister dans les données.",
+      "En ordre décroissant, compter les séances dont le tarif est strictement supérieur à 14, puis situer 14 juste après elles."
+    ],
+    "solution": "-- Oracle\nSELECT RANK(14) WITHIN GROUP(ORDER BY SNC_TARIF DESC) AS rang FROM T_SEANCE_SNC;\n-- Vérification portable\nSELECT 1+COUNT(*) AS rang FROM T_SEANCE_SNC WHERE SNC_TARIF>14;",
+    "explanation": "Les données de l’atelier sont une reconstitution : les effectifs et montants du PDF original ne constituent pas ses résultats attendus. Le rang est 1 plus le nombre de séances au tarif strictement supérieur. Au-dessus du maximum : 1. En dessous du minimum : nombre de lignes + 1. Le résultat dépend des tarifs du jeu chargé.",
+    "skillIds": ["B3.11"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [4]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [6]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "4.3"
+  },
+  {
+    "id": "TP-L-5.1",
+    "lessonId": "sql-windows",
+    "title": "Nombre de films du réalisateur",
+    "type": "sql",
+    "prompt": "Afficher toutes les colonnes de chaque film et NB_FILM_REAL, nombre de films de son réalisateur. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Ne pas joindre les séances : on compte des films, pas des projections.",
+      "Ajouter COUNT(*) OVER avec une partition par FLM_REALISATEUR au SELECT des films."
+    ],
+    "solution": "SELECT f.*,COUNT(*) OVER(PARTITION BY FLM_REALISATEUR) AS NB_FILM_REAL FROM T_FILM_FLM f;",
+    "explanation": "La fenêtre compte les films de la partition tout en gardant chaque film. Une jointure avec les séances multiplierait les lignes et ne compterait plus la même population.",
+    "skillIds": ["B3.04", "B3.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [4]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [6]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "5.1",
+    "datasetId": "cinema",
+    "alternativeDatasetIds": ["cinema-alt"]
+  },
+  {
+    "id": "TP-L-5.2",
+    "lessonId": "sql-ranking",
+    "title": "Rang après sélection des films",
+    "type": "sql",
+    "prompt": "Pour les films de 1960 ou après, afficher FLM_TITRE,FLM_REALISATEUR,FLM_ANNEE,rang,rang_dense. Classer chronologiquement parmi les seuls films sélectionnés. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Le classement porte seulement sur la population sélectionnée.",
+      "Placer le filtre de l’année dans WHERE au même niveau que les fenêtres, qui s’appliquent ensuite."
+    ],
+    "solution": "SELECT FLM_TITRE,FLM_REALISATEUR,FLM_ANNEE,RANK() OVER(ORDER BY FLM_ANNEE) AS rang,DENSE_RANK() OVER(ORDER BY FLM_ANNEE) AS rang_dense FROM T_FILM_FLM WHERE FLM_ANNEE>=1960;",
+    "explanation": "Le support dit « après 1960 » mais sa correction inclut 1960 : cet atelier fixe explicitement >=1960. WHERE s’exécute avant les fonctions de classement. Les trous apparaissent seulement avec RANK.",
+    "skillIds": ["B3.09", "B3.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [4, 5]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [7]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "5.2",
+    "datasetId": "cinema",
+    "alternativeDatasetIds": ["cinema-alt"]
+  },
+  {
+    "id": "TP-L-5.3",
+    "lessonId": "sql-ranking",
+    "title": "Sélection avec rang global",
+    "type": "sql",
+    "prompt": "Afficher FLM_TITRE,FLM_REALISATEUR,FLM_ANNEE,rang pour les films de 1960 ou après ; rang doit être calculé parmi tous les films. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Le rang doit être calculé avant d’éliminer les films anciens.",
+      "Utiliser une CTE contenant tous les films et leur RANK ; mettre le filtre de l’année dans le SELECT externe."
+    ],
+    "solution": "WITH classes AS (SELECT *,RANK() OVER(ORDER BY FLM_ANNEE) AS rang FROM T_FILM_FLM) SELECT FLM_TITRE,FLM_REALISATEUR,FLM_ANNEE,rang FROM classes WHERE FLM_ANNEE>=1960;",
+    "explanation": "La CTE classe avant le filtre externe. Déplacer WHERE à l’intérieur changerait la population et les numéros de rang.",
+    "skillIds": ["B3.09", "B3.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [5]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [7]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "5.3",
+    "datasetId": "cinema",
+    "alternativeDatasetIds": ["cinema-alt"]
+  },
+  {
+    "id": "TP-L-5.4",
+    "lessonId": "sql-ranking",
+    "title": "Bornes et rangs par réalisateur",
+    "type": "sql",
+    "prompt": "Pour chaque film, afficher FLM_TITRE,FLM_REALISATEUR,ancien,recent,rangt,rangl : années extrêmes du réalisateur, rang chronologique global et rang chez le réalisateur. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Les années extrêmes et le rang local utilisent le réalisateur, mais pas le rang global.",
+      "Écrire MIN/MAX avec PARTITION BY réalisateur, puis comparer deux RANK avec et sans cette partition."
+    ],
+    "solution": "SELECT FLM_TITRE,FLM_REALISATEUR,MIN(FLM_ANNEE) OVER(PARTITION BY FLM_REALISATEUR) AS ancien,MAX(FLM_ANNEE) OVER(PARTITION BY FLM_REALISATEUR) AS recent,RANK() OVER(ORDER BY FLM_ANNEE) AS rangt,RANK() OVER(PARTITION BY FLM_REALISATEUR ORDER BY FLM_ANNEE) AS rangl FROM T_FILM_FLM;",
+    "explanation": "La partition du réalisateur s’applique aux extrêmes et au rang local, mais pas au rang global. Aucun filtre de 1960 n’est demandé dans cette version.",
+    "skillIds": ["B3.05", "B3.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [5]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [7, 8]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "5.4",
+    "datasetId": "cinema",
+    "alternativeDatasetIds": ["cinema-alt"]
+  },
+  {
+    "id": "TP-L-5.5",
+    "lessonId": "sql-window-order",
+    "title": "Jour de meilleur chiffre d’affaires",
+    "type": "sql",
+    "prompt": "Afficher SNC_DATE,ca_jour pour tous les jours au chiffre d’affaires maximal. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Commencer par une ligne de chiffre d’affaires par jour.",
+      "Calculer SUM(billets*tarif), classer ces journées en ordre décroissant, puis filtrer le rang dans une étape extérieure."
+    ],
+    "solution": "WITH jours AS (SELECT SNC_DATE,SUM(SNC_BILLET*SNC_TARIF) AS ca_jour FROM T_SEANCE_SNC GROUP BY SNC_DATE), classes AS (SELECT *,RANK() OVER(ORDER BY ca_jour DESC) AS rang FROM jours) SELECT SNC_DATE,ca_jour FROM classes WHERE rang=1;",
+    "explanation": "Il faut sommer les produits billets × tarif par séance. La multiplication d’une somme de billets par un tarif arbitraire serait fausse si les tarifs varient. RANK conserve les jours ex æquo.",
+    "skillIds": ["B3.09", "B3.10"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [5]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [8]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "5.5",
+    "datasetId": "cinema",
+    "alternativeDatasetIds": ["cinema-alt"]
+  },
+  {
+    "id": "TP-L-5.6",
+    "lessonId": "sql-hypothetical-rank",
+    "title": "Cinq meilleurs jours et listes",
+    "type": "sql",
+    "prompt": "Afficher SNC_DATE,ca_jour,les_ventes,les_films pour les jours dont le rang de chiffre d’affaires est au plus cinq ; conserver les IDs répétés dans les listes. Utiliser la syntaxe de liste du moteur navigateur. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL. Dans les deux listes, ordonner les séances par SNC_BILLET décroissant puis SNC_ID croissant ; séparer les valeurs par « ; » suivi d’un espace.",
+    "hints": [
+      "Les listes sont des agrégats par jour, calculés avant le classement des jours.",
+      "Utiliser le même ordre de séances dans les deux string_agg pour aligner chaque vente avec son film."
+    ],
+    "solution": "WITH jours AS (SELECT SNC_DATE,SUM(SNC_BILLET*SNC_TARIF) AS ca_jour,string_agg(CAST(SNC_BILLET AS VARCHAR),'; ' ORDER BY SNC_BILLET DESC,SNC_ID) AS les_ventes,string_agg(CAST(FLM_ID AS VARCHAR),'; ' ORDER BY SNC_BILLET DESC,SNC_ID) AS les_films FROM T_SEANCE_SNC GROUP BY SNC_DATE), classes AS (SELECT *,RANK() OVER(ORDER BY ca_jour DESC) AS rang FROM jours) SELECT SNC_DATE,ca_jour,les_ventes,les_films FROM classes WHERE rang<=5;",
+    "explanation": "Adaptation de LISTAGG Oracle par string_agg DuckDB. Les deux listes ont le même tri afin de conserver la correspondance entre ventes et films. Le prédicat rang<=5 peut donner plus de cinq jours en cas d’ex æquo.",
+    "skillIds": ["B3.10", "B3.12"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [5]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [8, 9]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "5.6",
+    "datasetId": "cinema",
+    "alternativeDatasetIds": ["cinema-alt"]
+  },
+  {
+    "id": "TP-L-5.7",
+    "lessonId": "sql-hypothetical-rank",
+    "title": "IDs distincts dans la liste",
+    "type": "sql",
+    "prompt": "Reprendre les cinq meilleurs jours, mais ne faire apparaître chaque ID de film qu’une fois dans les_films. Garder les_ventes détaillées. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL. Ordonner les ventes par SNC_BILLET décroissant puis SNC_ID croissant, les IDs distincts par valeur numérique croissante ; séparer par « ; » suivi d’un espace.",
+    "hints": [
+      "Dédupliquer les IDs ne doit pas dédupliquer les séances ni réduire le chiffre d’affaires.",
+      "Construire séparément les couples date/film distincts et les totaux de ventes, puis joindre leurs agrégats journaliers."
+    ],
+    "solution": "WITH jours AS (SELECT SNC_DATE,SUM(SNC_BILLET*SNC_TARIF) AS ca_jour,string_agg(CAST(SNC_BILLET AS VARCHAR),'; ' ORDER BY SNC_BILLET DESC,SNC_ID) AS les_ventes FROM T_SEANCE_SNC GROUP BY SNC_DATE), uniques AS (SELECT DISTINCT SNC_DATE,FLM_ID FROM T_SEANCE_SNC), films AS (SELECT SNC_DATE,string_agg(CAST(FLM_ID AS VARCHAR),'; ' ORDER BY FLM_ID) AS les_films FROM uniques GROUP BY SNC_DATE), classes AS (SELECT jours.*,films.les_films,RANK() OVER(ORDER BY ca_jour DESC) AS rang FROM jours JOIN films ON jours.SNC_DATE=films.SNC_DATE) SELECT SNC_DATE,ca_jour,les_ventes,les_films FROM classes WHERE rang<=5;",
+    "explanation": "Une CTE déduplique les couples date/film avant la liste, tandis qu’une autre conserve toutes les séances pour le chiffre d’affaires et les ventes. Cette séparation évite de perdre une vente. La liste distincte des IDs n’a plus une correspondance positionnelle avec les ventes. \nConsulter aussi TP-L-5.7-test pour les modifications temporaires et ROLLBACK. Correction Oracle portable pour les seuls IDs distincts : WITH d AS (SELECT DISTINCT SNC_DATE,FLM_ID FROM T_SEANCE_SNC) SELECT SNC_DATE,LISTAGG(FLM_ID,'; ') WITHIN GROUP(ORDER BY FLM_ID) AS les_films FROM d GROUP BY SNC_DATE. Joindre ce résultat à la CTE de chiffres d’affaires et de ventes pour garder les autres colonnes.",
+    "skillIds": ["B3.12", "B0.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [5, 6]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [9, 10]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "5.7",
+    "datasetId": "cinema",
+    "alternativeDatasetIds": ["cinema-alt"]
+  },
+  {
+    "id": "TP-L-5.8",
+    "lessonId": "sql-hypothetical-rank",
+    "title": "Titres au lieu des IDs",
+    "type": "sql",
+    "prompt": "Sur les cinq meilleurs rangs de jours, afficher SNC_DATE,ca_jour,les_ventes,les_films, avec une liste de titres distincts par jour. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL. Ordonner les ventes par SNC_BILLET décroissant puis SNC_ID croissant, les titres distincts par titre croissant ; séparateur « ; » suivi d’un espace.",
+    "hints": [
+      "Les titres sont dans la table des films, pas dans celle des séances.",
+      "Joindre sur FLM_ID avant le regroupement journalier, puis construire une liste de titres distincts."
+    ],
+    "solution": "WITH jours AS (SELECT s.SNC_DATE,SUM(s.SNC_BILLET*s.SNC_TARIF) AS ca_jour,string_agg(CAST(s.SNC_BILLET AS VARCHAR),'; ' ORDER BY s.SNC_BILLET DESC,s.SNC_ID) AS les_ventes,string_agg(DISTINCT f.FLM_TITRE,'; ' ORDER BY f.FLM_TITRE) AS les_films FROM T_SEANCE_SNC s JOIN T_FILM_FLM f ON f.FLM_ID=s.FLM_ID GROUP BY s.SNC_DATE), classes AS (SELECT *,RANK() OVER(ORDER BY ca_jour DESC) AS rang FROM jours) SELECT SNC_DATE,ca_jour,les_ventes,les_films FROM classes WHERE rang<=5;",
+    "explanation": "La jointure séance → film est plusieurs-vers-un et ne doit pas multiplier les séances. Dédupliquer les titres ne déduplique pas les ventes ; deux films peuvent porter le même titre, ce qui est une limite d’une demande de titres distincts.",
+    "skillIds": ["B3.12", "B0.03"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [6, 7]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [10, 11]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "5.8",
+    "datasetId": "cinema",
+    "alternativeDatasetIds": ["cinema-alt"]
+  },
+  {
+    "id": "TP-L-5.9a",
+    "lessonId": "sql-window-frames",
+    "title": "Sens des sous-requêtes corrélées",
+    "type": "guided",
+    "prompt": "Pour chaque séance, une sous-requête additionne les billets du même jour aux heures inférieures ou égales à son heure. Une seconde additionne les produits billets × tarif avec le même filtre. Que calculent-elles ?",
+    "hints": [
+      "Le sous-SELECT est corrélé à la date et à l’heure de la séance extérieure.",
+      "Considérer deux séances simultanées : le prédicat heure inférieure ou égale les inclut toutes les deux pour chacune."
+    ],
+    "solution": "La première donne le cumul de billets vendus depuis le début du jour jusqu’à l’heure de la séance incluse. La seconde donne le chiffre d’affaires cumulé correspondant. Toutes les séances de même date et même heure reçoivent le même cumul, car le prédicat inclut leurs pairs.",
+    "explanation": "Le lien de corrélation est date égale et heure au plus égale. Ce n’est pas un cumul global sur toutes les dates.",
+    "skillIds": ["B2.03", "B3.08"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [7]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [11]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "5.9a"
+  },
+  {
+    "id": "TP-L-5.9b",
+    "lessonId": "sql-window-frames",
+    "title": "Mesure de la version corrélée",
+    "type": "guided",
+    "prompt": "Exécuter la requête corrélée du TP sur un jeu identifié et relever son temps. Que faut-il noter pour pouvoir comparer ?",
+    "hints": [
+      "Une durée n’a de sens qu’avec le moteur et les données qui l’ont produite.",
+      "Noter le jeu, les index et le contexte de cache ; répéter sans modifier le travail demandé."
+    ],
+    "solution": "Noter le moteur et sa version, le jeu et ses effectifs, les index, le contexte de cache, la requête exacte et plusieurs répétitions. Conserver la même population et vérifier les résultats avant de comparer. Une première exécution peut inclure compilation ou chargement.",
+    "explanation": "Le temps imprimé dans le corrigé Oracle ne devient pas une mesure personnelle ni un résultat attendu du navigateur. L’exercice est guidé tant que cette mesure n’a pas été réalisée.",
+    "skillIds": ["B9.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [7]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [12]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "5.9b"
+  },
+  {
+    "id": "TP-L-5.9c",
+    "lessonId": "sql-window-frames",
+    "title": "Réécrire les cumuls avec OVER",
+    "type": "sql",
+    "prompt": "Afficher SNC_DATE,SNC_HEURE,FLM_TITRE,SNC_BILLET,SNC_TARIF,cumul_jour,ca_cumul_jour avec la sémantique inclusive de toutes les séances simultanées. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Le cumul doit redémarrer chaque jour et inclure les séances d’une même heure ensemble.",
+      "PARTITION BY date et ORDER BY heure définissent la fenêtre ; RANGE conserve la sémantique inclusive des pairs."
+    ],
+    "solution": "SELECT s.SNC_DATE,s.SNC_HEURE,f.FLM_TITRE,s.SNC_BILLET,s.SNC_TARIF,SUM(s.SNC_BILLET) OVER(PARTITION BY s.SNC_DATE ORDER BY s.SNC_HEURE RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumul_jour,SUM(s.SNC_BILLET*s.SNC_TARIF) OVER(PARTITION BY s.SNC_DATE ORDER BY s.SNC_HEURE RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS ca_cumul_jour FROM T_SEANCE_SNC s JOIN T_FILM_FLM f ON f.FLM_ID=s.FLM_ID;",
+    "explanation": "RANGE inclut les pairs de même heure, comme le <= de la version corrélée. ROWS avec un départage pourrait donner un cumul progressif entre séances simultanées et changerait alors le sens.",
+    "skillIds": ["B3.07", "B3.08", "B3.12"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [7]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [12]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "5.9c",
+    "datasetId": "cinema",
+    "alternativeDatasetIds": ["cinema-alt"]
+  },
+  {
+    "id": "TP-L-5.9d",
+    "lessonId": "sql-window-order",
+    "title": "Comparer les temps et résultats",
+    "type": "guided",
+    "prompt": "Comparer la version fenêtrée à la version corrélée. Quelle conclusion justifiée peut-on écrire ?",
+    "hints": [
+      "Une requête plus rapide mais différente ne constitue pas une optimisation valide.",
+      "Comparer d’abord les résultats sur un cas avec séances simultanées, puis les plans et mesures dans le même contexte."
+    ],
+    "solution": "Vérifier d’abord l’égalité des résultats, en incluant des séances simultanées. Mesurer ensuite les deux versions dans les mêmes conditions. Décrire le gain ou la perte observé, le moteur, le jeu et le plan ; ne pas conclure que la fenêtre est toujours dix fois plus rapide.",
+    "explanation": "Le corrigé illustre un gain sur son contexte. Les optimisations d’un moteur peuvent transformer les deux écritures ; un autre volume ou index peut changer le bilan.",
+    "skillIds": ["B9.09"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [7]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [12]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "5.9d"
+  },
+  {
+    "id": "TP-L-6",
+    "lessonId": "sql-cinema",
+    "title": "Proposer une demande nouvelle",
+    "type": "guided",
+    "prompt": "Proposer une requête originale sur la base cinéma, expliquer la population et vérifier le résultat sur un petit exemple. Exemple possible : part du chiffre d’affaires de chaque séance dans celui de sa journée.",
+    "hints": [
+      "Chercher une question métier nouvelle, avec une population et un résultat vérifiables.",
+      "Pour une part de chiffre d’affaires, garder une ligne par séance et calculer le total de sa journée dans une fenêtre."
+    ],
+    "solution": "SELECT SNC_ID,SNC_DATE,SNC_BILLET*SNC_TARIF AS ca_seance,100.0*(SNC_BILLET*SNC_TARIF)/NULLIF(SUM(SNC_BILLET*SNC_TARIF) OVER(PARTITION BY SNC_DATE),0) AS part_pct FROM T_SEANCE_SNC;",
+    "explanation": "Cette proposition conserve les séances et calcule une part d’un total journalier ; NULLIF évite une division par zéro. Pour valider l’extension libre, formuler aussi sa propre demande, pas seulement recopier cet exemple.",
+    "skillIds": ["B3.05", "B3.12", "B1.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [7]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [12]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "6"
+  },
+  {
+    "id": "SQL-E06",
+    "lessonId": "sql-scalar-subquery",
+    "title": "Trier selon une valeur scalaire",
+    "type": "sql",
+    "prompt": "Afficher ename et deptno, triés par nom du département obtenu dans une sous-requête scalaire puis e_id. Les noms de colonnes attendus sont ceux indiqués ; aucun tri final n’est exigé sauf mention explicite. Les calculs conservent le traitement SQL normal des NULL.",
+    "hints": [
+      "Un tri peut utiliser une expression qui n’est pas affichée.",
+      "La sous-requête dans ORDER BY cherche dname à partir de e.deptno ; ajouter e_id au tri pour départager."
+    ],
+    "solution": "SELECT e.ename,e.deptno FROM emp e ORDER BY (SELECT d.dname FROM dept d WHERE d.deptno=e.deptno),e.e_id;",
+    "explanation": "La clé deptno de dept garantit au plus une ligne dans la sous-requête. Un employé sans département correspondant obtient une valeur de tri NULL ; le placement des NULL dépend du dialecte et peut être précisé explicitement.",
+    "skillIds": ["B2.01", "B2.02"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [46, 47]
+      }
+    ],
+    "origin": "created",
+    "datasetId": "course",
+    "alternativeDatasetIds": ["course-alt"],
+    "ordered": true
+  },
+  {
+    "id": "SQL-G01",
+    "lessonId": "sql-case",
+    "title": "CASE dans UPDATE",
+    "type": "guided",
+    "prompt": "Augmenter le salaire des employés du département 10 de 100 et ceux du département 20 de 200 ; conserver les autres salaires. Écrire l’instruction puis expliquer le salaire NULL.",
+    "hints": [
+      "Le CASE doit être à droite de SET salaire ; il fabrique la nouvelle valeur.",
+      "Utiliser salaire + 100 ou salaire + 200 dans les branches, et salaire dans ELSE pour conserver les autres lignes."
+    ],
+    "solution": "UPDATE emp SET salaire=CASE WHEN deptno=10 THEN salaire+100 WHEN deptno=20 THEN salaire+200 ELSE salaire END;",
+    "explanation": "ELSE salaire conserve la valeur des autres lignes. Un salaire NULL augmenté de 100 reste NULL : CASE ne transforme pas implicitement une valeur inconnue en zéro. Il s’agit d’une écriture guidée, pas d’un SELECT à comparer.",
+    "skillIds": ["B1.03"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [18]
+      }
+    ],
+    "origin": "created"
+  },
+  {
+    "id": "SQL-G02",
+    "lessonId": "sql-recursion",
+    "title": "Écriture Oracle avec CYCLE",
+    "type": "guided",
+    "prompt": "Écrire la forme Oracle des connexions de villes et marquer les cycles de couples départ/arrivée.",
+    "hints": [
+      "La forme récursive Oracle étudiée omet le mot RECURSIVE.",
+      "Après les parenthèses de la CTE, CYCLE indique les colonnes répétées et une colonne marqueur Y/N."
+    ],
+    "solution": "WITH chemins(ville_dep,ville_arr) AS (\n SELECT ville_dep,ville_arr FROM vol\n UNION ALL\n SELECT c.ville_dep,v.ville_arr FROM chemins c JOIN vol v ON c.ville_arr=v.ville_dep\n) CYCLE ville_dep,ville_arr SET is_cycle TO 'Y' DEFAULT 'N'\nSELECT ville_dep,ville_arr,is_cycle FROM chemins;",
+    "explanation": "Oracle n’emploie pas RECURSIVE dans cette forme et exige UNION ALL. La clause marque un cycle selon les colonnes annoncées ; elle n’exprime pas à elle seule la règle « ne revisiter aucune ville ». Les différentes routes peuvent encore produire des doublons.",
+    "skillIds": ["B4.02", "B4.03", "B4.04"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [134, 135, 136, 137, 138]
+      }
+    ],
+    "origin": "created"
+  },
+  {
+    "id": "TP-L-5.7-test",
+    "lessonId": "sql-hypothetical-rank",
+    "title": "Tester une liste distincte puis annuler",
+    "type": "guided",
+    "prompt": "Dans une base de travail, modifier temporairement une séance pour lui attribuer un autre film existant, contrôler la liste distincte et annuler la transaction. Expliquer pourquoi les IDs du corrigé ne sont pas ceux de la reconstitution.",
+    "hints": [
+      "Une expérience de modification doit se faire dans une transaction réversible.",
+      "Choisir une séance existante, un autre film existant, exécuter le contrôle puis ROLLBACK sans COMMIT intermédiaire."
+    ],
+    "solution": "-- DuckDB : protocole guidé de transaction sur le jeu courant\nBEGIN TRANSACTION;\nUPDATE T_SEANCE_SNC SET FLM_ID=(SELECT MAX(FLM_ID) FROM T_FILM_FLM)\nWHERE SNC_ID=(SELECT MIN(SNC_ID) FROM T_SEANCE_SNC);\nSELECT SNC_DATE,FLM_ID,COUNT(*) FROM T_SEANCE_SNC GROUP BY SNC_DATE,FLM_ID;\n-- Exécuter aussi la solution de TP-L-5.7 et comparer les listes.\nROLLBACK;",
+    "explanation": "Choisir d’abord une séance et un film différents sur les données réellement chargées ; si le MIN des séances possède déjà le MAX des films, adapter le choix pour produire une vraie modification. Le jeu original propose les séances 100 et 97 et le film 27 : ces identifiants ne sont pas transposables sans vérification. ROLLBACK annule la modification non validée ; ne pas faire COMMIT entre-temps.",
+    "skillIds": ["B3.12", "B0.07"],
+    "sourceRefs": [
+      {
+        "sourceId": "TP-L",
+        "pages": [5, 6]
+      },
+      {
+        "sourceId": "SOL-L",
+        "pages": [9, 10]
+      }
+    ],
+    "origin": "tp",
+    "tpId": "cinema",
+    "tpQuestion": "5.7"
+  },
+  {
+    "id": "SQL-Q19",
+    "lessonId": "sql-pivot-variants",
+    "title": "PIVOT XML dynamique",
+    "type": "quiz",
+    "prompt": "Dans le contexte Oracle du cours, que produit PIVOT XML avec une sélection dynamique des valeurs ?",
+    "hints": [
+      "Le mot XML décrit la représentation du résultat.",
+      "Distinguer une grille dont les colonnes sont fixes d’un contenu structuré pouvant décrire des catégories dynamiques."
+    ],
+    "solution": "Une sortie XML décrivant le pivot.",
+    "explanation": "La variante dynamique ne crée pas magiquement une liste de colonnes SQL ordinaires inconnues au moment de l’écriture ; sa représentation est XML.",
+    "skillIds": ["B1.08", "B4.A2"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [35, 36]
+      }
+    ],
+    "origin": "created",
+    "options": [
+      "Une sortie XML décrivant le pivot.",
+      "Toujours les mêmes colonnes qu’un PIVOT ordinaire.",
+      "Une suppression des valeurs inconnues.",
+      "Une table modifiée définitivement."
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "SQL-G03",
+    "lessonId": "sql-distributed",
+    "title": "Lire une jointure distribuée",
+    "type": "guided",
+    "prompt": "Expliquer SELECT e.ename,d.dname FROM emp e JOIN dept@SiteGeneve d ON e.deptno=d.deptno. Quel coût supplémentaire apparaît et que cherche à orienter DRIVING_SITE ?",
+    "hints": [
+      "La notation @site porte sur un objet, pas sur une condition de jointure.",
+      "Dessiner deux sites et demander quelles lignes doivent traverser le réseau pour calculer le résultat."
+    ],
+    "solution": "emp est une table locale ; dept est l’objet distant référencé par le database link SiteGeneve. La jointure associe les départements par leur numéro. Les données et résultats intermédiaires peuvent transiter sur le réseau. DRIVING_SITE cherche à orienter le site de traitement ; cela ne prouve pas à lui seul que le choix est plus rapide.",
+    "explanation": "Filtrer et agréger avant un transfert peut réduire son volume. Pour conclure sur le placement, il faut tenir compte des tailles, index, capacités distantes et latence. Aucune connexion distante n’est créée dans cet exercice.",
+    "skillIds": ["B4.05"],
+    "sourceRefs": [
+      {
+        "sourceId": "C-LMD",
+        "pages": [140]
+      }
+    ],
+    "origin": "created"
+  }
+]

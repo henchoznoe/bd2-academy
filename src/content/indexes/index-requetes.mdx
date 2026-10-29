@@ -1,0 +1,25 @@
+export const meta = {"id": "index-requetes", "moduleId": "btree", "title": "Choisir l’ordre des colonnes et couvrir une requête", "summary": "Utiliser égalité, plage, tri, jointure et agrégat pour proposer un index.", "objectives": ["Utiliser égalité, plage, tri, jointure et agrégat pour proposer un index.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-IDX", "pages": [74, 75, 76, 77, 78, 79, 80, 85]}], "skillIds": ["B8.09", "B8.12", "B8.13"], "order": 8};
+
+Partir de la requête : quelles lignes sont cherchées, quelles colonnes sont nécessaires, combien de lignes correspondent, et dans quel ordre doivent-elles sortir ? Un index a un intérêt relatif à cette demande.
+
+### Trois exemples EMP
+
+```sql
+SELECT NumDpt, COUNT(*) FROM Emp GROUP BY NumDpt;
+SELECT NumDpt, MIN(sal) FROM Emp GROUP BY NumDpt;
+SELECT AVG(sal) FROM Emp WHERE Age = 30 AND sal BETWEEN 4000 AND 5000;
+```
+
+Un index sur NumDpt peut suffire au premier agrégat si toutes les lignes pertinentes sont représentées. Pour le deuxième, NumDpt,sal regroupe par département puis ordonne les salaires. Pour le troisième, Age,sal fixe d’abord Age puis isole la plage de salaire, en contenant les valeurs à moyenner. L’ordre sal,Age doit généralement parcourir une plage plus large avant de filtrer Age.
+
+Un index est **recouvrant** lorsque toutes les colonnes nécessaires sont accessibles sans aller chercher la ligne. Cela inclut les colonnes de filtre, de jointure, de tri, d’agrégation et de projection. La présence implicite de la PK dépend du moteur. Une colonne nullable absente d’un index particulier peut rendre un comptage par index incomplet : vérifier la représentation des NULL.
+
+### AND et OR
+
+Un index sur classe aide pour classe=I1, puis âge peut être filtré sur les lignes candidates. Pour classe=I1 **OR** âge=20, le seul index classe ne retrouve pas les élèves de vingt ans dans d’autres classes. Un deuxième index et une union ou fusion d’index peuvent être utiles. Il faut préserver les lignes qui satisfont les deux conditions sans les compter deux fois.
+
+Un index âge peut servir à une plage de vingt à trente ans, mais si presque tous les élèves y figurent, un parcours séquentiel peut coûter moins. Une faible cardinalité ne rend pas absolument tout B-arbre inutile : une valeur rare ou un index recouvrant peut rester intéressant.
+
+### Validation
+
+Pour proposer un index, donner la séquence de recherche dans cet index, les colonnes encore absentes et le coût des écritures. Un `SELECT *` peut annuler la couverture sans changer le filtre.

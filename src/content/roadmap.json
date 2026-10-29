@@ -1,0 +1,2184 @@
+{
+  "skills": [
+    {
+      "id": "B0.01",
+      "description": "Identifier tuples, attributs, domaines, PK, FK, clés candidates et contraintes UNIQUE / NOT NULL ; expliquer les insertions permises ou interdites.",
+      "checked": true,
+      "kind": "skill"
+    },
+    {
+      "id": "B0.02",
+      "description": "Écrire une sélection avec projection, filtre, alias et tri ; expliquer l'effet de DISTINCT.",
+      "checked": true,
+      "kind": "skill"
+    },
+    {
+      "id": "B0.03",
+      "description": "Écrire une jointure interne employés/départements puis une jointure externe conservant tous les employés ; prévoir les lignes produites.",
+      "checked": true,
+      "kind": "skill"
+    },
+    {
+      "id": "B0.04",
+      "description": "Calculer COUNT(*), COUNT(salaire), SUM(salaire) et AVG(salaire) ; expliquer le traitement des NULL et utiliser IS NULL.",
+      "checked": true,
+      "kind": "skill"
+    },
+    {
+      "id": "B0.05",
+      "description": "Donner la moyenne des salaires par département et ne conserver que les groupes dépassant 120 ; distinguer WHERE de HAVING.",
+      "checked": true,
+      "kind": "skill"
+    },
+    {
+      "id": "B0.06",
+      "description": "Trouver les employés au-dessus de la moyenne globale avec une sous-requête ; expliquer IN, EXISTS et la corrélation.",
+      "checked": true,
+      "kind": "skill"
+    },
+    {
+      "id": "B0.07",
+      "description": "Expliquer le rôle de CREATE TABLE, INSERT, UPDATE, DELETE, d'une transaction et de ROLLBACK dans les manipulations des TP.",
+      "checked": true,
+      "kind": "skill"
+    },
+    {
+      "id": "B0.V",
+      "description": "Réussir ce diagnostic sans corrigé, expliquer notamment pourquoi une jointure peut supprimer ou multiplier des lignes et pourquoi = NULL ne remplace pas IS NULL.",
+      "checked": true,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.01",
+      "description": "Écrire et lire un CASE simple et un CASE recherché ; expliquer l'arrêt au premier WHEN vrai et le résultat sans ELSE.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.01a",
+      "description": "Lire un CASE recherché et prédire ses résultats sur plusieurs valeurs.",
+      "checked": true,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.01b",
+      "description": "Écrire la structure d’un CASE recherché avec conditions, ELSE, END et une projection SQL.",
+      "checked": true,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.01c",
+      "description": "Expliquer l’arrêt au premier WHEN vrai et l’effet d’une inversion des branches.",
+      "checked": true,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.01d",
+      "description": "Écrire et expliquer un CASE simple, en le distinguant de la forme recherchée.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.01e",
+      "description": "Prédire le résultat lorsqu’aucune branche ne convient et que ELSE est absent.",
+      "checked": true,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.02",
+      "description": "Traiter explicitement les NULL et prévoir le résultat de conditions fausses ou inconnues.",
+      "checked": true,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.03",
+      "description": "Utiliser un CASE dans une expression de requête et dans un UPDATE, sans modifier involontairement les autres cas.",
+      "checked": true,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.04",
+      "description": "Expliquer et utiliser NULLIF et COALESCE, seuls puis combinés ; respecter la compatibilité des types.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.04a",
+      "description": "Expliquer COALESCE et prévoir la première valeur non NULL, y compris lorsque cette valeur est zéro.",
+      "checked": true,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.04b",
+      "description": "Écrire une projection SQL utilisant COALESCE pour une demande donnée.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.04c",
+      "description": "Expliquer et appliquer NULLIF ; notion présentée, exercice de vérification passé à la demande de l’étudiant.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.04d",
+      "description": "Décomposer et écrire une combinaison NULLIF / COALESCE.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.04e",
+      "description": "Vérifier la compatibilité des types et introduire une conversion lorsque nécessaire.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.05",
+      "description": "Construire un tableau croisé par agrégation conditionnelle ; distinguer COUNT(CASE…) et SUM(CASE…) et leurs valeurs par défaut.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.05a",
+      "description": "Prédire COUNT(CASE…) avec ELSE absent, NULL ou zéro ; expliquer pourquoi COUNT compte aussi les zéros.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.05b",
+      "description": "Prédire SUM(CASE… ELSE 0 END) et distinguer somme des valeurs et nombre de valeurs non NULL.",
+      "checked": true,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.05c",
+      "description": "Écrire un tableau croisé avec une ligne par groupe et plusieurs colonnes calculées conditionnellement.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.05d",
+      "description": "Expliquer les valeurs par défaut et le cas où aucun élément ne correspond à une catégorie dans un groupe.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.06",
+      "description": "Lire et construire un PIVOT : colonnes de regroupement implicites, colonne pivotée, valeurs retenues, fonctions d'agrégation et alias.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.06a",
+      "description": "Identifier la colonne FOR, les valeurs et alias IN et la colonne de regroupement implicite lors d’une inversion du tableau.",
+      "checked": true,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.06b",
+      "description": "Écrire une requête PIVOT complète avec une source adaptée et vérifier son résultat.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.06c",
+      "description": "Expliquer l’effet d’une colonne source supplémentaire inutilisée sur le regroupement implicite.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.07",
+      "description": "Comprendre un pivot avec plusieurs agrégats ou plusieurs colonnes pivotées et calculer la forme du résultat.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B1.08",
+      "description": "Reconnaître les variantes du support : agrégats avec FILTER, PIVOT Oracle et pivot dynamique XML ; distinguer principe général et syntaxe propre au SGBD.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "LMD-C01",
+      "description": "Départements avec CASE : énoncé p. 7, correction p. 8 ; analyse du piège WHEN NULL p. 9–10. → B1.01–02",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "LMD-C02",
+      "description": "Taux d'occupation : énoncé p. 14, correction p. 15–16. → B1.01–02",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "LMD-C03",
+      "description": "Pivot sur les statuts : énoncé p. 27, correction p. 28. → B1.06",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "LMD-C04",
+      "description": "Pivot avec nombre et valeur des commandes : énoncé p. 29, analyse et correction p. 30–32. → B1.06–07",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "LMD-C05",
+      "description": "Pivot sur catégorie et client : énoncé p. 33, correction p. 34. → B1.07",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "LMD-C06",
+      "description": "Expliquer puis refaire l'exemple des budgets p. 41, y compris NULLIF, COALESCE, conversion et filtre. → B1.04",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "B1.V",
+      "description": "Sur un petit jeu de données, prédire les résultats d'un CASE et d'un pivot, écrire leur équivalent et expliquer le traitement des catégories absentes et des valeurs nulles.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B2.01",
+      "description": "Reconnaître une sous-requête scalaire ; expliquer ses résultats avec zéro, une ou plusieurs lignes et les erreurs de cardinalité ou de nombre de colonnes.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B2.02",
+      "description": "Utiliser une sous-requête dans SELECT, WHERE ou ORDER BY, et une table dérivée dans FROM ; expliciter les alias et les colonnes accessibles.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B2.03",
+      "description": "Distinguer sous-requête corrélée et non corrélée ; expliquer LATERAL à partir des lignes de la requête externe.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B2.04",
+      "description": "Écrire un top N par groupe avec LATERAL et un tri adapté, en précisant le traitement des ex æquo.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B2.05",
+      "description": "Décomposer une demande en CTE avec WITH, y compris des CTE dépendantes ; expliquer leur résultat intermédiaire et leur portée.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B2.06",
+      "description": "Comparer deux écritures avec et sans CTE sur leur sens ; ne pas déduire automatiquement un gain de performance de la seule présence de WITH.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B2.07",
+      "description": "Lire et écrire un MERGE : source, destination, condition ON, branches de mise à jour et d'insertion ; prédire la table finale.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B2.08",
+      "description": "Paginer avec OFFSET / FETCH, distinguer ONLY de WITH TIES, et préciser pourquoi un ordre de tri est nécessaire pour une sélection déterministe.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B2.09",
+      "description": "Comprendre la sélection aléatoire présentée sous Oracle, ainsi que les différences entre LIMIT, FETCH et l'ancien usage de ROWNUM.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "LMD-C07",
+      "description": "Expliquer les sous-requêtes incorrectes et proposer des variantes correctes p. 45 ; expliquer l'exemple de tri p. 46–47. → B2.01–02",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "LMD-C08",
+      "description": "Deux animaux les plus âgés par personne : énoncé p. 52, proposition p. 53 ; adapter la limitation de lignes au SGBD. → B2.03–04",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "LMD-C09",
+      "description": "Charges salariales supérieures à la moyenne des charges : demande p. 56, démarche et variantes p. 57–60. → B2.05–06",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "LMD-C10",
+      "description": "Refaire à la main l'exemple de MERGE p. 63–64, puis vérifier quelles lignes changent ou sont ajoutées. → B2.07",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "LMD-C11",
+      "description": "Expliquer les lignes ignorées et retenues dans les exemples OFFSET / FETCH et sélection aléatoire p. 69–72. → B2.08–09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "B2.V",
+      "description": "Traduire une demande en sous-requête puis en CTE, justifier leur équivalence, résoudre un top N par groupe et prédire un MERGE sans consulter les exemples.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B3.01",
+      "description": "Énumérer les groupes construits par GROUPING SETS, ROLLUP et CUBE, avec ou sans colonnes fixes, et expliquer leurs totaux et sous-totaux.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B3.02",
+      "description": "Réécrire un regroupement étendu avec UNION ALL, comparer deux résultats et expliquer l'effet de l'ordre des colonnes dans un ROLLUP.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B3.03",
+      "description": "Distinguer le NULL d'un sous-total d'une valeur nulle présente dans les données ; interpréter le rôle du groupe vide et de HAVING.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B3.04",
+      "description": "Expliquer la différence entre agrégation avec GROUP BY et fonction de fenêtre avec OVER, notamment le nombre de lignes conservées.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B3.05",
+      "description": "Utiliser OVER() et OVER(PARTITION BY…) avec COUNT, SUM, AVG, MIN et MAX ; calculer un résultat global et un résultat par partition.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B3.06",
+      "description": "Distinguer le tri dans OVER du tri final ; définir un cadre avec UNBOUNDED, CURRENT ROW, PRECEDING et FOLLOWING.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B3.07",
+      "description": "Distinguer ROWS et RANGE, spécialement avec des valeurs de tri égales ; préciser explicitement la fenêtre lorsqu'elle change le sens du calcul.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B3.08",
+      "description": "Calculer des cumuls et des moyennes mobiles à la main, puis écrire la requête correspondante.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B3.09",
+      "description": "Combiner GROUP BY et fenêtrage ; expliquer l'ordre logique FROM / WHERE / GROUP BY / HAVING / fenêtres / tri final et utiliser une requête externe pour filtrer un résultat de fenêtre.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B3.10",
+      "description": "Calculer RANK, DENSE_RANK, ROW_NUMBER et NTILE, avec partitions et ex æquo ; distinguer classement global, classement local et ensemble filtré.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B3.11",
+      "description": "Expliquer le classement hypothétique RANK(valeur) WITHIN GROUP (…) et le distinguer de RANK() OVER (…).",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B3.12",
+      "description": "Réécrire un calcul corrélé avec du fenêtrage, en conservant sa sémantique ; comprendre LISTAGG utilisé dans les approfondissements du TP.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "LMD-C12",
+      "description": "Refaire les groupements et résultats sur ventes et animaux p. 76–92, puis permuter les colonnes de ROLLUP / CUBE. → B3.01–03",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "LMD-C13",
+      "description": "Fenêtres globales et par département : énoncé p. 100, corrections p. 101–102. → B3.04–05",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "LMD-C14",
+      "description": "Comparer fenêtrage et GROUP BY : énoncé p. 104, correction p. 105. → B3.04",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "LMD-C15",
+      "description": "Calculer le cumul sur les comptes : énoncé p. 110, déroulement p. 111–115 ; ajouter un ex æquo pour comparer ROWS et RANGE. → B3.06–08",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "LMD-C16",
+      "description": "Total mensuel et cumul annuel : énoncé p. 116, solution et déroulement p. 117–119. → B3.08–09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "LMD-C17",
+      "description": "Refaire les exemples de rang hypothétique et analytique p. 124–128, puis créer un cas avec ex æquo pour comparer les fonctions. → B3.10–11",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "B3.V",
+      "description": "Remplir sans SQL un tableau de résultats combinant partition, cumul et rang ; expliquer l'effet d'un filtre avant ou après le classement, puis écrire les requêtes correspondantes.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B4.01",
+      "description": "Reconnaître un problème de parcours de graphe ou de fermeture transitive nécessitant une requête récursive.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B4.02",
+      "description": "Séparer l'ancre et l'étape récursive, préciser les colonnes produites et dérouler plusieurs itérations sur un petit graphe.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B4.03",
+      "description": "Expliquer le rôle de UNION / UNION ALL, les doublons et la condition d'arrêt ; distinguer les contraintes de syntaxe Oracle de celles d'autres SGBD.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B4.04",
+      "description": "Détecter les effets d'un cycle et expliquer la clause CYCLE ainsi que la différence entre détecter un cycle et interdire toute revisite de nœud.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B4.05",
+      "description": "Comprendre le principe d'un database link Oracle, la notation d'un objet distant et le but du hint DRIVING_SITE, sans mémoriser un identifiant de connexion.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B4.A1",
+      "description": "Distinguer INSERT ALL et INSERT FIRST, avec conditions qui se recouvrent p. 65–67.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B4.A2",
+      "description": "Comprendre le principe de PIVOT XML p. 35–36. Repère seulement pour UNPIVOT p. 37, explicitement non vu.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "LMD-C18",
+      "description": "Dérouler les connexions entre villes p. 133–135, puis analyser les cycles et la solution illustrée p. 136–138. → B4.01–04",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "LMD-C19",
+      "description": "Comparer le nombre et la destination des insertions dans l'exemple INSERT FIRST / INSERT ALL p. 67. → B4.A1",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "B4.V",
+      "description": "Construire et expliquer une CTE récursive sur un petit graphe sans cycle, puis expliquer ce qui doit changer si un cycle est ajouté. Décrire oralement une requête sur un objet distant.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B5.01",
+      "description": "Traduire une règle métier en DF et une DF en phrase précise ; expliquer source et cible, et pourquoi une DF est une contrainte sur toutes les données admissibles.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B5.02",
+      "description": "Vérifier une DF sur une extension, proposer une insertion valide et construire un contre-exemple ; distinguer observation sur des données et règle générale.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B5.03",
+      "description": "Reconnaître une DF triviale, simple, élémentaire ou directe et repérer les attributs superflus.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B5.04",
+      "description": "Appliquer réflexivité, augmentation et transitivité, puis union, décomposition et pseudo-transitivité, en écrivant une preuve correcte dans le bon sens.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B5.05",
+      "description": "Calculer la fermeture d'un ensemble d'attributs X+ jusqu'au point fixe et utiliser ce calcul pour tester une implication.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B5.06",
+      "description": "Expliquer la fermeture d'un ensemble de DF F+, la distinguer de X+ et tester l'équivalence de deux ensembles par implications dans les deux sens.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B5.07",
+      "description": "Représenter des DF par un graphe, y compris les déterminants composés, sans transformer une dépendance conjointe en dépendances séparées.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B5.08",
+      "description": "Construire une couverture minimale : décomposer les cibles, simplifier les sources, retirer les DF redondantes et vérifier l'équivalence finale ; comprendre qu'elle peut ne pas être unique.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B5.09",
+      "description": "Trouver toutes les clés candidates, y compris avec cycles de DF ou attributs absents des DF ; prouver la fermeture complète et la minimalité de chaque clé.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B5.10",
+      "description": "Distinguer clé candidate, superclé et choix d'une PK ; expliquer quels attributs sont premiers, c'est-à-dire présents dans au moins une clé candidate.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B5.11",
+      "description": "Projeter des DF sur une sous-relation en tenant compte des DF déduites, et pas seulement des DF initialement écrites.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "DF-C01",
+      "description": "COMPAGNIE : trouver les DF et des insertions valides ou invalides, p. 9 ; corrigé p. 2–5. → B5.01–02",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "DF-C02",
+      "description": "Implication AD → F avec Armstrong, p. 18 ; corrigé p. 6–7. → B5.04",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "DF-C03",
+      "description": "Tester AD → F et AB → F par fermetures, p. 19 ; corrigé et contre-exemple p. 8–10. → B5.02, B5.05",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "DF-C04",
+      "description": "Déduire une DF n'autorise pas forcément à remplacer l'ancienne : p. 23 ; corrigé p. 11–14. → B5.04–06",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "DF-C05",
+      "description": "Couverture sur A, B, C, D, p. 30 ; corrigé p. 15–21. → B5.08",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "DF-C06",
+      "description": "Deux couvertures avec cycle B/C et exemple concret, p. 31 ; corrigé p. 22–23. → B5.01, B5.06, B5.08",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "DF-C07",
+      "description": "Couverture minimale avec déterminants composés p. 32 ; pas de corrigé correspondant fourni. → B5.08",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "DF-C08",
+      "description": "Clés de EMPLOYE, ACHAT, PIECE et MATIERE, traiter les quatre cas p. 35 ; corrigé p. 24–25. → B5.09–10",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "DF-C09",
+      "description": "Ensemble avec B1/B2, C1/C2, D1/D2 : couverture puis clés p. 36 ; éléments de correction p. 26–28. Vérifier que la recherche des clés est exhaustive. → B5.08–09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "DF-C10",
+      "description": "Équivalence de E1 et E2 sur A, B, C, D, E, p. 37 ; corrigé p. 29–31. → B5.06, B5.08",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "DF-C11",
+      "description": "DF sur la projection S(A,C,D), p. 38 ; corrigé p. 32–34. → B5.11",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "DF-C12",
+      "description": "Recherche des clés sur l'ensemble de quinze DF p. 39 ; pas de corrigé fourni. → B5.09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "DF-C13",
+      "description": "Comparer les deux ensembles B1/B2, D1/D2 p. 40 ; pas de corrigé détaillé fourni dans ce fichier. → B5.06, B5.08",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "DF-C14",
+      "description": "« Avez-vous compris ? » : créer un schéma, une phrase DF et une phrase non-DF, un ensemble minimal, les clés et une extension invalide p. 41. → B5.01–10",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "B5.V",
+      "description": "Sur un ensemble inédit, prouver une implication de deux manières, trouver une couverture minimale et toutes les clés candidates, puis vérifier chaque suppression et chaque simplification.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B6.01",
+      "description": "Identifier les redondances, mélanges de sémantique et anomalies d'insertion, modification et suppression ; expliquer ce qu'une normalisation cherche à améliorer.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B6.02",
+      "description": "Décomposer par projection et recomposer par jointure ; expliquer les tuples parasites d'une jointure avec perte d'information.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B6.03",
+      "description": "Vérifier une décomposition binaire sans perte à partir de l'intersection et de sa fermeture ; appliquer le théorème de Heath en donnant la DF utilisée.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B6.04",
+      "description": "Vérifier séparément la préservation des DF ; expliquer pourquoi une décomposition peut préserver le contenu et perdre une contrainte.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B6.05",
+      "description": "Reconnaître 1FN et dépendances partielles de 2FN, en considérant toutes les clés candidates, pas seulement la PK choisie.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B6.06",
+      "description": "Tester la 3FN à partir des DF, superclés et attributs premiers ; repérer les dépendances transitives problématiques et les limites des formulations simplifiées.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B6.07",
+      "description": "Appliquer toutes les étapes de la synthèse en 3FN : couverture minimale, clés, groupement par source, fusion des sources équivalentes, création des relations, élimination des inclusions et ajout d'une relation contenant une clé si nécessaire.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B6.08",
+      "description": "Tester BCNF à partir des déterminants des DF non triviales ; expliquer pourquoi une relation peut être en 3FN sans être en BCNF.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B6.09",
+      "description": "Appliquer la décomposition BCNF, recalculer les DF projetées à chaque étape et vérifier la préservation du contenu et les éventuelles DF perdues.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B6.10",
+      "description": "Comparer synthèse 3FN et décomposition BCNF : point de départ, garanties, relations obtenues et compromis.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B6.11",
+      "description": "Reconnaître une dépendance multivaluée, la distinguer d'une DF et expliquer l'indépendance entre deux ensembles de faits ; construire les tuples croisés requis.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B6.12",
+      "description": "Tester la 4FN sur les dépendances non triviales et décomposer les faits indépendants ; préserver ensemble les attributs qui décrivent un même fait.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B6.13",
+      "description": "Traduire les relations obtenues en SQL avec PK, clés candidates, FK, UNIQUE et NOT NULL ; vérifier les DF avec des requêtes, corriger les données puis les transférer.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B6.14",
+      "description": "Expliquer ce qui change dans les requêtes après normalisation et comment reconstruire l'ancienne vue des données ; comprendre les exemples de contraintes perdues contrôlées via vue matérialisée et de compatibilité via vue/triggers.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "FN-C01",
+      "description": "Comparer les deux schémas fournisseurs/produits/livraisons et nommer les anomalies p. 6–9. → B6.01",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FN-C02",
+      "description": "Recomposer EMPLOYE, trouver les tuples parasites et appliquer le test de préservation p. 12–17. → B6.02–03",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FN-C03",
+      "description": "Montrer la DF perdue dans COMPAGNIE et donner une mise à jour qui la viole p. 18–22. → B6.04",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FN-C04",
+      "description": "Refaire l'exemple de synthèse fournisseurs/pièces avec fusion des sources p. 35–40. → B6.07",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FN-C05",
+      "description": "PRÊTS : décomposition et nécessité de conserver la clé universelle p. 41 ; corrigé p. 2–3. → B6.07",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FN-C06",
+      "description": "R(A,B,C) : clé, forme normale, extension invalide, correction et synthèse p. 42 ; corrigé p. 4–5. → B6.05–07",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FN-C07",
+      "description": "Deux couvertures équivalentes, deux synthèses à comparer p. 43 ; pas de corrigé dédié fourni. → B6.07, B5.06",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FN-C08",
+      "description": "R(A,B,C,D,E), avec AB → CDE et D → B : forme normale et anomalies p. 44 ; corrigé p. 6–7, discussion BCNF p. 45–50 du cours. → B6.06, B6.08",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FN-C09",
+      "description": "Décomposer AVION p. 54, analyser ENSEIGNEMENT p. 56–58 puis la projection qui conserve une DF déduite p. 59. → B6.09–10",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FN-C10",
+      "description": "Cours/professeurs/livres : extension complète, forme normale et anomalies p. 69 ; corrigé p. 8–11. → B6.11–12",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FN-C11",
+      "description": "LOCALISATION : forme normale p. 81, puis analyse de la proposition de décomposition p. 82 ; corrigé p. 12–15. → B6.04, B6.08–09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FN-C12",
+      "description": "Personnes, enfants et voitures : décomposition 4FN p. 83 ; corrigé p. 16–17. → B6.11–12",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "B6.V",
+      "description": "Sur un schéma inédit, expliquer les anomalies, déterminer la forme normale, réaliser une synthèse 3FN et une décomposition BCNF, vérifier les garanties de chacune et traiter un petit cas de dépendance multivaluée.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B7.01",
+      "description": "Distinguer organisation logique et physique, mémoire principale, secondaire et tertiaire ; expliquer persistance, capacité et ordres de grandeur des accès utilisés dans le cours.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B7.02",
+      "description": "Définir fichier, bloc/page, enregistrement et champ ; expliquer pourquoi un accès à un seul tuple peut nécessiter le transfert d'un bloc entier.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B7.03",
+      "description": "Expliquer positionnement, rotation et transfert sur un disque mécanique ; comparer les coûts d'accès aléatoires et séquentiels sans appliquer les chiffres HDD à tous les supports.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B7.04",
+      "description": "Expliquer le rôle du buffer manager, du cache et du recovery manager ; distinguer lectures logiques et physiques et calculer un hit ratio.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B7.05",
+      "description": "Expliquer l'intérêt de regrouper les données souvent utilisées ensemble et les effets de la présence de blocs en mémoire.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B7.06",
+      "description": "Distinguer enregistrements fixes et variables, adresses de blocs et d'articles ; expliquer l'influence de la taille des enregistrements et des blocs.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B7.07",
+      "description": "Comparer organisation en tas, triée et hachée, accès séquentiel et sélectif ; préciser le compromis entre recherche, insertion, suppression et mise à jour.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B7.08",
+      "description": "Estimer les E/S d'une recherche et d'une modification dans un tas ou un fichier trié, en précisant unicité, succès de la recherche et hypothèses de cache.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B7.09",
+      "description": "Calculer les enregistrements par bloc, le nombre de blocs et la taille d'une table avec les unités et arrondis appropriés.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B7.A1",
+      "description": "Reconnaître plateau, piste, secteur et cylindre p. 10–12, les stratégies LRU/LFU/MRU p. 20 et le problème de swap p. 21.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B7.A2",
+      "description": "Expliquer les principes RAID présentés p. 25–26 et le compromis du paramètre Oracle DB Block size p. 29–30.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "PHY-C01",
+      "description": "Transfert de 500 blocs contigus ou dispersés : p. 14–15. Écrire les deux formules avant le résultat et justifier les positionnements. → B7.03",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "PHY-C02",
+      "description": "Sur un exemple de lectures logiques et physiques choisi pour la révision, calculer le hit ratio et expliquer les cas extrêmes. → B7.04",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "PHY-C03",
+      "description": "Estimer la taille d'une table à partir d'un effectif, d'une taille de ligne et d'une taille de bloc ; refaire le calcul lorsque la taille de ligne change. → B7.06, B7.09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "B7.V",
+      "description": "Expliquer un accès disque/RAM et comparer deux chemins d'accès ; résoudre un calcul de blocs et de transfert en écrivant formules, unités, arrondis et hypothèses.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B8.01",
+      "description": "Expliquer le passage du fichier trié à l'index hiérarchisé ; distinguer fichier de données, index, clé de recherche et clé primaire.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B8.02",
+      "description": "Reconnaître un index dense ou creux, préciser les contraintes d'organisation et interpréter les pointeurs de données et d'index.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B8.03",
+      "description": "Dessiner un B-arbre d'ordre d selon la convention du cours : nombre de clés, nombre de fils, exception de la racine et feuilles au même niveau.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B8.04",
+      "description": "Exécuter une recherche, une insertion avec éclatement et une suppression avec redistribution ou fusion ; expliquer un changement de hauteur.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B8.05",
+      "description": "Distinguer B-arbre et B+arbre : contenu des nœuds internes et feuilles, chaînage, recherche par intervalle et conséquences sur la capacité.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B8.06",
+      "description": "Déterminer l'ordre maximal à partir de la taille du bloc, des clés et des pointeurs ; séparer le calcul d'un B-arbre de celui d'un B+arbre.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B8.07",
+      "description": "Calculer capacités minimale/maximale, nombre de nœuds et feuilles, hauteur nécessaire et coût d'accès ; préciser le taux de remplissage et les niveaux déjà en RAM.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B8.08",
+      "description": "Calculer taille de table, taille des feuilles et de l'index, puis expliquer l'effet d'un changement de taille de clé ou d'enregistrement.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B8.09",
+      "description": "Expliquer bulk loading, traitement des valeurs dupliquées et index composés ; utiliser l'ordre lexicographique et le préfixe gauche.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B8.10",
+      "description": "Distinguer clustered et nonclustered ; expliquer feuilles de données, localisateurs physiques ou logiques et accès supplémentaire à la table.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B8.11",
+      "description": "Comparer les organisations présentées sous MySQL/InnoDB, SQL Server et Oracle : PK, heap, ROWID, IOT et index secondaires ; interpréter BLEVEL par rapport à la hauteur.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B8.12",
+      "description": "Choisir un index pour égalité, intervalle, jointure, tri ou regroupement ; expliquer la sélectivité, le clustering factor et pourquoi l'index peut être moins bon qu'un full scan.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B8.13",
+      "description": "Reconnaître et construire un index recouvrant ; expliquer pourquoi SELECT * peut faire perdre la couverture et augmenter fortement les E/S.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B8.14",
+      "description": "Comprendre les index fonctionnels et les exemples JSON du support ; repérer les fonctions ou conversions qui peuvent empêcher l'utilisation d'un index ordinaire.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B8.15",
+      "description": "Justifier les coûts d'espace et de maintenance des index, leur reconstruction et leur désactivation/recréation lors d'un chargement ; considérer la charge réelle de lectures et d'écritures.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "IDX-C01",
+      "description": "Simuler insertion de 13, puis suppressions de 12 et 14 p. 20–24. → B8.03–04",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "IDX-C02",
+      "description": "Ordre maximal d'un B-arbre avec blocs de 4 K, clé de 4 octets et pointeurs de 8 octets p. 31. → B8.06",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "IDX-C03",
+      "description": "Index de hauteur 3 et maximum de 255 pointeurs par bloc : traiter les quatre questions, capacité, nœuds/feuilles, racine en RAM et niveaux internes en RAM p. 32. → B8.07",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "IDX-C04",
+      "description": "Expliquer l'extrait MySQL « Avez-vous compris ? » p. 33. → B8.07, B8.11",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "IDX-C05",
+      "description": "Pourquoi l'index Sybase sur CHAR(700) échoue-t-il avec des blocs de 2 K ? p. 34. → B8.06",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "IDX-C06",
+      "description": "B+arbre : insertion de 20, 40, 25, 15, 17 p. 38, puis ordre maximal et comparaison au B-arbre p. 39–40. → B8.04–06",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "IDX-C07",
+      "description": "Nombre de valeurs d'une clé de 4 octets et hauteur maximale p. 41, éléments de correction p. 42 ; expliquer la réflexion UUID p. 43. → B8.06–08",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "IDX-C08",
+      "description": "Refaire la construction par bulk loading p. 47–48. → B8.09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "IDX-C09",
+      "description": "Index sur classe, puis sur âge : égalité, OR, AND et intervalle p. 74–76. → B8.12",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "IDX-C10",
+      "description": "Peut-on répondre avec le seul index ? p. 77, donner des exemples et contre-exemples. → B8.13",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "IDX-C11",
+      "description": "Proposer et justifier les meilleurs index pour les trois requêtes sur EMP p. 79, correction p. 80. → B8.09, B8.12–13",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "IDX-C12",
+      "description": "Calculer les E/S des six scénarios sur TITRES p. 81, puis expliquer le clustering factor p. 82–83 et refaire les scénarios avec SELECT * p. 84. → B8.07, B8.12–13",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "IDX-C13",
+      "description": "Analyser et qualifier les index dessinés p. 99. → B8.01–03, B8.10",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "IDX-C14",
+      "description": "Représenter FILM en séquentiel, après insertions/suppressions, puis avec index creux et dense p. 100. → B7.07–08, B8.02",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "IDX-C15",
+      "description": "Choisir les index pour chacun des quatre profils de charge p. 101–104, en justifiant le compromis lectures/écritures. → B8.12, B8.15",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "IDX-C16",
+      "description": "Comparer les écritures SQL et conversions de types p. 105, en précisant domaines et hypothèses. → B8.14",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "B8.V",
+      "description": "Lire un schéma d'index, calculer ordre/hauteur/capacité et coût d'accès, simuler une modification, puis proposer et défendre un index recouvrant face à un full scan.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B9.01",
+      "description": "Construire un index bitmap, relier chaque bit à une ligne et répondre à une restriction ou un comptage avec AND, OR et NOT.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B9.02",
+      "description": "Comparer bitmap et B-arbre selon cardinalité, répétitions, coût de maintenance et charge analytique ; comprendre les exemples bitmap sur JSON.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B9.03",
+      "description": "Expliquer hachage statique, buckets, fonction de hachage, collisions, zones libres et réorganisation ; distinguer fichier haché et index de hachage.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B9.04",
+      "description": "Comparer hachage et B+arbre pour égalité et intervalle, puis interpréter HASHKEYS, SIZE et HASH IS dans les exemples Oracle.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B9.05",
+      "description": "Expliquer les clusters Oracle indexés et hachés, éventuellement multitables ; les distinguer d'un clustered index sur une table et justifier les effets sur jointures et parcours complets.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B9.06",
+      "description": "Lire un plan EXPLAIN / EXPLAIN ANALYZE : parcours, index possibles et choisis, ordre de jointure, lignes estimées/réelles et informations d'exécution disponibles.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B9.07",
+      "description": "Comparer des formulations de requêtes en vérifiant d'abord leur sens : jointure, sous-requête, IN / EXISTS, NOT IN / NOT EXISTS, jointure externe et effet des doublons ou NULL.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B9.08",
+      "description": "Expliquer l'effet de la largeur des lignes, des fonctions sur colonnes filtrées, des index composés, de la couverture et de la factorisation par CTE sur les chemins d'accès.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B9.09",
+      "description": "Appuyer une conclusion de performance sur un plan et des mesures contextualisées, sans transformer les temps du corrigé en loi générale.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B9.10",
+      "description": "Reconnaître les organisations du glossaire : heap, hash, ISAM, B+tree et bitmap ; choisir selon la charge et documenter le compromis.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "AUT-C01",
+      "description": "Produits/couleurs : reconstruire les bitmaps et réaliser les trois comptages p. 4–6. → B9.01",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "AUT-C02",
+      "description": "PROFESSEUR : spécialités et catégories, bitmap et accès nécessaires p. 29. → B9.01–02",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "AUT-C03",
+      "description": "Choisir une organisation pour la recherche sur tauxHoraire, en tenant compte des valeurs actuelles et de la montée en charge p. 30. → B9.02–04",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "B9.V",
+      "description": "Sur trois besoins différents, choisir entre B+arbre, bitmap, hash ou cluster, expliquer les opérations favorisées et pénalisées, puis analyser une réécriture SQL sans changer son résultat.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B10.01",
+      "description": "Distinguer égalité, recherche de préfixe, sous-chaîne et motif ; expliquer quand un B-arbre aide un LIKE, le rôle de % et les index sur préfixe de colonne.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B10.02",
+      "description": "Comparer LIKE, RLIKE / REGEXP_LIKE et Full Text selon le besoin, le résultat et le coût ; ne pas assimiler recherche de mots et recherche de sous-chaînes.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B10.03",
+      "description": "Construire un petit index inversé : termes, documents et informations utiles aux scores ; expliquer le lien entre index inversé et recherche.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B10.04",
+      "description": "Expliquer tokenisation, stopwords, normalisation des caractères, stemming et n-grams ; distinguer chaîne générale de prétraitement et possibilités du parseur MySQL présenté.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B10.05",
+      "description": "Calculer TF, IDF, TF-IDF et similarité cosinus avec les conventions du cours ; préciser corpus, fréquence, norme et sens de variation du score.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B10.06",
+      "description": "Expliquer la pertinence InnoDB et la formule de ranking illustrée, la distinguer du TF-IDF normalisé et comprendre le rôle général de BM25.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B10.07",
+      "description": "Comprendre charset, collation, sensibilité à la casse/aux accents et effets sur comparaison, tri et recherche.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B10.08",
+      "description": "Créer et supprimer un index FULLTEXT ; relier les colonnes de MATCH à un index compatible et distinguer index multicolonne et index séparés.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B10.09",
+      "description": "Écrire MATCH (…) AGAINST (…), afficher et interpréter les scores ; distinguer mode naturel, booléen et expansion de requête.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B10.10",
+      "description": "Utiliser les opérateurs booléens du support : inclusion, exclusion, pondération, groupes, préfixe, phrase et proximité ; expliquer l'effet des mots optionnels et des stopwords.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B10.11",
+      "description": "Décrire les étapes de l'expansion de requête et expliquer pourquoi elle peut élargir les résultats au-delà des mots saisis.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B10.12",
+      "description": "Interpréter les métadonnées d'index Full Text, tailles de tokens, tables de stopwords et index auxiliaires ; expliquer reconstruction, chargement massif et limites présentées.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B10.13",
+      "description": "Expliquer un embedding, son espace de représentation et la différence entre proximité sémantique et présence exacte de mots ; relier TF-IDF vectoriel et embeddings appris.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B10.14",
+      "description": "Comprendre l'idée de cooccurrence/GloVe et l'interprétation géométrique d'une proximité entre vecteurs, sans ajouter un cours complet de machine learning.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B10.15",
+      "description": "Lire les exemples VECTOR(N), conversions texte/vecteur et dimension ; expliquer stockage, dimensions compatibles et contraintes décrites pour la version MySQL du support.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B10.16",
+      "description": "Comprendre les distances cosinus, produit scalaire et euclidienne, ainsi que le tri d'une recherche de voisins ; distinguer similarité et distance.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B10.17",
+      "description": "Distinguer stockage des vecteurs, génération des embeddings et indexation de voisins approximatifs ; expliquer KNN exact / ANN et les limites/alternatives citées dans le cours.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "B10.18",
+      "description": "Choisir entre recherche par égalité, LIKE, Full Text et recherche vectorielle selon une demande précise et justifier ce qui peut être retrouvé ou manqué.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "FT-C01",
+      "description": "Analyser les exemples LIKE et les motifs AND / OR p. 5–12, puis prédire l'intérêt de l'index. → B10.01–02",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FT-C02",
+      "description": "Refaire un calcul TF-IDF et cosinus à partir des exemples p. 18–29, puis le ranking à un mot p. 31–34. → B10.03, B10.05–06",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FT-C03",
+      "description": "Construire les tokens d'un exemple avec le parseur ordinaire puis n-gram, expliquer stopwords et collation p. 36–54. → B10.04, B10.07, B10.12",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FT-C04",
+      "description": "Expliquer chaque expression de recherche booléenne p. 61–62, comparer les modes p. 63–64 et l'utilisation d'index séparés ou combinés p. 65–66. → B10.08–11",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "VEC-C01",
+      "description": "Expliquer les représentations TF-IDF, GloVe et géométriques p. 5–10. → B10.13–14",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "VEC-C02",
+      "description": "Lire et adapter la requête des documents les plus proches p. 16, puis expliquer les limites et alternatives p. 18–19. → B10.15–18",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "B10.V",
+      "description": "Construire un mini-index inversé, calculer un score simple, écrire une recherche dans chaque mode Full Text et expliquer quand une recherche sémantique apporte autre chose. Justifier les absences de résultats dues aux tokens, stopwords ou colonnes indexées.",
+      "checked": false,
+      "kind": "skill"
+    },
+    {
+      "id": "TP-L-1",
+      "description": "Comprendre les deux tables, les types Oracle de date/heure, la FK et les contrôles de chargement énoncé p. 1–2. Exécution à distinguer de la compréhension du schéma. → B0.01, B0.07",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-2.1",
+      "description": "Classer les films en culturel/divertissement énoncé p. 2, corrigé p. 2. → B1.01",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-2.2",
+      "description": "Traiter séparément les genres inconnus énoncé p. 2, corrigé p. 2. → B1.02",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-2.3",
+      "description": "Remplacer le genre NULL sans CASE énoncé p. 2, corrigé p. 2. → B1.04",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-3.1",
+      "description": "Meilleure séance par film, date/heure et comparaison ONLY / WITH TIES énoncé p. 2–3, corrigé p. 3–4. → B2.03–04, B2.08",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-3.2",
+      "description": "Formuler précisément la sémantique de la requête sur les moyennes énoncé p. 3, corrigé p. 4. → B2.01–02",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-3.3",
+      "description": "Réécrire cette requête avec des CTE énoncé p. 3, corrigé p. 4. → B2.05–06",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-4.1",
+      "description": "Ventes par jour, mois et année : versions GROUPING SETS et ROLLUP énoncé p. 3, corrigé p. 4–5. → B3.01–02",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-4.2",
+      "description": "Comparer les résultats au simple regroupement par date sans exécuter énoncé p. 4, corrigé p. 5–6. → B3.01–03",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-4.3",
+      "description": "Rang hypothétique de 14, puis valeurs au-delà du minimum et du maximum ; vérification indépendante énoncé p. 4, corrigé p. 6. → B3.11",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-5.1",
+      "description": "Détails de chaque film et nombre de films de son réalisateur énoncé p. 4, corrigé p. 6. → B3.04–05",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-5.2",
+      "description": "Classement parmi les films sélectionnés, comparer RANK et DENSE_RANK énoncé p. 4–5, corrigé p. 7. → B3.09–10",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-5.3",
+      "description": "Même sélection avec classement sur tous les films énoncé p. 5, corrigé p. 7. → B3.09–10",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-5.4",
+      "description": "Années extrêmes et classements global/par réalisateur énoncé p. 5, corrigé p. 7–8. → B3.05, B3.10",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-5.5",
+      "description": "Jour au chiffre d'affaires maximal énoncé p. 5, corrigé p. 8. → B3.09–10",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-5.6",
+      "description": "Cinq meilleurs jours et listes des ventes/films avec LISTAGG énoncé p. 5, corrigé p. 8–9. → B3.10, B3.12",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-5.7",
+      "description": "Liste d'IDs distincts : comprendre le dédoublonnage, tester le cas modifié et restaurer les données énoncé p. 5–6, corrigé p. 9–10. → B3.12, B0.07",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-5.8",
+      "description": "Remplacer les IDs par les titres en conservant le sens de la variante choisie énoncé p. 6–7, corrigé p. 10–11. → B3.12, B0.03",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-5.9a",
+      "description": "Expliquer les deux cumuls de la requête corrélée énoncé p. 7, corrigé p. 11. → B2.03, B3.08",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-5.9b",
+      "description": "Mesurer la version initiale sur le jeu utilisé, en notant le contexte énoncé p. 7, comparaison dans le corrigé p. 12. → B9.09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-5.9c",
+      "description": "Écrire l'équivalent avec fenêtres et justifier le cadre choisi énoncé p. 7, corrigé p. 12. → B3.07–08, B3.12",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-5.9d",
+      "description": "Mesurer, comparer et expliquer les différences sans généraliser les chiffres du corrigé énoncé p. 7, corrigé p. 12. → B9.09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-L-6",
+      "description": "Créer une demande réellement nouvelle et sa solution sur la base cinéma énoncé p. 7, pas de corrigé imposé. → bloc choisi, à noter dans le journal.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-N-0",
+      "description": "Lire le schéma et traduire chacune des sept lignes de DF de l'énoncé p. 1–2 ; identifier les données absentes pour l'exécution. → B5.01, B6.13",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-N-1a",
+      "description": "Expliquer les redondances et trois types d'anomalies énoncé p. 2, synthèse du corrigé p. 4. → B6.01",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-N-1b",
+      "description": "Établir la couverture minimale et justifier le traitement de la dernière DF énoncé p. 2, résultat à analyser dans le corrigé p. 3. → B5.08",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-N-1c",
+      "description": "Déterminer la forme normale du schéma et expliquer pourquoi elle ne dépend pas seulement du remplissage actuel énoncé p. 2. → B6.05–06",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-N-2a",
+      "description": "Écrire un contrôle SQL pour chaque DF et interpréter les lignes en anomalie énoncé p. 2, méthode dans le corrigé p. 2 et 5. → B6.13",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-N-2a-ext",
+      "description": "Afficher les lignes incohérentes avec une CTE énoncé p. 2, corrigé p. 5. → B2.05, B6.13",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-N-2b",
+      "description": "Proposer les corrections UPDATE selon la règle du plus petit numéro d'animal énoncé p. 2, démarche du corrigé p. 2. → B0.07, B6.13",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-N-2b-ext",
+      "description": "Comprendre et adapter la correction automatique par MERGE énoncé p. 2, exemple dans le corrigé p. 6, en explicitant le cas des NULL. → B1.04, B2.07",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-N-2c",
+      "description": "Trouver les clés, faire la synthèse 3FN et écrire les tables avec toutes les contraintes énoncé p. 2, schéma obtenu dans le corrigé p. 3–4. → B5.09, B6.07, B6.13",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-N-2d",
+      "description": "Transférer les données sans doublons dans un ordre compatible avec les FK énoncé p. 2, méthode du corrigé p. 2. → B6.13",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-N-2e-i",
+      "description": "Ours du zoo, sur les deux schémas énoncé p. 2, corrigé p. 7. → B6.14",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-N-2e-ii",
+      "description": "Animaux en forêt, sur les deux schémas énoncé p. 2, corrigé p. 7. → B6.14",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-N-2e-iii",
+      "description": "Animaux du gardien Dupont, sur les deux schémas énoncé p. 2, corrigé p. 8. → B6.14",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-N-2e-iv",
+      "description": "Masse salariale, sans recompter les gardiens ni fusionner ceux qui ont le même salaire énoncé p. 2, corrigé p. 8. → B6.01, B6.14",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-N-2e-v",
+      "description": "Emplacements de classes différentes, avec toutes les colonnes demandées énoncé p. 2, comparer aux éléments de correction p. 9, qui ne projettent que l'emplacement. → B6.14",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-N-3",
+      "description": "Faire le bilan : anomalies encore possibles, information conservée, contraintes et coût des jointures énoncé p. 3, synthèse du corrigé p. 4. → B6.01–04, B6.14",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-I-0",
+      "description": "Comprendre l'environnement, les tables et effectifs, les index existants, EXPLAIN, EXPLAIN ANALYZE, les métadonnées et le principe de sauvegarde/restauration énoncé p. 1–6. Séparer cette compréhension de la disponibilité réelle de l'environnement. → B9.06, B9.09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-I-5.1.1",
+      "description": "Déterminer espace et blocs à partir des tablespaces énoncé p. 7, corrigé p. 6. → B7.06, B7.09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-I-5.1.2a",
+      "description": "Dupliquer les lignes sans renseigner les commentaires et observer l'espace énoncé p. 7, corrigé p. 6–7. → B7.06, B7.09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-I-5.1.2b",
+      "description": "Refaire le chargement avec commentaires renseignés énoncé p. 7, corrigé p. 7. → B7.06, B7.09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-I-5.1.2c",
+      "description": "Expliquer les différences et estimer les lignes par bloc énoncé p. 7, éléments du corrigé p. 7. → B7.06, B7.09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-I-5.1.2d",
+      "description": "Comparer réellement CHAR et VARCHAR énoncé p. 8, corrigé p. 7 ; corriger les types de l'exemple avant de mesurer. → B7.06, B9.08",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-I-5.2.1",
+      "description": "Total des commandes par client : sous-requête, jointure, plans et clients sans commande énoncé p. 8, corrigé p. 8–9. → B2.03, B9.06–09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-I-5.2.2",
+      "description": "Tester si une jointure peut être supprimée en conservant colonnes, doublons et lignes énoncé p. 8, proposition à vérifier dans le corrigé p. 9. → B9.07",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-I-5.2.3",
+      "description": "Comparer anti-jointure, NOT EXISTS et NOT IN, en ajoutant un cas avec NULL énoncé p. 8–9, corrigé p. 9–10. → B9.07",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-I-5.2.4",
+      "description": "Comparer jointure, EXISTS et IN avec des pays répétés ; vérifier si les comptages sont équivalents énoncé p. 9, éléments du corrigé p. 10. → B9.07",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-I-5.2.5",
+      "description": "Commandes au-dessus de la moyenne du vendeur : sémantique, fenêtre, CTE, plans et comparaison énoncé p. 9, corrigé p. 11. → B3.05, B3.12, B9.09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-I-5.3.1",
+      "description": "Un seul index pour les deux requêtes de recherche et projection énoncé p. 9–10, corrigé p. 11–12. → B8.09, B8.13",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-I-5.3.2",
+      "description": "Accélérer tri descendant et limitation à dix clients énoncé p. 10, corrigé p. 12–13. → B8.12–13",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-I-5.3.3",
+      "description": "Recherche d'un suffixe avec LIKE '%2' : expliquer le problème et proposer une solution compatible avec le moteur utilisé énoncé p. 10, proposition à vérifier dans le corrigé p. 13. → B8.14, B10.01",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-I-5.3.4",
+      "description": "Filtre par mois/année : réécriture sur un intervalle de dates et choix d'index énoncé p. 10, corrigé p. 13. → B8.12, B8.14",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-I-5.3.5",
+      "description": "Comparer SELECT * et projection recouverte avec l'index composé proposé énoncé p. 10–11, corrigé p. 14. → B8.09, B8.12–13",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-I-5.3.6",
+      "description": "Accélérer la jointure sur orders puis orders2 et expliquer les plans des deux cas énoncé p. 11, éléments du corrigé p. 14–15. → B8.12, B9.06, B9.08–09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-I-5.3.7",
+      "description": "Réécrire avec CTE, comparer sur orders2 et orders, avec uniquement les PK au départ énoncé p. 11. Pas de correction de cette question dans le corrigé fourni. → B2.05–06, B9.08–09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-0",
+      "description": "Comprendre la table movie, le chargement CSV et l'environnement p. 1–5 ; relever le nom du CSV réellement disponible avant toute importation. → B0.01, B0.07",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.1.1",
+      "description": "Compter les lignes p. 6. → B0.04",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.1.2",
+      "description": "Afficher un échantillon maîtrisé p. 6. → B2.08",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.2.1",
+      "description": "Rechercher les comédies, compter et échantillonner p. 6. → B10.01–02",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.2.2",
+      "description": "Comédies parlant de famille, compter et échantillonner p. 6. → B10.01–02",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.2.3",
+      "description": "Chercher « dream » dans le titre p. 6. → B10.01",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.2.4",
+      "description": "Vérifier la sensibilité à la casse et expliquer charset/collation p. 6. → B10.07",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.2.5",
+      "description": "Titres commençant par « The », compter et échantillonner p. 6. → B10.01",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.2.6",
+      "description": "Identifier les requêtes qui bénéficient de l'index sur le titre p. 6. → B8.12, B10.01",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.2.7",
+      "description": "Refaire la recherche avec une expression régulière et comparer p. 6. → B10.02, B9.09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.2.8",
+      "description": "Proposer la recherche de « fear » ou termes équivalents ; expliquer ce qu'une recherche par mots peut réellement trouver p. 6. → B10.02, B10.18",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.2.9a",
+      "description": "Forme normale et problème de la colonne genres p. 6. → B6.05",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.2.9b",
+      "description": "Donner une requête rendue fastidieuse par cette représentation p. 6. → B6.01, B10.01",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.2.9c",
+      "description": "Comparer les moyens de contraindre les genres à un ensemble fini p. 6. → B0.01, B6.13",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.2.9d",
+      "description": "Créer et peupler la variante SET en comprenant sa représentation p. 7. → B6.13",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.2.9e",
+      "description": "Expliquer les différences entre les trois recherches LIKE / FIND_IN_SET p. 7. → B10.01–02",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.3.1",
+      "description": "Préparer movieFT, son schéma et les index nécessaires p. 7. → B10.08",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.3.2a",
+      "description": "Comprendre l'ajout de PK ; vérifier les contraintes déjà présentes dans la copie avant de l'exécuter p. 7. → B0.01",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.3.2b",
+      "description": "Créer l'index Full Text sur le titre p. 7. → B10.08",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.3.2c",
+      "description": "Inspecter les mots indexés et expliquer la table auxiliaire choisie p. 7. → B10.03, B10.12",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.3.2d",
+      "description": "Inspecter les stopwords et prévoir leur effet p. 7–8. → B10.04, B10.12",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.3.2e",
+      "description": "Comparer les tables auxiliaires avant/après le second index p. 8. → B10.12",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.3.3",
+      "description": "Expliquer l'index combiné titre/genres, sans exécuter le code comme demandé dans l'énoncé p. 8. → B10.08",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.4.1",
+      "description": "Reprendre la recherche des comédies dans les trois modes, comparer résultats et exécution à LIKE p. 8. → B10.09–11, B9.09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.4.2",
+      "description": "Afficher les scores dans les trois modes et limiter les résultats p. 8. → B10.06, B10.09",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "TP-FT-4.4.3",
+      "description": "Expliquer les cinq requêtes « death in », « death », naturel, booléen et expansion p. 8–9, y compris stopwords, mots contre sous-chaînes et élargissement des résultats. → B10.02, B10.04, B10.09–11",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-1.1",
+      "description": "— PDF p. 2. → B3.04–10. Table et requête de l'annexe ; valeurs manuscrites insuffisantes pour déterminer toute la demande.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-1.2",
+      "description": "— PDF p. 2. → B2.01–05, B3.05. Requête D absente ; le commentaire manuscrit est un indice à vérifier.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-1.3",
+      "description": "— PDF p. 2. → B0.01, B5.01, B5.08–10. DDL absent ; ne pas reconstruire PK/UNIQUE à partir des seules réponses.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2.1",
+      "description": "— PDF p. 3. → B5.04–05. Ensemble F absent ; proposer des DF compatibles et les annoncer comme données d'entraînement.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2.2",
+      "description": "— PDF p. 3–4. → B5.06, B5.08. F exact absent ; suivre les six décisions sur une variante choisie, sans traiter les annotations comme un corrigé certain.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2.3",
+      "description": "— PDF p. 4. → B5.09–10. Attributs et DF exacts absents ; justifier exhaustivité et minimalité sur la variante.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2.4",
+      "description": "— PDF p. 5. → B6.07, B6.13. Utiliser le même schéma d'entraînement que pour EX-2.1–3.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-2.5",
+      "description": "— PDF p. 5. → B6.05. Vérifier toutes les clés des relations obtenues ; réponse manuscrite barrée à ne pas apprendre.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-3.1",
+      "description": "— PDF p. 6. → B8.01–03, B8.10. Figure 3 absente ; dessiner une nouvelle figure complète et numérotée.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-3.2",
+      "description": "— PDF p. 6. → B8.05. Convention de la figure absente ; la définir sur la nouvelle figure.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-3.3",
+      "description": "— PDF p. 6. → B8.02–05. Travailler les clés, pointeurs et chaînage sur la nouvelle figure.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-3.4a",
+      "description": "— PDF p. 6. → B8.03, B8.06. Déduire l'ordre d'un schéma choisi avec convention explicite.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-3.4b",
+      "description": "— PDF p. 7. → B8.07. Compter les niveaux sur le schéma choisi.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-3.4c",
+      "description": "— PDF p. 7. → B8.02, B8.07–08. Distinguer clés internes, entrées de feuilles et lignes de données.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-3.5a",
+      "description": "— PDF p. 7. → B8.12. Choisir un filtre non aidé par l'index de la nouvelle figure.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-3.5b",
+      "description": "— PDF p. 7. → B8.07, B8.10–12. Numéro et cache définis sur la nouvelle figure ; compter index et données.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-3.5c",
+      "description": "— PDF p. 7. → B8.12. Justifier les deux coûts dans un même modèle.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-3.5d",
+      "description": "— PDF p. 7. → B8.13. Construire une projection recouverte et compter les E/S.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-4.1",
+      "description": "— PDF p. 8. → B7.09, B8.08. Paramètres de l'annexe absents ; les choisir ou les inférer avec réserve, puis les déclarer.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-4.2",
+      "description": "— PDF p. 8. → B8.06. Reprendre l'hypothèse simplificatrice indiquée : autant de clés que de pointeurs dans un bloc interne.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-4.3",
+      "description": "— PDF p. 8–9. → B8.07–08. Préciser index dense, tailles et remplissage.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-4.4",
+      "description": "— PDF p. 9. → B8.07. Comparer capacité maximale et effectif avec la convention retenue.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-4.5",
+      "description": "— PDF p. 9. → B8.06–08. Expliquer quels calculs changent et pourquoi.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-4.6",
+      "description": "— PDF p. 9. → B7.09, B8.08. Séparer taille des données et taille des entrées de l'index.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-V1",
+      "description": "Créer une petite table d'employés avec départements, ex æquo et valeurs nulles ; préparer des requêtes de total global, total par département, cumul et rang. Puis remplir leurs résultats sans exécution. → EX-1.1, B3",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-V2",
+      "description": "Choisir une requête de salaire comparé à la moyenne du département et un DDL avec PK, UNIQUE, NOT NULL et FK ; expliquer la requête et déduire uniquement les DF justifiées par les contraintes. → EX-1.2–3, B2, B5",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-V3",
+      "description": "Construire un ensemble de DF contenant implication déduite, source simplifiable, redondance, plusieurs clés et attribut indépendant. Vérifier la cohérence du jeu avant de dérouler preuves, couverture, clés et synthèse 3FN. → EX-2, B5–6",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-V4",
+      "description": "Dessiner un B+arbre nonclustered sur les titres de films, avec au moins deux niveaux, feuilles chaînées et blocs de données séparés ; définir le cache puis reprendre toutes les questions de lecture et de coût. → EX-3, B7–8",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-V5",
+      "description": "Choisir explicitement effectif, taille des blocs, enregistrements, clés et pointeurs ; reprendre les six questions de l'exercice 4 avec formules, unités et arrondis. Les nombres manuscrits de la copie ne constituent qu'une piste si l'on veut une variante proche. → EX-4, B7–8",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "EX-V6",
+      "description": "Ajouter une question sur bitmap/hash/cluster, une sur Full Text et une sur vecteurs, absents ou non identifiables dans les pages visibles ; les rattacher aux compétences du cours. → B9–10",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "RES-1",
+      "description": "Pour le TP cinéma, identifier l'environnement et le jeu utilisés, puis noter ce qui a réellement été exécuté.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "RES-2",
+      "description": "Pour le TP zoo, identifier les données originales ou créer un jeu d'entraînement déclaré, puis séparer conclusions théoriques et contrôles exécutés.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "RES-3",
+      "description": "Pour le TP index, identifier moteur/version, schéma, effectifs, index initiaux et données avant toute comparaison de performance.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "RES-4",
+      "description": "Pour le TP Full Text, identifier CSV, schéma, collation, moteur/version et paramètres de tokens/stopwords avant toute comparaison de résultats.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FIN-1",
+      "description": "Je sais choisir l'outil SQL adapté, écrire une requête, calculer son résultat sur un petit exemple et expliquer les NULL, doublons et ex æquo.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FIN-2",
+      "description": "Je sais enchaîner implication de DF, couverture minimale, recherche exhaustive des clés et synthèse 3FN, en justifiant chaque étape.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FIN-3",
+      "description": "Je sais distinguer préservation du contenu et préservation des DF, tester les formes normales et expliquer les compromis BCNF / 4FN.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FIN-4",
+      "description": "Je sais lire et modifier un B-arbre/B+arbre, calculer ordre, hauteur, capacité, blocs et E/S avec les conventions annoncées.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FIN-5",
+      "description": "Je sais choisir et critiquer un chemin d'accès ou un index selon la requête et la charge, puis expliquer un plan d'exécution.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FIN-6",
+      "description": "Je sais comparer recherche exacte, motifs, Full Text et vecteurs, construire un exemple et expliquer les scores et limites.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FIN-7",
+      "description": "J'ai repris les questions visibles de l'ancien examen avec les variantes nécessaires, en séparant données originales, déduites et choisies.",
+      "checked": false,
+      "kind": "exercise"
+    },
+    {
+      "id": "FIN-8",
+      "description": "Je sais refaire un exercice d'un autre jeu de données sans copier une correction, repérer une erreur de raisonnement et expliquer la solution oralement.",
+      "checked": false,
+      "kind": "exercise"
+    }
+  ],
+  "sources": [
+    {
+      "id": "C-LMD",
+      "file": "1_LMD_avance.pdf",
+      "pages": 140
+    },
+    {
+      "id": "TP-L",
+      "file": "1_TP_LMD_avance.pdf",
+      "pages": 7
+    },
+    {
+      "id": "SOL-L",
+      "file": "1_TP_LMD_avance_sol.pdf",
+      "pages": 12
+    },
+    {
+      "id": "C-DF",
+      "file": "2_DF.pdf",
+      "pages": 41
+    },
+    {
+      "id": "SOL-DF",
+      "file": "2_DF_sol.pdf",
+      "pages": 34
+    },
+    {
+      "id": "C-FN",
+      "file": "2_FN.pdf",
+      "pages": 83
+    },
+    {
+      "id": "SOL-FN",
+      "file": "2_FN_sol.pdf",
+      "pages": 17
+    },
+    {
+      "id": "TP-N",
+      "file": "2_TP_Normalistion.pdf",
+      "pages": 3
+    },
+    {
+      "id": "SOL-N",
+      "file": "2_TP_Normalisation_sol.pdf",
+      "pages": 9
+    },
+    {
+      "id": "C-PHY",
+      "file": "3_OrgPhysique.pdf",
+      "pages": 39
+    },
+    {
+      "id": "C-IDX",
+      "file": "3_BArbres.pdf",
+      "pages": 106
+    },
+    {
+      "id": "C-AUT",
+      "file": "3_IndexAutres.pdf",
+      "pages": 30
+    },
+    {
+      "id": "C-FT",
+      "file": "3_IndexFT.pdf",
+      "pages": 71
+    },
+    {
+      "id": "C-VEC",
+      "file": "3_Index_Vecteurs.pdf",
+      "pages": 19
+    },
+    {
+      "id": "TP-I",
+      "file": "3_TP_Index.pdf",
+      "pages": 11
+    },
+    {
+      "id": "SOL-I",
+      "file": "3_TP_Index_sol.pdf",
+      "pages": 15
+    },
+    {
+      "id": "TP-FT",
+      "file": "3_TP_Index_FT.pdf",
+      "pages": 9
+    },
+    {
+      "id": "EX",
+      "file": "TE1_2425.pdf",
+      "pages": 9
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+export const meta = {"id": "sql-null-functions", "moduleId": "sql", "title": "NULLIF et COALESCE", "summary": "Choisir une valeur de remplacement et neutraliser une valeur sentinelle.", "objectives": ["Choisir une valeur de remplacement et neutraliser une valeur sentinelle.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [38, 39, 40, 41]}], "skillIds": ["B1.04"], "order": 2}
+
+## NULLIF et COALESCE
+
+`COALESCE(a,b,c)` prend la première valeur non NULL, de gauche à droite. Zéro n'est pas NULL. Si tout est NULL, le résultat est NULL. `NULLIF(a,b)` produit NULL lorsque l'égalité est vraie, sinon il conserve a.
+
+```sql
+SELECT COALESCE(NULL, 0, 100) AS premier; -- 0
+SELECT NULLIF(12,12) AS egal, NULLIF(12,8) AS different;
+-- egal : NULL ; different : 12
+SELECT nom, prix / NULLIF(prix,0) AS quotient FROM produit;
+```
+
+La division par `NULLIF(quantite,0)` évite de diviser par zéro : le résultat devient inconnu pour une quantité nulle. Remplacer ensuite ce résultat par zéro serait une décision métier, pas une obligation technique.
+
+Le cours combine les fonctions pour les budgets : lorsque budget courant et précédent sont égaux, NULLIF donne NULL, puis COALESCE fournit le texte « Budget constant ».
+
+```sql
+SELECT dept_id,
+  COALESCE(CAST(NULLIF(budgetCourant,budgetPrec) AS VARCHAR),
+           'Budget constant') AS budget
+FROM budgets WHERE budgetCourant IS NOT NULL;
+```
+
+L'exemple exécutable emploie `CAST(... AS VARCHAR)` dans DuckDB ; le cours Oracle utilise `TO_CHAR`. Le filtre conserve seulement les budgets courants connus. Sans lui, un budget courant inconnu serait aussi affiché comme constant, ce qui serait trompeur.
+
+**À retenir :** dérouler d'abord la fonction intérieure et vérifier les types. Une expression de remplacement textuelle ne doit pas être mélangée sans conversion à un nombre.

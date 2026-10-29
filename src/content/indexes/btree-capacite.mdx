@@ -1,0 +1,34 @@
+export const meta = {"id": "btree-capacite", "moduleId": "btree", "title": "Calculer l’ordre, la hauteur et les accès", "summary": "Dimensionner un B-arbre avec des unités et hypothèses explicites.", "objectives": ["Dimensionner un B-arbre avec des unités et hypothèses explicites.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-IDX", "pages": [26, 27, 28, 29, 30, 31, 32, 33, 34]}], "skillIds": ["B8.06", "B8.07", "B8.08"], "order": 3};
+
+On compte ici la hauteur h en **niveaux**, racine incluse : une racine seule a une hauteur de 1. Ne pas confondre nombre de niveaux, nombre d’arêtes et nombre de lectures physiques après cache.
+
+### Calcul de l’ordre
+
+Un nœud B-arbre de k clés stocke k clés, k pointeurs de donnée et k+1 pointeurs de sous-arbre. Sans en-têtes ni compression :
+
+```text
+B : taille de page en octets
+c : taille d’une clé ; p : taille d’un pointeur
+k*c + k*p + (k+1)*p <= B
+Avec B=4096, c=4, p=8 : 20k+8 <=4096
+k <=204 ; kmax=2d => dmax=102
+```
+
+L’entier se prend par défaut : dépasser la page d’un seul octet invalide le nœud. En pratique il faut réserver les en-têtes, les slots, les alignements et l’espace libre.
+
+### Capacité théorique du B-arbre
+
+```text
+Nmin(h) = 2*(d+1)^(h-1)-1
+Nmax(h) = (2d+1)^h-1
+```
+
+Le minimum vient d’une racine à une clé et deux fils, puis de nœuds au minimum. Le maximum est une somme géométrique sur tous les niveaux. Les démonstrations p.27–28 sont des annexes d’explication.
+
+Avec 255 fils au maximum et h=3 : d=127, nombre maximal de clés 16 581 374, nœuds 1+255+65 025=65 281, feuilles 65 025. Seuls les 256 nœuds internes occupent 1 Mio si chaque page fait 4 Kio.
+
+Sans cache, une recherche allant jusqu’à une feuille coûte trois lectures d’index, puis une lecture de donnée séparée. Racine en cache : trois lectures physiques au pire ; tous les internes en cache : deux. Une requête couverte supprime l’accès de donnée ; un index clustered fait de la feuille la donnée.
+
+### Interpréter les chiffres d’un manuel
+
+L’extrait MySQL p.33 utilise un facteur de remplissage de deux tiers et un exemple de page 1 024 octets. Ce n’est pas la taille de page universelle d’InnoDB. Son modèle de coût compte environ une descente puis une lecture de donnée ; le cache peut réduire les accès physiques. De même, la limite Sybase sur une clé CHAR de 700 octets dépend du produit. Dans l’exemple SAP ASE à pages 2 Kio, la limite de clé utilisateur est de 600 octets : 700 dépasse ce plafond, même si une valeur tient seule dans la page. Cette limite laisse de la place pour plusieurs entrées et métadonnées. Voir [SAP ASE, Index Size](https://help.sap.com/docs/SAP_ASE/86fcdd45cd3142af9f1b6dd75017260f/a8fbd3b6bc2b1014bc1ca6e786977909.html?version=16.0.2.4).

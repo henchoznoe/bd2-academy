@@ -1,0 +1,38 @@
+export const meta = {"id": "sql-recursion", "moduleId": "sql", "title": "CTE récursives et cycles", "summary": "Construire une ancre, une étape de parcours et une condition d’arrêt.", "objectives": ["Construire une ancre, une étape de parcours et une condition d’arrêt.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [130, 131, 132, 133, 134, 135, 136, 137, 138]}], "skillIds": ["B4.01", "B4.02", "B4.03", "B4.04"], "order": 19}
+
+## CTE récursives et cycles
+
+Une CTE récursive décrit un résultat de départ puis la manière d'ajouter des résultats à partir du tour précédent. Le cours part d'un graphe de vols : une liaison peut être directe ou passer par une ville déjà atteinte.
+
+```sql
+-- DuckDB : UNION retire les couples déjà présents
+WITH RECURSIVE chemins(ville_dep,ville_arr) AS (
+ SELECT ville_dep,ville_arr FROM vol
+ UNION
+ SELECT c.ville_dep,v.ville_arr
+ FROM chemins c JOIN vol v ON c.ville_arr=v.ville_dep
+)
+SELECT DISTINCT ville_arr FROM chemins WHERE ville_dep='Genève';
+```
+
+L'ancre apporte les vols directs. Le premier tour ajoute les liaisons avec une escale ; les tours suivants allongent les chemins. UNION retire les couples dupliqués dans ce calcul de connexions finies. Avec UNION ALL, les répétitions restent ; un cycle peut produire indéfiniment des chemins si aucune autre condition ne l'empêche.
+
+Dans la forme Oracle enseignée, ne pas écrire le mot RECURSIVE et utiliser UNION ALL entre ancre et partie récursive. La clause Oracle CYCLE permet de repérer des cycles selon les colonnes déclarées. Si le besoin interdit toute revisite d'une ville, il faut aussi représenter le chemin et contrôler les nœuds déjà visités.
+
+Ajouter une profondeur maximale peut protéger un exercice mais change la question : les trajets plus longs ne sont alors plus recherchés. On doit annoncer cette limite, pas la masquer comme une solution complète.
+
+**À retenir :** définir ce qui est mémorisé, ce qui est nouveau et ce qui arrête le calcul ; tester un cycle et plusieurs chemins vers la même ville.
+
+## Transposition Oracle complète
+
+```sql
+WITH chemins(ville_dep,ville_arr) AS (
+ SELECT ville_dep,ville_arr FROM vol
+ UNION ALL
+ SELECT c.ville_dep,v.ville_arr
+ FROM chemins c JOIN vol v ON c.ville_arr=v.ville_dep
+) CYCLE ville_dep,ville_arr SET is_cycle TO 'Y' DEFAULT 'N'
+SELECT ville_dep,ville_arr,is_cycle FROM chemins;
+```
+
+Cette forme est étudiée comme une syntaxe Oracle et ne sert pas de solution exécutable DuckDB. Les colonnes de CYCLE définissent ce qui compte comme répétition dans un chemin.

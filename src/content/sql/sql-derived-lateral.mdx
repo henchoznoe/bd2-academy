@@ -1,0 +1,31 @@
+export const meta = {"id": "sql-derived-lateral", "moduleId": "sql", "title": "Tables dérivées, corrélation et LATERAL", "summary": "Calculer une relation intermédiaire et un top N pour chaque ligne externe.", "objectives": ["Calculer une relation intermédiaire et un top N pour chaque ligne externe.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [48, 49, 50, 51, 52, 53]}], "skillIds": ["B2.02", "B2.03", "B2.04"], "order": 7}
+
+> **Les mots du cours.** Une sous-requête dans FROM est appelée inline view dans le support, et aussi table dérivée ici. Ces expressions désignent la même construction dans ce contexte.
+
+## Tables dérivées, corrélation et LATERAL
+
+Une sous-requête dans FROM produit une relation, avec plusieurs colonnes et lignes possibles. Son alias permet d'utiliser ces colonnes dans la requête extérieure.
+
+```sql
+SELECT d.dname,x.total FROM dept d
+JOIN (SELECT deptno,SUM(salaire) AS total FROM emp GROUP BY deptno) x
+ON x.deptno=d.deptno;
+```
+
+Une sous-requête corrélée dépend de la ligne extérieure. LATERAL autorise cette dépendance dans FROM. On peut la lire comme une boucle : pour chaque personne, rechercher ses animaux, les trier et conserver les deux premiers.
+
+```sql
+-- Variante exécutable DuckDB ; LIMIT est à adapter sous Oracle
+SELECT p.id AS personne,a.id AS animal
+FROM personne p,
+LATERAL (
+ SELECT id FROM animal WHERE proprioId=p.id
+ ORDER BY age DESC,id LIMIT 2
+) a;
+```
+
+Le deuxième critère id rend le choix déterministe en cas d'âge égal. Cette version choisit exactement deux lignes au maximum. Conserver tous les ex æquo du deuxième rang est un besoin différent.
+
+Une jointure latérale interne ne produit pas de ligne pour une personne sans animal. Une jointure externe latérale peut conserver cette personne avec des colonnes nulles. LATERAL n'est pas synonyme de calcul unique : son sens est lié à la ligne extérieure.
+
+**À retenir :** distinguer relation intermédiaire indépendante et sous-requête dépendante ; choisir le type de jointure et la règle d'ex æquo d'après la demande.

@@ -1,0 +1,60 @@
+export const meta = {
+  "id": "fn-dm",
+  "moduleId": "normalisation",
+  "title": "Comprendre les dépendances multivaluées",
+  "summary": "Des ensembles de faits indépendants imposent toutes leurs combinaisons.",
+  "objectives": [
+    "Lire une DM comme indépendance",
+    "Construire les tuples croisés",
+    "Distinguer une DM d’une DF"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "C-FN",
+      "pages": [
+        64,
+        66,
+        67,
+        68,
+        69,
+        70
+      ]
+    }
+  ],
+  "skillIds": [
+    "B6.11"
+  ],
+  "order": 8
+}
+
+## Plusieurs valeurs, mais une indépendance précise
+
+Dans `R(Etudiant,Sport,Cours)`, écrire `Etudiant ↠ Sport` signifie : pour un étudiant fixé, l'ensemble de ses sports est indépendant de ses cours. Ce n'est pas seulement « il a plusieurs sports ». Si `(102,Foot,BD)` et `(102,Tennis,SI)` existent, il faut aussi `(102,Foot,SI)` et `(102,Tennis,BD)`.
+
+Une DF Étudiant → Sport imposerait un seul sport par étudiant ; une DM autorise plusieurs sports et exige leur recombinaison avec le reste. Toute DF implique une DM correspondante, mais la réciproque est fausse.
+
+## Exemple déroulé : cours, professeurs, livres
+
+Pour C1, professeurs A,B,C et livres L1,L2 sont indépendants. Il faut les six couples A/L1, A/L2, B/L1, B/L2, C/L1, C/L2. Pour C2, professeur D et livres L3,L4 : deux lignes. L'extension complète contient huit lignes.
+
+Sans DF non triviale, la clé du schéma universel est Cours,Prof,Livre ; la relation est BCNF. Pourtant ajouter un professeur à C2 oblige à ajouter une ligne par livre. Les redondances viennent des DM, que BCNF ne traite pas.
+
+## Compléments du support
+
+L'annexe présente les DM élémentaires et leurs règles d'inférence. La complétion est particulièrement intuitive : si X ↠ Y dans XYZ, alors X ↠ Z aussi. Les règles de DM ne doivent pas être remplacées par celles des DF sans justification ; une cible de DM peut être un groupe d'attributs décrivant un même fait.
+
+### Repères de l'annexe, page PDF 70
+
+Ces règles complètent la lecture, sans ajouter un objectif de récitation :
+
+- Complétion : X ↠ Y donne X ↠ (R moins X moins Y).
+- Réflexivité : si Y est inclus dans X, alors X ↠ Y.
+- Augmentation : si W est inclus dans Z et X ↠ Y, alors XZ ↠ YW.
+- Transitivité : X ↠ Y et Y ↠ Z donnent X ↠ (Z moins Y).
+- Union : X ↠ Y et X ↠ Z donnent X ↠ YZ.
+
+La soustraction dans la transitivité fait partie de la règle : il ne faut pas la remplacer machinalement par la transitivité des DF.
+
+## Application
+
+Si prénom-enfant et âge-enfant décrivent le même enfant, garde-les ensemble. Les rendre indépendants créerait des couples prénom/âge inventés. Réussite : à partir de deux lignes partageant X, tu écris les deux lignes croisées exigées et expliques pourquoi le métier les autorise.

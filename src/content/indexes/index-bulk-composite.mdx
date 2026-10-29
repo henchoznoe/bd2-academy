@@ -1,0 +1,28 @@
+export const meta = {"id": "index-bulk-composite", "moduleId": "btree", "title": "Chargement en masse, doublons et clés composées", "summary": "Construire les feuilles triées et raisonner sur le préfixe gauche.", "objectives": ["Construire les feuilles triées et raisonner sur le préfixe gauche.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-IDX", "pages": [45, 46, 47, 48, 49, 50]}], "skillIds": ["B8.09", "B8.15"], "order": 5};
+
+Insérer une ligne à la fois dans un index existant répète les descentes et les éventuels éclatements. Le bulk loading trie les entrées, remplit les feuilles séquentiellement, puis construit les niveaux supérieurs à partir des bornes. On peut laisser une marge de place pour les écritures futures. Ce tri préalable a lui-même un coût.
+
+### Exemple du cours
+
+Avec deux valeurs par feuille :
+
+```text
+[3,4] -> [8,9] -> [10,11] -> [12,13] -> [20,22] -> [23,31]
+```
+
+Les niveaux supérieurs regroupent les références à ces six feuilles ; si un interne possède trois fils, on obtient deux internes puis une racine. Le choix des séparateurs dépend de la convention, tandis que le contenu des feuilles reste identique.
+
+Les doublons ne deviennent pas une seule ligne. Une clé secondaire répétée référence plusieurs lignes, par liste, entrées distinctes avec identifiant ou feuilles voisines selon le moteur. Une requête sans `DISTINCT` conserve ces multiplicités.
+
+### Ordre lexicographique
+
+```text
+Index(country,name,id)
+('CH','Adam',4), ('CH','Borel',2), ('FR','Adam',8)
+```
+
+Toutes les entrées CH sont contiguës. Chercher country puis name est naturel ; chercher name seul ne fixe pas un intervalle unique. Un moteur peut parfois balayer l’index ou employer une optimisation spécialisée : cela ne transforme pas name en premier composant.
+
+Une égalité sur le premier composant laisse le second exploitable en recherche d’intervalle. Une plage sur le premier composant limite généralement le pouvoir de resserrement du second ; ce second reste utile pour filtrer dans l’index et couvrir la projection.
+
+Le cours mentionne SOUNDEX pour une approximation phonétique. Un index ordinaire sur name ne devient pas un index sur SOUNDEX(name). Il faut une expression ou colonne calculée adaptée, et la phonétique n’est ni égalité ni sémantique.

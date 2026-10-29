@@ -1,0 +1,36 @@
+export const meta = {"id": "sql-case", "moduleId": "sql", "title": "Fonctions d’aiguillage : CASE simple et CASE avec recherche", "summary": "Choisir entre CASE simple et recherché et comprendre le premier WHEN vrai.", "objectives": ["Choisir entre CASE simple et recherché et comprendre le premier WHEN vrai.", "Expliquer le résultat sur un petit exemple et repérer le piège principal."], "sourceRefs": [{"sourceId": "C-LMD", "pages": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]}], "skillIds": ["B1.01", "B1.02", "B1.03"], "order": 1}
+
+> **Les mots du cours.** Le support distingue CASE simple et CASE avec recherche, parmi les fonctions d’aiguillage. « CASE recherché » est ici le raccourci pour la seconde forme, avec des conditions complètes.
+
+## CASE : décider pour chaque ligne
+
+Une expression `CASE` fabrique une valeur. Dans un `SELECT`, elle ne change pas la table : elle calcule une colonne pour chaque ligne. Le CASE simple compare une même expression à plusieurs valeurs. Le CASE recherché teste une condition complète dans chaque branche.
+
+```sql
+SELECT ename, CASE deptno
+  WHEN 10 THEN 'Enseignement'
+  WHEN 20 THEN 'Recherche'
+  ELSE 'Autre'
+END AS departement FROM emp;
+
+SELECT ename, CASE
+  WHEN taux IS NULL THEN 'Taux inconnu'
+  WHEN taux > 0 AND taux < 100 THEN 'Temps partiel'
+  WHEN taux = 100 THEN 'Plein temps'
+  ELSE 'Taux à contrôler'
+END AS occupation FROM emp;
+```
+
+| Taux | Occupation |
+|---|---|
+| NULL | Taux inconnu |
+| 0 | Taux à contrôler |
+| 80 | Temps partiel |
+| 100 | Plein temps |
+| 120 | Taux à contrôler |
+
+SQL retient le **premier WHEN vrai** et n'évalue pas les autres comme des choix de résultat. Si aucune condition n'est vraie, il utilise ELSE. Sans ELSE, la valeur retournée est NULL. Une comparaison avec NULL n'est pas vraie : `CASE deptno WHEN NULL` ne remplace jamais `WHEN deptno IS NULL`.
+
+Dans un UPDATE, l'expression calcule la nouvelle valeur : `SET salaire = CASE WHEN deptno = 10 THEN salaire + 100 ELSE salaire END`. ELSE conserve ici les autres salaires ; l'omettre les remplacerait par NULL.
+
+**À retenir :** choisir la bonne forme, tester NULL explicitement et traduire exactement les bornes « strictement » ou « au moins ».

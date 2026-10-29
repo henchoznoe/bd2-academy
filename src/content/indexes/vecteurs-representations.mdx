@@ -1,0 +1,21 @@
+export const meta = {"id": "vecteurs-representations", "moduleId": "vecteurs", "title": "Du TF-IDF aux embeddings appris", "summary": "Expliquer la différence entre coordonnées lexicales et représentation sémantique.", "objectives": ["Expliquer la différence entre coordonnées lexicales et représentation sémantique.", "Expliquer le résultat d’un exemple et justifier les limites."], "sourceRefs": [{"sourceId": "C-VEC", "pages": [3, 4, 5, 6, 7, 8, 9, 10]}], "skillIds": ["B10.13", "B10.14", "B10.18"], "order": 24};
+
+Un vecteur représente un document ou une requête par une suite ordonnée de nombres dans un même espace. Deux vecteurs ne sont comparables que si leurs coordonnées correspondent au même modèle, dans la même dimension et avec le même prétraitement.
+
+TF-IDF donne une coordonnée par mot du vocabulaire : deux textes sans mots communs ont souvent un produit scalaire nul, même s’ils parlent de sujets proches. Un embedding appris dense peut rapprocher peur et panique s’il a appris des contextes similaires. Il n’assure pas que les termes sont interchangeables dans chaque phrase.
+
+### Cooccurrences et GloVe
+
+Une matrice de cooccurrences compte les mots présents dans des fenêtres de contexte. GloVe apprend des vecteurs à partir des statistiques globales de ces cooccurrences, avec un objectif pondéré sur les comptes logarithmiques. Les deux jeux de paramètres, mots et contextes, permettent une représentation compacte. La présentation de « factorisation » du support est une intuition ; ce n’est pas une simple règle qui transforme toute matrice en vecteurs sémantiquement corrects.
+
+### Exemple géométrique créé
+
+```text
+Coordonnées choisies pour apprendre, pas sorties d’un modèle réel :
+peur=(1,0), panique=(0,9 ; 0,1), recette=(0,1)
+cos(peur,panique) ≈0,9939 ; cos(peur,recette)=0
+```
+
+La proximité vient des coordonnées définies. Dans un modèle réel, une coordonnée n’est pas nécessairement une notion interprétable comme peur ou cuisine. Des analogies visuelles ne prouvent ni causalité ni absence de biais.
+
+Pour indexer des films, on peut calculer un embedding du titre et résumé avec un modèle externe, conserver son identifiant/version, puis calculer celui de la requête avec le **même modèle**. Changer de modèle implique généralement de recalculer tous les vecteurs. L’annexe p.10 recense des usages : recherche sémantique et représentations de textes ne remplacent pas les contraintes SQL ni l’égalité d’un identifiant.
